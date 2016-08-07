@@ -1,0 +1,11 @@
+bootstrap:
+  environment:
+    test
+  config-sources:
+    - _dqconfig_list_:
+        merge: reset
+    - _dqconfig_meta_:
+        factory: com.diamondq.common.config.core.std.StdConfigBuilder
+        arg: FILE
+      file: application.yaml
+      stuff: true

@@ -1,0 +1,181 @@
+package com.diamondq.common.config.format.properties;
+
+import com.diamondq.common.config.format.AbstractStdConfigParser;
+import com.diamondq.common.config.spi.ConfigDataTuple;
+import com.diamondq.common.config.spi.ConfigNode;
+import com.diamondq.common.config.spi.ConfigNode.Builder;
+import com.diamondq.common.config.spi.ConfigParser;
+import com.diamondq.common.config.spi.ConfigProp;
+import com.diamondq.common.config.spi.NodeType;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.AbstractMap;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Properties;
+import java.util.Set;
+
+/**
+ * The properties file format allows meta data and type data to be added via sibling keys.
+ * 
+ * <pre>
+ * parentkey.key=value
+ * parentkey._dqconfig_meta_key.factory=com.example.factory
+ * parentkey._dqconfig_meta_key.otherMeta=metaValue
+ * </pre>
+ */
+public class PropertiesParser implements ConfigParser {
+
+	protected static final Set<String> sFileExtensions;
+
+	static {
+		Set<String> r = new HashSet<>();
+		r.add("props");
+		r.add("properties");
+		sFileExtensions = Collections.unmodifiableSet(r);
+	}
+
+	public PropertiesParser() {
+
+	}
+
+	public static class MutableConfigNode {
+		public String							name;
+
+		public NodeType							type;
+
+		public ConfigProp						value;
+
+		public Map<String, ConfigProp>			metaData;
+
+		public Map<String, MutableConfigNode>	children;
+
+		public MutableConfigNode() {
+			metaData = new HashMap<>();
+			children = new HashMap<>();
+			type = NodeType.builder().isExplicitType(false).build();
+		}
+	}
+
+	/**
+	 * @see com.diamondq.common.config.spi.ConfigParser#parse(com.diamondq.common.config.spi.ConfigDataTuple)
+	 */
+	@Override
+	public List<ConfigNode> parse(ConfigDataTuple pData) {
+		InputStream stream = pData.getStream();
+		List<ConfigNode> results = new ArrayList<>();
+		Properties p = new Properties();
+		try {
+			p.load(stream);
+		}
+		catch (IOException ex) {
+			throw new RuntimeException(ex);
+		}
+
+		String configSource = pData.getName();
+		MutableConfigNode root = new MutableConfigNode();
+		root.name = "";
+		@SuppressWarnings({"cast", "unchecked", "rawtypes"})
+		Map<String, String> map = (Map<String, String>) (Map) p;
+		map.entrySet().stream().map(m -> new AbstractMap.SimpleImmutableEntry<>(m.getKey().split("\\."), m.getValue()))
+			.forEach(e -> {
+
+				/* Find the MutableConfigNode */
+
+				MutableConfigNode node = root;
+				String metaKey = null;
+				for (String k : e.getKey()) {
+					if (metaKey != null) {
+						if (metaKey.isEmpty() == false)
+							throw new IllegalArgumentException("Multi-level meta not supported");
+						metaKey = k;
+					}
+					else if (k.startsWith(AbstractStdConfigParser.sMETA_KEY)) {
+						/**
+						 * a.b.c = value <br/>
+						 * a.b._dqconfig_meta_c.factory = f
+						 */
+						k = k.substring(AbstractStdConfigParser.sMETA_KEY.length());
+						metaKey = "";
+					}
+					else if (k.equals(AbstractStdConfigParser.sLIST_KEY)) {
+						k = k.substring(AbstractStdConfigParser.sMETA_KEY.length());
+						metaKey = "";
+					}
+					else {
+						MutableConfigNode child = node.children.get(k);
+						if (child == null) {
+							child = new MutableConfigNode();
+							child.name = k;
+							node.children.put(k, child);
+						}
+						node = child;
+					}
+				}
+
+				/* Now assign the data */
+
+				String value = e.getValue();
+
+				ConfigProp valueProp = ConfigProp.builder().value(value).configSource(configSource).build();
+				if (metaKey != null) {
+					if (AbstractStdConfigParser.sTYPE_FACTORY_ARG_KEY.equals(metaKey))
+						node.type = node.type.withFactoryArg(valueProp);
+					else if (AbstractStdConfigParser.sTYPE_FACTORY_KEY.equals(metaKey))
+						node.type = node.type.withFactory(valueProp);
+					else if (AbstractStdConfigParser.sTYPE_TYPE_KEY.equals(metaKey))
+						node.type = node.type.withType(valueProp);
+					else
+						node.metaData.put(metaKey, valueProp);
+				}
+				else
+					node.value = valueProp;
+
+			});
+
+		/* Now freeze the MutableNode's into a ConfigNode */
+
+		results.add(recursiveFreeze(root));
+		return results;
+	}
+
+	private ConfigNode recursiveFreeze(MutableConfigNode pRoot) {
+		Builder builder = ConfigNode.builder();
+		builder = builder.name(pRoot.name).type(pRoot.type);
+		if (pRoot.value != null)
+			builder = builder.value(pRoot.value);
+		builder = builder.putAllMetaData(pRoot.metaData);
+
+		for (Map.Entry<String, MutableConfigNode> pair : pRoot.children.entrySet())
+			builder = builder.putChildren(pair.getKey(), recursiveFreeze(pair.getValue()));
+
+		return builder.build();
+	}
+
+	/**
+	 * @see com.diamondq.common.config.spi.ConfigParser#canParse(java.util.Optional, java.lang.String)
+	 */
+	@Override
+	public boolean canParse(Optional<String> pMediaType, String pFileName) {
+		int offset = pFileName.lastIndexOf('.');
+		String suffix = pFileName.substring(offset + 1);
+		if (sFileExtensions.contains(suffix))
+			return true;
+		return false;
+	}
+
+	/**
+	 * @see com.diamondq.common.config.spi.ConfigParser#getFileExtensions()
+	 */
+	@Override
+	public Collection<String> getFileExtensions() {
+		return sFileExtensions;
+	}
+}

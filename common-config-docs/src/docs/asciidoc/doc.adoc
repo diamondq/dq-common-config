@@ -1,0 +1,121 @@
+:toc: left
+:toclevels: 4 
+:source-highlighter: highlight.js
+:experimental:
+[[main-classes]]
+== Documentation Abstract
+
+=== Overview
+
+The DQ Config system is based on the assembly of components / libraries that provide the specific configuration functionality
+you're looking for. For example, configuration data read from Zookeeper, Consul, YAML files; Automatic reloads; GUI / Cloud Configuration.
+
+The underlying system is based on the excellent library cfg4j, which is a modern, configuration library, designed to extensibility.
+
+The DQ Config system takes this library, and provides a layer of opinionated setup on top of it, and provides a variety of tooling.
+
+=== Concepts
+
+The configuration system is defined by a hierarchical collection of "Nodes". Each Node has a name, an optional single value, and some additional meta data (type, default, etc.). Nodes are assembled together into a hierarchical structure. For example:
+
+[plantuml, node-hierarchy, png]
+----
+node application [
+  Name: **application**
+  Type: Parent
+]
+node server [
+   Name: **server**
+   Type: Parent
+]
+node port [
+  Name: **port**
+  Type: Integer
+  Default: 80
+  Value: 8080
+]
+node hostname [
+	Name: **hostname**
+	Type: String
+	Value: localhost
+]
+node NR [
+	Name: **network-retries**
+	Type: Integer
+	Default: 1
+	Value: 1
+]
+application --> server
+application --> NR
+server --> port
+server --> hostname
+----
+
+==== Sources
+The nodes are populated by querying "sources". A source can be a variety of different things such as a YAML file, properties file, Environmental variables, a JSON from a configuration server, etc. Each source can provide a portion (or all) of the nodes.
+
+It is very easy to add additional sources.
+
+==== Binding
+End user access to the Configuration is usually done via binding the configuration nodes to a set of Java classes. The simplest is to just create a Java interface that matches and call the Config.bind method with the node prefix.
+
+[source,java]
+----
+public interface MyConfig {
+    public int getNetworkRetries();
+}
+----
+
+[source,java]
+----
+MyConfig config = config.bind("application", MyConfig.class);
+----
+==== Layer
+
+The final configuration result is created by merging many layers together. For example, you might have:
+
+[plantuml, layer-diagram, png]
+----
+artifact "library.yaml" as L1
+artifact "application.yaml" as A1
+artifact "http://cloudconfig.x.com" as C1
+L1 --> A1
+A1 --> C1
+----
+
+In this example, the elements from library.yaml are merged into those provided by application.yaml, which are then merged into those provided by the website cloudconfig.x.com. The 'last' one wins, so, for example, an element in application.yaml overrides a similarly named element in library.yaml
+
+=== Bootstrap Configuration
+
+In a bootstrap environment, initially the bootstrap.XXX configuration items are read. These are used to configure the main configuration system.  
+
+The conceptual path is:
+
+. The list of bootstrap profiles are defined by the Environmental variable `dq.bootstrap.profiles`
+. Any injectable dependency of type `com.diamondq.common.config.spi.BootstrapSource` are assembled together.
+.. The order of the different `BootstrapSource` is defined by the internal `int getBootstrapPriority()` method.
+.. Some `BootstrapSource` define additional configuration. Read the documentation on each source to see.
+.. The most common, and default set is:
+... `SystemEnvSource` which loads all the Environmental variables
+... `PropertiesSource` which loads all the System properties (as defined by `System.getProperties()`).
+... `BootstrapClassPathSource` which loads any `bootstrap.xxx` (where XXX is yaml, yml, json, xml, properties and props) located within the root of the any JAR in the classpath. Additionally, it will load `bootstrap-ppp.xxx`, where PPP is a provided profile.
+... `BootstrapFileSource` which loads any `bootstrap.xxx` and `bootstrap-ppp.xxx` (see above) located in the current working directory, or within the home directory of the current user.
+. Each `BootstrapSource` is queried with the set of profiles, and the results are merged together into a hierarchical set of Nodes.
+. The set of nodes is then bound against the `com.diamondq.common.config.model.BootstrapConfig`. 
+.. The `BootstrapConfig` defines the necessary configuration to load the 'main' configuration.
+. The `BootstrapConfig` is then used to assemble a set of `com.diamondq.common.config.spi.Source` objects.
+. The main set of profiles is defined by the `BootstrapConfig`.
+. Each `Source` is queried with the set of profiles, and the results are merged together into a hierarchical set of Nodes.
+
+[plantuml, sample-plantuml-diagram, png]
+----
+Alice -> Bob: Authentication Request
+Bob --> Alice: Authentication Response
+
+Alice -> Bob: Another authentication Request
+Alice <-- Bob: another authentication Response
+----
+
+=== Some New Stuff
+Some text
+kbd:[F11]

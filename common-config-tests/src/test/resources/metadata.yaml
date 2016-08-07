@@ -1,0 +1,22 @@
+metadata:
+  map:
+    _dqconfig_meta_:
+      type: com.example
+      factory: com.factory
+      arg: arg1
+      otherMeta: metaValue
+    mapKey: mapValue
+  
+  list:
+    - _dqconfig_list_:
+        type: com.example
+        factory: com.factory
+        arg: arg1
+        otherMeta: metaValue
+    - value0
+  
+  value:
+    key1: value
+    _dqconfig_meta_key1:
+      type: java.lang.String
+      otherMeta: metaValue
