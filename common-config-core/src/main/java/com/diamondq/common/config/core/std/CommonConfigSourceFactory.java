@@ -26,8 +26,8 @@ public class CommonConfigSourceFactory implements ConfigSourceFactory {
 			return new EnvironmentalVariablesConfigSource();
 		case FILE:
 			return new FileConfigSource(pArg1);
-//		case INMEMORY:
-//			return new ClassPathConfigSource(pArg1);
+		case INMEMORY:
+			return new InMemoryConfigSource(pOtherArgs);
 		case SYSPROPS:
 			return new SystemPropertiesConfigSource();
 		default:

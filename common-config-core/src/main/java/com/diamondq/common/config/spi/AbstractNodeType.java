@@ -26,4 +26,20 @@ public abstract class AbstractNodeType {
 
 	public abstract Optional<ConfigProp> getFactoryArg();
 
+	public String getSimpleName() {
+		StringBuilder sb = new StringBuilder();
+		if ((getType().isPresent() == true) && (getType().get().getValue().isPresent() == true))
+			sb.append("t=").append(getType().get().getValue().get());
+		if ((getFactory().isPresent() == true) && (getFactory().get().getValue().isPresent() == true)) {
+			if (sb.length() > 0)
+				sb.append(',');
+			sb.append("f=").append(getFactory().get().getValue().get());
+		}
+		if ((getFactoryArg().isPresent() == true) && (getFactoryArg().get().getValue().isPresent() == true)) {
+			if (sb.length() > 0)
+				sb.append(',');
+			sb.append("fa=").append(getFactoryArg().get().getValue().get());
+		}
+		return sb.toString();
+	}
 }

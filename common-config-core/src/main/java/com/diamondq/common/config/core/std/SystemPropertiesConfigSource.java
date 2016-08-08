@@ -1,12 +1,15 @@
 package com.diamondq.common.config.core.std;
 
 import com.diamondq.common.config.spi.ConfigDataTuple;
+import com.diamondq.common.config.spi.ConfigProp;
 import com.diamondq.common.config.spi.ConfigSource;
+import com.diamondq.common.config.spi.NodeType;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -16,9 +19,21 @@ import org.slf4j.LoggerFactory;
 public class SystemPropertiesConfigSource implements ConfigSource {
 	private static final Logger sLogger = LoggerFactory.getLogger(SystemPropertiesConfigSource.class);
 
+	/**
+	 * @see com.diamondq.common.config.spi.ConfigReconstructable#getReconstructionNodeType()
+	 */
 	@Override
-	public Map<String, String> getReconstructionDetails() {
-		return null;
+	public NodeType getReconstructionNodeType() {
+		return NodeType.builder().isExplicitType(true)
+			.type(ConfigProp.builder().configSource("").value(getClass().getName()).build()).build();
+	}
+
+	/**
+	 * @see com.diamondq.common.config.spi.ConfigReconstructable#getReconstructionParams()
+	 */
+	@Override
+	public Map<String, String> getReconstructionParams() {
+		return Collections.emptyMap();
 	}
 
 	@Override

@@ -14,6 +14,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
@@ -31,14 +32,29 @@ public class ConfigImpl implements Config {
 
 	private final ConfigNode								mConfigNode;
 
-	private final Map<Class<?>, ClassInfo<Object, Object>>	mClassToConstructorMap	= new ConcurrentHashMap<>();
+	private final Map<String, ClassInfo<Object, Object>>	mClassToConstructorMap	= new ConcurrentHashMap<>();
 
 	private final List<ConfigClassBuilder>					mClassBuilders;
+
+	private final ThreadLocal<Locale>						mThreadLocale			= new ThreadLocal<Locale>() {
+																						@Override
+																						protected Locale initialValue() {
+																							return Locale.getDefault();
+																						}
+																					};
 
 	public ConfigImpl(ConfigNode pConfigNode, List<ConfigClassBuilder> pClassBuilders) {
 
 		mConfigNode = pConfigNode;
 		mClassBuilders = pClassBuilders;
+	}
+
+	/**
+	 * @see com.diamondq.common.config.Config#setThreadLocale(java.util.Locale)
+	 */
+	@Override
+	public void setThreadLocale(Locale pLocale) {
+		mThreadLocale.set(pLocale);
 	}
 
 	/**
@@ -53,13 +69,13 @@ public class ConfigImpl implements Config {
 		ConfigNode node = findNode(prefixKeys);
 		if (node == null)
 			return null;
-		
-		DebugUtils.trace("", node);
-		
+
 		return internalBind(node, pClass);
 	}
 
 	private <T> T internalBind(ConfigNode pNode, Class<T> pClass) {
+
+		DebugUtils.trace("", pNode);
 
 		Class<?> buildClass;
 		NodeType type = pNode.getType();
@@ -80,6 +96,8 @@ public class ConfigImpl implements Config {
 			else if (type.getType().isPresent() == true) {
 				buildClass = resolveType(type.getType().get().getValue().get());
 			}
+			else if (type.isExplicitType() == false)
+				buildClass = String.class;
 			else
 				throw new IllegalArgumentException();
 		}
@@ -98,14 +116,16 @@ public class ConfigImpl implements Config {
 
 			NodeType type = pNode.getType();
 
+			String classNameKey =
+				new StringBuilder().append(pClass.getName()).append('/').append(type.getSimpleName()).toString();
 			@SuppressWarnings("unchecked")
-			ClassInfo<Object, T> classInfo = (ClassInfo<Object, T>) mClassToConstructorMap.get(pClass);
+			ClassInfo<Object, T> classInfo = (ClassInfo<Object, T>) mClassToConstructorMap.get(classNameKey);
 			if (classInfo == null)
-				classInfo = lookupClassInfo(pClass, type);
+				classInfo = lookupClassInfo(pClass, type, classNameKey);
 
 			/* Create a builder */
 
-			Pair<Object, BuilderInfo<Object, T>> builderPair = classInfo.builder();
+			Pair<Object, BuilderInfo<Object, T>> builderPair = classInfo.builder(this);
 			Object builder = builderPair._1;
 			BuilderInfo<Object, T> builderInfo = builderPair._2;
 
@@ -177,7 +197,8 @@ public class ConfigImpl implements Config {
 			T result = builderInfo.build(builder);
 			return result;
 		}
-		catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException | SecurityException ex) {
+		catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException | SecurityException
+			| InstantiationException ex) {
 			throw new RuntimeException(ex);
 		}
 	}
@@ -220,6 +241,8 @@ public class ConfigImpl implements Config {
 			Class<?> typeClass = resolveType(type.getType().get().getValue().get());
 			nodeValue = convertType(str, typeClass);
 		}
+		else if (type.isExplicitType() == false)
+			nodeValue = str;
 		else
 			throw new IllegalStateException();
 
@@ -308,16 +331,11 @@ public class ConfigImpl implements Config {
 	 * @param pClass the class
 	 * @return the class info
 	 */
-	private <T> ClassInfo<Object, T> lookupClassInfo(Class<T> pClass, NodeType pType) {
-		if ((pClass.isAssignableFrom(Iterable.class) == true) || (pClass.isAssignableFrom(List.class) == true)) {
-			@SuppressWarnings("unchecked")
-			Class<T> reassignClass = (Class<T>) ListBuilderFactory.class;
-			pClass = reassignClass;
-		}
+	private <T> ClassInfo<Object, T> lookupClassInfo(Class<T> pClass, NodeType pType, String pClassNameKey) {
 
 		ClassInfo<Object, T> result = null;
 		for (ConfigClassBuilder ccb : mClassBuilders) {
-			result = ccb.getClassInfo(pClass, pType);
+			result = ccb.getClassInfo(pClass, pType, mClassBuilders);
 			if (result != null)
 				break;
 		}
@@ -326,7 +344,7 @@ public class ConfigImpl implements Config {
 				String.format("Configuration support for the %s class is not supported.", pClass.getName()));
 		@SuppressWarnings("unchecked")
 		ClassInfo<Object, Object> putResult = (ClassInfo<Object, Object>) result;
-		mClassToConstructorMap.put(pClass, putResult);
+		mClassToConstructorMap.put(pClassNameKey, putResult);
 		return result;
 	}
 }

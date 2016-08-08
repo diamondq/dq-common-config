@@ -1,12 +1,15 @@
 package com.diamondq.common.config.core.std;
 
 import com.diamondq.common.config.spi.ConfigDataTuple;
+import com.diamondq.common.config.spi.ConfigProp;
 import com.diamondq.common.config.spi.ConfigSource;
+import com.diamondq.common.config.spi.NodeType;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
@@ -20,9 +23,21 @@ public class EnvironmentalVariablesConfigSource implements ConfigSource {
 	public EnvironmentalVariablesConfigSource() {
 	}
 
+	/**
+	 * @see com.diamondq.common.config.spi.ConfigReconstructable#getReconstructionNodeType()
+	 */
 	@Override
-	public Map<String, String> getReconstructionDetails() {
-		return null;
+	public NodeType getReconstructionNodeType() {
+		return NodeType.builder().isExplicitType(true)
+			.type(ConfigProp.builder().configSource("").value(getClass().getName()).build()).build();
+	}
+
+	/**
+	 * @see com.diamondq.common.config.spi.ConfigReconstructable#getReconstructionParams()
+	 */
+	@Override
+	public Map<String, String> getReconstructionParams() {
+		return Collections.emptyMap();
 	}
 
 	@Override
@@ -70,13 +85,13 @@ public class EnvironmentalVariablesConfigSource implements ConfigSource {
 
 			if (p.isEmpty() == true)
 				continue;
-			
+
 			StringBuilder nameBuilder = new StringBuilder();
 			nameBuilder.append("env://");
 			if (prefix != null)
 				nameBuilder.append(prefix).append('-');
 			nameBuilder.append("env.properties");
-			
+
 			/* Now write the properties out to a stream */
 
 			ByteArrayOutputStream baos = new ByteArrayOutputStream();

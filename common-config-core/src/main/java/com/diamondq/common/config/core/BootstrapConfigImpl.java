@@ -16,6 +16,7 @@ import java.io.IOException;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -23,19 +24,27 @@ import java.util.stream.Collectors;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.slf4j.ext.XLogger;
+import org.slf4j.ext.XLoggerFactory;
 
 @ApplicationScoped
 public class BootstrapConfigImpl implements Bootstrap {
 
-	private static final Logger			sLogger	= LoggerFactory.getLogger(BootstrapConfigImpl.class);
+	private static final XLogger		sLogger	= XLoggerFactory.getXLogger(BootstrapConfigImpl.class);
 
 	private final BootstrapSetupConfig	mSetupConfig;
+
+	private volatile Locale				mLocale;
 
 	@Inject
 	public BootstrapConfigImpl(BootstrapSetupConfig pSetupConfig) {
 		mSetupConfig = pSetupConfig;
+		mLocale = pSetupConfig.getDefaultLocale().orElse(Locale.getDefault());
+	}
+
+	@Override
+	public void setLocale(Locale pLocale) {
+		mLocale = pLocale;
 	}
 
 	/**
@@ -43,49 +52,57 @@ public class BootstrapConfigImpl implements Bootstrap {
 	 */
 	@Override
 	public Config bootstrapConfig() {
+		sLogger.entry();
+		try {
+			sLogger.debug("Starting bootstrap config");
 
-		sLogger.debug("Starting bootstrap config");
+			/* Get the list of bootstrap profiles */
 
-		/* Get the list of bootstrap profiles */
+			List<String> profiles = mSetupConfig.getProfiles();
 
-		List<String> profiles = mSetupConfig.getProfiles();
+			/* Get the environment */
 
-		/* Get the environment */
+			String environment = mSetupConfig.getEnvironment();
 
-		String environment = mSetupConfig.getEnvironment();
+			/* Now, get the list of source factories, and sort them */
 
-		/* Now, get the list of source factories, and sort them */
+			List<ConfigSource> sortedSources = mSetupConfig.getBootstrapSources().stream()
+				.sorted((a, b) -> a.getBootstrapPriority() - b.getBootstrapPriority())
+				.map(t -> t.create(environment, profiles)).collect(Collectors.toList());
 
-		List<ConfigSource> sortedSources = mSetupConfig.getBootstrapSources().stream()
-			.sorted((a, b) -> a.getBootstrapPriority() - b.getBootstrapPriority())
-			.map(t -> t.create(environment, profiles)).collect(Collectors.toList());
+			sLogger.trace("Bootstrap Sources: {}", sortedSources);
 
-		sLogger.trace("Bootstrap Sources: {}", sortedSources);
+			/* Now run the query */
 
-		/* Now run the query */
+			ConfigNode bootstrapProperties = resolve(sortedSources, environment, profiles, mSetupConfig.getParsers(),
+				mSetupConfig.getNodeResolvers());
 
-		ConfigNode bootstrapProperties =
-			resolve(sortedSources, environment, profiles, mSetupConfig.getParsers(), mSetupConfig.getNodeResolvers());
+			/* Now, bind against the BootstrapConfig */
 
-		/* Now, bind against the BootstrapConfig */
+			ConfigImpl bootstrapConfigImpl = new ConfigImpl(bootstrapProperties, mSetupConfig.getClassBuilders());
+			bootstrapConfigImpl.setThreadLocale(mLocale);
+			BootstrapConfig bootstrapConfig = bootstrapConfigImpl.bind("bootstrap", BootstrapConfig.class);
 
-		BootstrapConfig bootstrapConfig = new ConfigImpl(bootstrapProperties, mSetupConfig.getClassBuilders())
-			.bind("bootstrap", BootstrapConfig.class);
+			sLogger.debug("Bootstrap Config: {}", bootstrapConfig);
 
-		sLogger.debug("Bootstrap Config: {}", bootstrapConfig);
+			/* Next, let's use this information to load the main set of sources */
 
-		/* Next, let's use this information to load the main set of sources */
+			String actualEnvironment = bootstrapConfig.getEnvironment();
+			List<String> actualProfiles = bootstrapConfig.getProfiles();
+			List<ConfigSource> actualSources = bootstrapConfig.getConfigSources();
 
-		String actualEnvironment = bootstrapConfig.getEnvironment();
-		List<String> actualProfiles = bootstrapConfig.getProfiles();
-		List<ConfigSource> actualSources = bootstrapConfig.getConfigSources();
+			/* Now run the actual query */
 
-		/* Now run the actual query */
+			ConfigNode finalProperties = resolve(actualSources, actualEnvironment, actualProfiles,
+				bootstrapConfig.getParsers(), bootstrapConfig.getNodeResolvers());
 
-		ConfigNode finalProperties = resolve(actualSources, actualEnvironment, actualProfiles,
-			bootstrapConfig.getParsers(), bootstrapConfig.getNodeResolvers());
-
-		return new ConfigImpl(finalProperties, bootstrapConfig.getClassBuilders());
+			ConfigImpl finalConfigImpl = new ConfigImpl(finalProperties, bootstrapConfig.getClassBuilders());
+			finalConfigImpl.setThreadLocale(mLocale);
+			return sLogger.exit(finalConfigImpl);
+		}
+		catch (IOException ex) {
+			throw new RuntimeException(ex);
+		}
 	}
 
 	/**
@@ -96,9 +113,11 @@ public class BootstrapConfigImpl implements Bootstrap {
 	 * @param pProfiles
 	 * @param pNodeResolvers
 	 * @return
+	 * @throws IOException
 	 */
 	private ConfigNode resolve(List<ConfigSource> pSortedSources, String pEnvironment, List<String> pProfiles,
-		List<ConfigParser> pConfigParsers, List<ConfigNodeResolver> pNodeResolvers) {
+		List<ConfigParser> pConfigParsers, List<ConfigNodeResolver> pNodeResolvers) throws IOException {
+		sLogger.entry(pSortedSources, pEnvironment, pProfiles, pConfigParsers, pNodeResolvers);
 
 		/* Define the root node */
 
@@ -132,8 +151,14 @@ public class BootstrapConfigImpl implements Bootstrap {
 						}
 					}
 
-					if (parser == null)
-						throw new IllegalArgumentException();
+					if (parser == null) {
+						String format;
+						if (mediaType == null)
+							format = I18N.getFormat(mLocale, "bootstrap.noparser.both", mediaType, fileName);
+						else
+							format = I18N.getFormat(mLocale, "bootstrap.noparser.name", fileName);
+						throw new IllegalArgumentException(format);
+					}
 
 					/* Parse into a data map */
 
@@ -198,7 +223,7 @@ public class BootstrapConfigImpl implements Bootstrap {
 			DebugUtils.debug("", rootNode);
 		}
 
-		return rootNode;
+		return sLogger.exit(rootNode);
 	}
 
 	private ConfigNode recursiveMerge(ConfigNode pTarget, ConfigNode pSource) {

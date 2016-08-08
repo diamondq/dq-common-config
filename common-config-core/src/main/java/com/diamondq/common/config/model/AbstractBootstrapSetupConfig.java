@@ -6,6 +6,8 @@ import com.diamondq.common.config.spi.ConfigNodeResolver;
 import com.diamondq.common.config.spi.ConfigParser;
 
 import java.util.List;
+import java.util.Locale;
+import java.util.Optional;
 import java.util.Set;
 
 import org.immutables.value.Value;
@@ -26,4 +28,6 @@ public abstract class AbstractBootstrapSetupConfig {
 	public abstract List<ConfigParser> getParsers();
 
 	public abstract List<ConfigClassBuilder> getClassBuilders();
+
+	public abstract Optional<Locale> getDefaultLocale();
 }

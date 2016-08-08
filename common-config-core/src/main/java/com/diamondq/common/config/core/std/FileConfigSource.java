@@ -8,12 +8,22 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
+import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 public class FileConfigSource extends AbstractPathDrivenConfigSource {
 
 	public FileConfigSource(String pPath) {
 		super(Paths.get(pPath));
+	}
+
+	/**
+	 * @see com.diamondq.common.config.spi.ConfigReconstructable#getReconstructionParams()
+	 */
+	@Override
+	public Map<String, String> getReconstructionParams() {
+		return Collections.singletonMap("file", mPath.toString());
 	}
 
 	/**

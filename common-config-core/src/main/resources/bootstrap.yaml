@@ -1,6 +1,4 @@
 bootstrap:
   config-sources:
-    - _dqconfig_meta_:
-        factory: com.diamondq.common.config.core.std.StdConfigBuilder
-        arg: FILE
-      file: application.yaml
+    - _dqconfig_list_:
+        factory: com.diamondq.common.config.core.std.StdConfigListBuilder

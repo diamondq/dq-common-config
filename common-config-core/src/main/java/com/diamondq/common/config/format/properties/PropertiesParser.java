@@ -33,7 +33,10 @@ import java.util.Set;
  */
 public class PropertiesParser implements ConfigParser {
 
-	protected static final Set<String> sFileExtensions;
+	protected static final Set<String>	sFileExtensions;
+
+	private static final NodeType		sNodeType	= NodeType.builder().isExplicitType(true)
+		.type(ConfigProp.builder().configSource("").value(PropertiesParser.class.getName()).build()).build();
 
 	static {
 		Set<String> r = new HashSet<>();
@@ -44,6 +47,22 @@ public class PropertiesParser implements ConfigParser {
 
 	public PropertiesParser() {
 
+	}
+
+	/**
+	 * @see com.diamondq.common.config.spi.ConfigParser#getReconstructionNodeType()
+	 */
+	@Override
+	public NodeType getReconstructionNodeType() {
+		return sNodeType;
+	}
+
+	/**
+	 * @see com.diamondq.common.config.spi.ConfigParser#getReconstructionParams()
+	 */
+	@Override
+	public Map<String, String> getReconstructionParams() {
+		return Collections.emptyMap();
 	}
 
 	public static class MutableConfigNode {
@@ -68,16 +87,11 @@ public class PropertiesParser implements ConfigParser {
 	 * @see com.diamondq.common.config.spi.ConfigParser#parse(com.diamondq.common.config.spi.ConfigDataTuple)
 	 */
 	@Override
-	public List<ConfigNode> parse(ConfigDataTuple pData) {
+	public List<ConfigNode> parse(ConfigDataTuple pData) throws IOException {
 		InputStream stream = pData.getStream();
 		List<ConfigNode> results = new ArrayList<>();
 		Properties p = new Properties();
-		try {
-			p.load(stream);
-		}
-		catch (IOException ex) {
-			throw new RuntimeException(ex);
-		}
+		p.load(stream);
 
 		String configSource = pData.getName();
 		MutableConfigNode root = new MutableConfigNode();
@@ -97,19 +111,20 @@ public class PropertiesParser implements ConfigParser {
 							throw new IllegalArgumentException("Multi-level meta not supported");
 						metaKey = k;
 					}
-					else if (k.startsWith(AbstractStdConfigParser.sMETA_KEY)) {
-						/**
-						 * a.b.c = value <br/>
-						 * a.b._dqconfig_meta_c.factory = f
-						 */
-						k = k.substring(AbstractStdConfigParser.sMETA_KEY.length());
-						metaKey = "";
-					}
-					else if (k.equals(AbstractStdConfigParser.sLIST_KEY)) {
-						k = k.substring(AbstractStdConfigParser.sMETA_KEY.length());
-						metaKey = "";
-					}
 					else {
+						if (k.startsWith(AbstractStdConfigParser.sMETA_KEY)) {
+							/**
+							 * a.b.c = value <br/>
+							 * a.b._dqconfig_meta_c.factory = f
+							 */
+							k = k.substring(AbstractStdConfigParser.sMETA_KEY.length());
+							metaKey = "";
+						}
+						else if (k.equals(AbstractStdConfigParser.sLIST_KEY)) {
+							k = k.substring(AbstractStdConfigParser.sMETA_KEY.length());
+							metaKey = "";
+						}
+
 						MutableConfigNode child = node.children.get(k);
 						if (child == null) {
 							child = new MutableConfigNode();
@@ -117,6 +132,7 @@ public class PropertiesParser implements ConfigParser {
 							node.children.put(k, child);
 						}
 						node = child;
+
 					}
 				}
 
@@ -131,7 +147,7 @@ public class PropertiesParser implements ConfigParser {
 					else if (AbstractStdConfigParser.sTYPE_FACTORY_KEY.equals(metaKey))
 						node.type = node.type.withFactory(valueProp);
 					else if (AbstractStdConfigParser.sTYPE_TYPE_KEY.equals(metaKey))
-						node.type = node.type.withType(valueProp);
+						node.type = node.type.withType(valueProp).withIsExplicitType(true);
 					else
 						node.metaData.put(metaKey, valueProp);
 				}

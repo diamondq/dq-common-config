@@ -1,9 +1,12 @@
 package com.diamondq.common.config.builders;
 
+import com.diamondq.common.config.Config;
 import com.diamondq.common.config.ConfigKey;
+import com.diamondq.common.config.core.ConfigImpl;
 import com.diamondq.common.config.spi.BuilderInfo;
 import com.diamondq.common.config.spi.ClassInfo;
 import com.diamondq.common.config.spi.ConfigClassBuilder;
+import com.diamondq.common.config.spi.ConfigProp;
 import com.diamondq.common.config.spi.NodeType;
 import com.diamondq.common.config.spi.ParameterInfo;
 import com.diamondq.common.config.spi.StdBuilderInfo;
@@ -44,34 +47,82 @@ public class ImmutableClassBuilder implements ConfigClassBuilder {
 	}
 
 	/**
-	 * @see com.diamondq.common.config.spi.ConfigClassBuilder#getClassInfo(java.lang.Class,
-	 *      com.diamondq.common.config.spi.NodeType)
+	 * @see com.diamondq.common.config.spi.ConfigReconstructable#getReconstructionNodeType()
 	 */
 	@Override
-	public <T, O> ClassInfo<T, O> getClassInfo(Class<O> pClass, NodeType pType) {
+	public NodeType getReconstructionNodeType() {
+		return NodeType.builder().isExplicitType(true)
+			.type(ConfigProp.builder().configSource("").value(getClass().getName()).build()).build();
+	}
+
+	/**
+	 * @see com.diamondq.common.config.spi.ConfigReconstructable#getReconstructionParams()
+	 */
+	@Override
+	public Map<String, String> getReconstructionParams() {
+		return Collections.emptyMap();
+	}
+
+	/**
+	 * @see com.diamondq.common.config.spi.ConfigClassBuilder#getClassInfo(java.lang.Class,
+	 *      com.diamondq.common.config.spi.NodeType, java.util.List)
+	 */
+	@Override
+	public <T, O> ClassInfo<T, O> getClassInfo(Class<?> pClass, NodeType pType,
+		List<ConfigClassBuilder> pClassBuilders) {
 
 		boolean hasFactoryArg = false;
 		if ((pType.getFactoryArg().isPresent() == true) && (pType.getFactoryArg().get().getValue().isPresent() == true))
 			hasFactoryArg = true;
 
 		Method builderMethod = null;
-		for (Method m : pClass.getMethods()) {
+		int constructorArgPos = -1;
+		int configArgPos = -1;
+		method: for (Method m : pClass.getMethods()) {
 
-			/* Look for an Immutable's builder method */
+			/* Look for an Immutable's builder method or a builder that takes a ConfigImpl or a Config */
 
 			if (m.getName().equals("builder")) {
 				int modifiers = m.getModifiers();
 				if ((Modifier.isStatic(modifiers) == true) && (Modifier.isPublic(modifiers) == true)) {
 					if (hasFactoryArg == true) {
-						if (m.getParameterCount() != 1)
-							continue;
-						Class<?> paramType = m.getParameters()[0].getType();
-						if (paramType.isAssignableFrom(String.class) == false)
-							continue;
+						Class<?>[] parameterTypes = m.getParameterTypes();
+						if (parameterTypes.length > 0)
+							for (int paramOffset = 0; paramOffset < parameterTypes.length; paramOffset++) {
+								Class<?> pt = parameterTypes[paramOffset];
+								if ((pt.isAssignableFrom(ConfigImpl.class) == true)
+									|| (pt.isAssignableFrom(Config.class) == true)) {
+									if (configArgPos == -1)
+										configArgPos = paramOffset;
+									else
+										continue method;
+								}
+								else if (pt.isAssignableFrom(String.class) == true) {
+									if (constructorArgPos == -1)
+										constructorArgPos = paramOffset;
+									else
+										continue method;
+								}
+								else
+									continue method;
+							}
 					}
 					else {
-						if (m.getParameterCount() != 0)
-							continue;
+
+						/* Make sure that any parameter is a Config/ConfigImpl */
+
+						Class<?>[] parameterTypes = m.getParameterTypes();
+						if (parameterTypes.length > 0)
+							for (int paramOffset = 0; paramOffset < parameterTypes.length; paramOffset++) {
+								Class<?> pt = parameterTypes[paramOffset];
+								if ((pt.isAssignableFrom(ConfigImpl.class) == true)
+									|| (pt.isAssignableFrom(Config.class) == true)) {
+									if (configArgPos == -1)
+										configArgPos = paramOffset;
+									else
+										continue method;
+								}
+							}
 					}
 					builderMethod = m;
 					break;
@@ -85,19 +136,14 @@ public class ImmutableClassBuilder implements ConfigClassBuilder {
 			return null;
 
 		Object constructorArg;
-		boolean withConstructorArg;
-		if (hasFactoryArg == true) {
+		if (hasFactoryArg == true)
 			constructorArg = pType.getFactoryArg().get().getValue().get();
-			withConstructorArg = true;
-		}
-		else {
+		else
 			constructorArg = null;
-			withConstructorArg = false;
-		}
 
 		@SuppressWarnings("unchecked")
-		ClassInfo<T, O> result =
-			(ClassInfo<T, O>) new ImmutableClassInfo<O>(this, builderMethod, constructorArg, withConstructorArg);
+		ClassInfo<T, O> result = (ClassInfo<T, O>) new ImmutableClassInfo<O>(this, builderMethod, constructorArg,
+			constructorArgPos, configArgPos);
 		return result;
 	}
 

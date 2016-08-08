@@ -3,25 +3,49 @@ package com.diamondq.common.config.format.yaml;
 import com.diamondq.common.config.spi.ConfigDataTuple;
 import com.diamondq.common.config.spi.ConfigNode;
 import com.diamondq.common.config.spi.ConfigParser;
+import com.diamondq.common.config.spi.ConfigProp;
+import com.diamondq.common.config.spi.NodeType;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 import org.yaml.snakeyaml.Yaml;
 import org.yaml.snakeyaml.constructor.SafeConstructor;
 
 public class SnakeYAMLParser extends AbstractYAMLConfigParser implements ConfigParser {
 
+	private static final NodeType sNodeType = NodeType.builder().isExplicitType(true)
+		.type(ConfigProp.builder().configSource("").value(SnakeYAMLParser.class.getName()).build()).build();
+
 	public SnakeYAMLParser() {
 
+	}
+
+	/**
+	 * @see com.diamondq.common.config.spi.ConfigParser#getReconstructionNodeType()
+	 */
+	@Override
+	public NodeType getReconstructionNodeType() {
+		return sNodeType;
+	}
+
+	/**
+	 * @see com.diamondq.common.config.spi.ConfigParser#getReconstructionParams()
+	 */
+	@Override
+	public Map<String, String> getReconstructionParams() {
+		return Collections.emptyMap();
 	}
 
 	/**
 	 * @see com.diamondq.common.config.spi.ConfigParser#parse(com.diamondq.common.config.spi.ConfigDataTuple)
 	 */
 	@Override
-	public List<ConfigNode> parse(ConfigDataTuple pData) {
+	public List<ConfigNode> parse(ConfigDataTuple pData) throws IOException {
 		Yaml yaml = new Yaml(new SafeConstructor());
 		InputStream stream = pData.getStream();
 		Iterable<Object> docs = yaml.loadAll(stream);

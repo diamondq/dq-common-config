@@ -20,8 +20,16 @@ public abstract class StdConfigBuilder {
 		switch (type) {
 		case FILE:
 			return new FileStdConfigBuilder(sFactory.getFileConfigSourceFactory());
+		case CLASSPATH:
+			return new ClasspathStdConfigBuilder(sFactory.getClassPathConfigSourceFactory());
+		case ENV:
+			return new EnvStdConfigBuilder(sFactory.getEnvironmentalVariablesConfigSourceFactory());
+		case INMEMORY:
+			return new InMemoryStdConfigBuilder(sFactory.getInMemoryConfigSourceFactory());
+		case SYSPROPS:
+			return new SysStdConfigBuilder(sFactory.getSystemPropertiesConfigSourceFactory());
 		default:
-			throw new IllegalArgumentException();
+			throw new IllegalStateException();
 		}
 	}
 
@@ -33,17 +41,70 @@ public abstract class StdConfigBuilder {
 			super(pFactory);
 		}
 
-		public FileStdConfigBuilder file(String pFile) {
-			mFile = pFile;
+		public FileStdConfigBuilder file(String pValue) {
+			mFile = pValue;
 			return this;
 		}
 
-		@Override
 		public ConfigSource build() {
 			return mFactory.create(mFile, null);
 		}
 
 	}
 
-	public abstract ConfigSource build();
+	public static class ClasspathStdConfigBuilder extends StdConfigBuilder {
+
+		private String mClassPath;
+
+		public ClasspathStdConfigBuilder(ConfigSourceFactory pFactory) {
+			super(pFactory);
+		}
+
+		public ClasspathStdConfigBuilder classpath(String pValue) {
+			mClassPath = pValue;
+			return this;
+		}
+
+		public ConfigSource build() {
+			return mFactory.create(mClassPath, null);
+		}
+
+	}
+
+	public static class EnvStdConfigBuilder extends StdConfigBuilder {
+
+		public EnvStdConfigBuilder(ConfigSourceFactory pFactory) {
+			super(pFactory);
+		}
+
+		public ConfigSource build() {
+			return mFactory.create(null, null);
+		}
+
+	}
+
+	public static class SysStdConfigBuilder extends StdConfigBuilder {
+
+		public SysStdConfigBuilder(ConfigSourceFactory pFactory) {
+			super(pFactory);
+		}
+
+		public ConfigSource build() {
+			return mFactory.create(null, null);
+		}
+
+	}
+
+	public static class InMemoryStdConfigBuilder extends StdConfigBuilder {
+
+		public InMemoryStdConfigBuilder(ConfigSourceFactory pFactory) {
+			super(pFactory);
+		}
+
+		public ConfigSource build() {
+			return mFactory.create(null, null);
+		}
+
+	}
+
 }

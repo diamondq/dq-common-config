@@ -7,8 +7,10 @@ import java.io.InputStream;
 import java.net.URL;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Collections;
 import java.util.Enumeration;
 import java.util.List;
+import java.util.Map;
 
 import javax.annotation.Nonnull;
 
@@ -16,6 +18,14 @@ public class ClassPathConfigSource extends AbstractPathDrivenConfigSource {
 
 	public ClassPathConfigSource(String pPath) {
 		super(Paths.get(pPath));
+	}
+
+	/**
+	 * @see com.diamondq.common.config.spi.ConfigReconstructable#getReconstructionParams()
+	 */
+	@Override
+	public Map<String, String> getReconstructionParams() {
+		return Collections.singletonMap("classpath", mPath.toString());
 	}
 
 	/**

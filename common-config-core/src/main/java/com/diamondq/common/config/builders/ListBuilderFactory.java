@@ -1,4 +1,4 @@
-package com.diamondq.common.config.core;
+package com.diamondq.common.config.builders;
 
 import com.diamondq.common.config.ConfigKey;
 
@@ -6,7 +6,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-public class ListBuilderFactory {
+public abstract class ListBuilderFactory {
 
 	public static class ListBuilder {
 

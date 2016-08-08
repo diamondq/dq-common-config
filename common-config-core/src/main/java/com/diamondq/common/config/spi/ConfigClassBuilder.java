@@ -1,8 +1,11 @@
 package com.diamondq.common.config.spi;
 
-public interface ConfigClassBuilder {
+import java.util.List;
 
-	public <T, O> ClassInfo<T, O> getClassInfo(Class<O> pClass, NodeType pType);
+public interface ConfigClassBuilder extends ConfigReconstructable {
+
+	public <T, O> ClassInfo<T, O> getClassInfo(Class<?> pClass, NodeType pType,
+		List<ConfigClassBuilder> pClassBuilders);
 
 	public <T, O> BuilderInfo<T, O> getBuilderInfo(ClassInfo<T, O> pClassInfo, T pBuilder);
 }

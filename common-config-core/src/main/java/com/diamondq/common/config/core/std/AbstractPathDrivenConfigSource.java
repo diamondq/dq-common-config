@@ -1,15 +1,15 @@
 package com.diamondq.common.config.core.std;
 
 import com.diamondq.common.config.spi.ConfigDataTuple;
+import com.diamondq.common.config.spi.ConfigProp;
 import com.diamondq.common.config.spi.ConfigSource;
+import com.diamondq.common.config.spi.NodeType;
 
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,11 +25,12 @@ public abstract class AbstractPathDrivenConfigSource implements ConfigSource {
 	}
 
 	/**
-	 * @see com.diamondq.common.config.spi.ConfigSource#getReconstructionDetails()
+	 * @see com.diamondq.common.config.spi.ConfigReconstructable#getReconstructionNodeType()
 	 */
 	@Override
-	public Map<String, String> getReconstructionDetails() {
-		return Collections.emptyMap();
+	public NodeType getReconstructionNodeType() {
+		return NodeType.builder().isExplicitType(true)
+			.type(ConfigProp.builder().configSource("").value(getClass().getName()).build()).build();
 	}
 
 	/**

@@ -75,7 +75,9 @@ public abstract class AbstractStdConfigParser implements ConfigParser {
 		else if (o instanceof List) {
 			@SuppressWarnings("unchecked")
 			List<Object> list = (List<Object>) o;
-			builder = builder.type(NodeType.builder().isExplicitType(false).build());
+			Optional<ConfigProp> type = Optional.empty();
+			Optional<ConfigProp> factory = Optional.empty();
+			Optional<ConfigProp> factoryArg = Optional.empty();
 			int offset = 0;
 			for (Object c : list) {
 
@@ -98,8 +100,19 @@ public abstract class AbstractStdConfigParser implements ConfigParser {
 										throw new IllegalStateException();
 
 									String metaKey = metaPair.getKey();
-									builder.putMetaData(metaKey, ConfigProp.builder().configSource(pSourceName)
-										.value(metaValueObj.toString()).build());
+
+									if (sTYPE_FACTORY_KEY.equals(metaKey))
+										factory = Optional.of(ConfigProp.builder().configSource(pSourceName)
+											.value(metaValueObj.toString()).build());
+									else if (sTYPE_FACTORY_ARG_KEY.equals(metaKey))
+										factoryArg = Optional.of(ConfigProp.builder().configSource(pSourceName)
+											.value(metaValueObj.toString()).build());
+									else if (sTYPE_TYPE_KEY.equals(metaKey))
+										type = Optional.of(ConfigProp.builder().configSource(pSourceName)
+											.value(metaValueObj.toString()).build());
+									else
+										builder.putMetaData(metaKey, ConfigProp.builder().configSource(pSourceName)
+											.value(metaValueObj.toString()).build());
 								}
 
 							}
@@ -111,10 +124,12 @@ public abstract class AbstractStdConfigParser implements ConfigParser {
 					}
 				}
 
-				String offsetStr = String.valueOf(offset);
+				String offsetStr = String.format("%05d", offset);
 				builder.putChildren(offsetStr, map(pSourceName, offsetStr, c));
 				offset++;
 			}
+			builder = builder.type(NodeType.builder().isExplicitType(type.isPresent()).type(type).factory(factory)
+				.factoryArg(factoryArg).build());
 		}
 		else {
 			if (o instanceof Boolean) {
