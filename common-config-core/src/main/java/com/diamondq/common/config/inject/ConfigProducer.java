@@ -13,41 +13,70 @@ import com.diamondq.common.config.spi.ConfigParser;
 import com.diamondq.common.config.spi.ConfigSourceFactoryFactory;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Locale;
-import java.util.stream.Collectors;
 
+import javax.enterprise.inject.Instance;
 import javax.enterprise.inject.Produces;
 import javax.inject.Named;
 
 public class ConfigProducer {
 
-	@Produces
-	public Config getConfig(@Named("config.environment") String pEnvironment,
-		@Named("config.profiles") String pProfiles, @Named("config.appid") String pAppId,
-		ConfigSourceFactoryFactory pFactoryFactory, Locale pDefaultLocale) {
-		BootstrapSetupConfigHolder holder = new BootstrapSetupConfigHolder();
-		String[] profiles = pProfiles.split(",");
-		List<ConfigParser> parsers = getParsers();
-		List<String> extensions =
-			parsers.stream().flatMap(p -> p.getFileExtensions().stream()).collect(Collectors.toList());
-		List<ConfigClassBuilder> classBuilders = getClassBuilders();
-		List<BootstrapConfigSourceFactory> bootstrapSources = new ArrayList<BootstrapConfigSourceFactory>(
-			StandardSetup.getStandardBootstrapSources(pFactoryFactory, extensions, holder, pAppId, null, null));
-		bootstrapSources.addAll(getBootstrapSources());
+    @Produces
+    public Config getConfig(@Named("config.environment") String pEnvironment, @Named("config.profiles") String pProfiles,
+        @Named("config.appid") String pAppId, ConfigSourceFactoryFactory pFactoryFactory, Locale pDefaultLocale,
+        Instance<ConfigParser> pParsers, Instance<ConfigClassBuilder> pClassBuilders,
+        Instance<BootstrapConfigSourceFactory> pBootstrapSources) {
+        BootstrapSetupConfigHolder holder = new BootstrapSetupConfigHolder();
+        String[] profiles = pProfiles.split(",");
+        List<String> extensions = new ArrayList<>();
+        Collection<ConfigParser> orderedParsers = InjectUtils.orderByPriority(pParsers);
+        Collection<ConfigClassBuilder> orderedClassBuilders = InjectUtils.orderByPriority(pClassBuilders);
+        Collection<BootstrapConfigSourceFactory> orderedFactories = InjectUtils.orderByPriority(pBootstrapSources);
+        for (ConfigParser p : orderedParsers)
+            extensions.addAll(p.getFileExtensions());
 
-		Builder builder = BootstrapSetupConfig.builder().environment(pEnvironment).addProfile(profiles);
-		builder =
-			builder.addAllClassBuilders(classBuilders).addAllBootstrapSources(bootstrapSources).addAllParsers(parsers);
-		BootstrapSetupConfig build = builder.build();
-		holder.value = build;
-		BootstrapConfigImpl impl = new BootstrapConfigImpl(build);
-		impl.setLocale(pDefaultLocale);
-		return impl.bootstrapConfig();
-	}
+        List<BootstrapConfigSourceFactory> bootstrapSources =
+            new ArrayList<BootstrapConfigSourceFactory>(StandardSetup.getStandardBootstrapSources(pFactoryFactory, extensions, holder,
+                                                                                                  pAppId, null, null));
+        for (BootstrapConfigSourceFactory f : orderedFactories)
+            bootstrapSources.add(f);
 
-	@Produces
-	public ConfigSourceFactoryFactory getFactoryFactory() {
-		return new CoreFactoryFactory();
-	}
+        Builder builder = BootstrapSetupConfig.builder().environment(pEnvironment).addProfile(profiles);
+        builder = builder.addAllClassBuilders(orderedClassBuilders).addAllBootstrapSources(bootstrapSources).addAllParsers(orderedParsers);
+        BootstrapSetupConfig build = builder.build();
+        holder.value = build;
+        BootstrapConfigImpl impl = new BootstrapConfigImpl(build);
+        impl.setLocale(pDefaultLocale);
+        return impl.bootstrapConfig();
+    }
+
+    @Produces
+    @Named("config.environment")
+    public String getEnvironment() {
+        return System.getProperty("config.environment", "");
+    }
+
+    @Produces
+    @Named("config.profiles")
+    public String getProfiles() {
+        return System.getProperty("config.profiles", "");
+    }
+
+    @Produces
+    @Named("config.appid")
+    public String getAppId() {
+        return System.getProperty("config.appid", "");
+    }
+
+    @Produces
+    public Locale getDefaultLocale() {
+        return Locale.getDefault();
+    }
+
+    @Produces
+    public ConfigSourceFactoryFactory getFactoryFactory() {
+        return new CoreFactoryFactory();
+    }
 }

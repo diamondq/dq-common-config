@@ -13,27 +13,37 @@ import javax.annotation.Nonnull;
 
 public class NoParamClassInfo<O> implements ClassInfo<Object, O> {
 
-	private Constructor<?> mConstructor;
+    private Constructor<?> mConstructor;
+    private final Class<O> mFinalClass;
 
-	public NoParamClassInfo(Constructor<?> pConstructor) {
-		mConstructor = pConstructor;
-	}
+    public NoParamClassInfo(Class<O> pFinalClass, Constructor<?> pConstructor) {
+        mFinalClass = pFinalClass;
+        mConstructor = pConstructor;
+    }
 
-	/**
-	 * @see com.diamondq.common.config.spi.ClassInfo#builder(com.diamondq.common.config.core.ConfigImpl)
-	 */
-	@Override
-	public Pair<Object, BuilderInfo<Object, O>> builder(ConfigImpl pConfigImpl)
-		throws IllegalAccessException, IllegalArgumentException, InvocationTargetException, InstantiationException {
+    /**
+     * @see com.diamondq.common.config.spi.ClassInfo#getFinalClass()
+     */
+    @Override
+    public Class<O> getFinalClass() {
+        return mFinalClass;
+    }
 
-		@SuppressWarnings("nullness")
-		@Nonnull
-		Object builder = mConstructor.newInstance((Object[]) null);
+    /**
+     * @see com.diamondq.common.config.spi.ClassInfo#builder(com.diamondq.common.config.core.ConfigImpl)
+     */
+    @Override
+    public Pair<Object, BuilderInfo<Object, O>> builder(ConfigImpl pConfigImpl)
+        throws IllegalAccessException, IllegalArgumentException, InvocationTargetException, InstantiationException {
 
-		BuilderInfo<Object, O> builderInfo = new StdNoopBuilderInfo<O>();
+        @SuppressWarnings("nullness")
+        @Nonnull
+        Object builder = mConstructor.newInstance((Object[]) null);
 
-		return new Pair<Object, BuilderInfo<Object, O>>(builder, builderInfo);
+        BuilderInfo<Object, O> builderInfo = new StdNoopBuilderInfo<O>();
 
-	}
+        return new Pair<Object, BuilderInfo<Object, O>>(builder, builderInfo);
+
+    }
 
 }

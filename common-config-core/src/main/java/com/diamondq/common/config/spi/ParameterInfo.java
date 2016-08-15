@@ -4,10 +4,20 @@ import java.lang.reflect.InvocationTargetException;
 
 public interface ParameterInfo<T> {
 
-	public String getName();
+    public static enum ParameterType {
+        NORMAL, LIST, MAP
+    };
 
-	public Class<?> getType();
+    public String getName();
 
-	public void set(T pBuilder, Object pValue)
-		throws IllegalAccessException, IllegalArgumentException, InvocationTargetException;
+    public ParameterType getType();
+
+    public Class<?> getClassType1();
+
+    public Class<?> getClassType2();
+
+    public void set1(T pBuilder, Object pValue1) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException;
+
+    public void set2(T pBuilder, Object pValue1, Object pValue2)
+        throws IllegalAccessException, IllegalArgumentException, InvocationTargetException;
 }

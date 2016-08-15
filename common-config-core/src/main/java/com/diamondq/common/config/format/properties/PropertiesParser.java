@@ -22,6 +22,8 @@ import java.util.Optional;
 import java.util.Properties;
 import java.util.Set;
 
+import javax.inject.Singleton;
+
 /**
  * The properties file format allows meta data and type data to be added via sibling keys.
  * 
@@ -31,6 +33,7 @@ import java.util.Set;
  * parentkey._dqconfig_meta_key.otherMeta=metaValue
  * </pre>
  */
+@Singleton
 public class PropertiesParser implements ConfigParser {
 
 	protected static final Set<String>	sFileExtensions;
@@ -86,7 +89,8 @@ public class PropertiesParser implements ConfigParser {
 	/**
 	 * @see com.diamondq.common.config.spi.ConfigParser#parse(com.diamondq.common.config.spi.ConfigDataTuple)
 	 */
-	@Override
+	@SuppressWarnings("resource")
+    @Override
 	public List<ConfigNode> parse(ConfigDataTuple pData) throws IOException {
 		InputStream stream = pData.getStream();
 		List<ConfigNode> results = new ArrayList<>();
