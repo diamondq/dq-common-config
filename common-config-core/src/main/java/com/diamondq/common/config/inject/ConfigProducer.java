@@ -20,10 +20,12 @@ import java.util.Locale;
 import javax.enterprise.inject.Instance;
 import javax.enterprise.inject.Produces;
 import javax.inject.Named;
+import javax.inject.Singleton;
 
 public class ConfigProducer {
 
     @Produces
+    @Singleton
     public Config getConfig(@Named("config.environment") String pEnvironment, @Named("config.profiles") String pProfiles,
         @Named("config.appid") String pAppId, ConfigSourceFactoryFactory pFactoryFactory, Locale pDefaultLocale,
         Instance<ConfigParser> pParsers, Instance<ConfigClassBuilder> pClassBuilders,

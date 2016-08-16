@@ -14,33 +14,34 @@ import java.util.Map;
 
 public class FileConfigSource extends AbstractPathDrivenConfigSource {
 
-	public FileConfigSource(String pPath) {
-		super(Paths.get(pPath));
-	}
+    public FileConfigSource(String pPath) {
+        super(Paths.get(pPath));
+    }
 
-	/**
-	 * @see com.diamondq.common.config.spi.ConfigReconstructable#getReconstructionParams()
-	 */
-	@Override
-	public Map<String, String> getReconstructionParams() {
-		return Collections.singletonMap("file", mPath.toString());
-	}
+    /**
+     * @see com.diamondq.common.config.spi.ConfigReconstructable#getReconstructionParams()
+     */
+    @Override
+    public Map<String, String> getReconstructionParams() {
+        return Collections.singletonMap("file", mPath.toString());
+    }
 
-	/**
-	 * @see com.diamondq.common.config.spi.ConfigSource#getName()
-	 */
-	@Override
-	public String getName() {
-		return "file:" + mPath.toString();
-	}
+    /**
+     * @see com.diamondq.common.config.spi.ConfigSource#getName()
+     */
+    @Override
+    public String getName() {
+        return "file:" + mPath.toString();
+    }
 
-	@Override
-	protected void processPath(Path pPath, List<ConfigDataTuple> pResults) throws IOException {
+    @Override
+    protected void processPath(Path pPath, List<ConfigDataTuple> pResults) throws IOException {
 
-		if (Files.exists(pPath) == true)
-			try (InputStream input = Files.newInputStream(pPath, StandardOpenOption.READ)) {
-				pResults.add(ConfigDataTuple.builder().name(pPath.toString()).source(this).stream(input).build());
-			}
-	}
+        if (Files.exists(pPath) == true) {
+            @SuppressWarnings("resource")
+            InputStream input = Files.newInputStream(pPath, StandardOpenOption.READ);
+            pResults.add(ConfigDataTuple.builder().name(pPath.toString()).source(this).stream(input).build());
+        }
+    }
 
 }

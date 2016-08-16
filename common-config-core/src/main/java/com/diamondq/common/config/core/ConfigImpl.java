@@ -77,33 +77,36 @@ public class ConfigImpl implements Config {
 
         DebugUtils.trace("", pNode);
 
-        Class<?> buildClass;
+        Class<?> buildClass = null;
         NodeType type = pNode.getType();
-        Class<T> finalClass;
+        Class<T> finalClass = pClass;
 
-        if (pClass == Object.class) {
+        /* If there is a factory, then the factory provides the buildClass */
 
-            /* We'll use the type of the node to determine the class */
+        if ((type.getFactory().isPresent() == true) && (type.getFactory().get().getValue().isPresent() == true))
+            buildClass = resolveType(type.getFactory().get().getValue().get());
 
-            if (type.getFactory().isPresent() == true) {
-                if ((type.getType().isPresent() == true) && (type.getType().get().getValue().isPresent() == true))
-                    buildClass = resolveType(type.getType().get().getValue().get());
-                else
-                    buildClass = pClass;
+        if ((buildClass == null) && (type.getType().isPresent() == true) && (type.getType().get().getValue().isPresent() == true))
+            buildClass = resolveType(type.getType().get().getValue().get());
 
-                finalClass = (Class<T>) resolveType(type.getFactory().get().getValue().get());
-            } else if (type.getType().isPresent() == true) {
-                buildClass = resolveType(type.getType().get().getValue().get());
-                finalClass = (Class<T>) buildClass;
-            } else if (type.isExplicitType() == false) {
-                buildClass = String.class;
-                finalClass = (Class<T>) buildClass;
-            } else
+        /* If the final class is an Object, then hopefully there is type information that we can use */
+
+        if (finalClass == Object.class) {
+            if ((type.getType().isPresent() == true) && (type.getType().get().getValue().isPresent() == true))
+                finalClass = (Class<T>) resolveType(type.getType().get().getValue().get());
+            else if (type.isExplicitType() == false)
+                finalClass = (Class<T>) String.class;
+            else
                 throw new IllegalArgumentException();
-        } else {
-            buildClass = pClass;
-            finalClass = pClass;
         }
+
+        /* If there still isn't a build class, then use the final class */
+
+        if (buildClass == null)
+            buildClass = finalClass;
+
+        /* If we're dealing with a primitive, then just resolve the value */
+
         if (isPrimitive(buildClass) == true)
             return resolveValue(pNode, pClass);
 
@@ -165,7 +168,7 @@ public class ConfigImpl implements Config {
                         if (children.containsKey(name)) {
 
                             switch (p.getType()) {
-                                case NORMAL:
+                                case NORMAL: {
                                     Class<?> typeClass = p.getClassType1();
                                     Object result = isPrimitive(typeClass) ? resolveValue(children.get(name), typeClass)
                                         : internalBind(children.get(name), typeClass);
@@ -173,19 +176,43 @@ public class ConfigImpl implements Config {
                                     p.set1(builder, result);
                                     match = true;
                                     break;
-                                case MAP:
-                                    Class<?> keyClass = p.getClassType1();
-                                    Class<?> valueClass = p.getClassType2();
-                                    ConfigNode mapChildren = children.get(name);
+                                }
+                                case LIST: {
+                                    Class<?> valueClass = p.getClassType1();
                                     boolean isPrimitive = isPrimitive(valueClass);
+                                    ConfigNode listChildren = children.get(name);
+                                    if ((listChildren.getType().getFactory().isPresent() ==true) && (listChildren.getType().getFactory().get().getValue().isPresent() == true)) {
+                                        
+                                        /* There is a factory, so resolve that first to get the initial set of values */
+                                        
+                                        @SuppressWarnings("rawtypes")
+                                        List initialList = internalBind(listChildren, List.class);
+                                        for(Object o : initialList)
+                                            p.set1(builder, o);
+                                    }
+                                    for (Map.Entry<String, ConfigNode> childPair : listChildren.getChildren().entrySet()) {
+                                        Object listResult = isPrimitive ? resolveValue(childPair.getValue(), valueClass)
+                                            : internalBind(childPair.getValue(), valueClass);
+                                        sLogger.trace("P: Name: {} -> {} Type: {} = {}", origName, name, valueClass, listResult);
+                                        p.set1(builder, listResult);
+                                    }
+                                    match = true;
+                                    break;
+                                }
+                                case MAP: {
+                                    Class<?> keyClass = p.getClassType1();
+                                    Class<?> mapValueClass = p.getClassType2();
+                                    ConfigNode mapChildren = children.get(name);
+                                    boolean isPrimitive = isPrimitive(mapValueClass);
                                     for (Map.Entry<String, ConfigNode> childPair : mapChildren.getChildren().entrySet()) {
                                         Object key = convertType(childPair.getKey(), keyClass);
-                                        Object value = isPrimitive ? resolveValue(childPair.getValue(), valueClass)
-                                            : internalBind(childPair.getValue(), valueClass);
+                                        Object value = isPrimitive ? resolveValue(childPair.getValue(), mapValueClass)
+                                            : internalBind(childPair.getValue(), mapValueClass);
                                         p.set2(builder, key, value);
                                     }
                                     match = true;
                                     break;
+                                }
                                 default:
                                     throw new UnsupportedOperationException();
                             }

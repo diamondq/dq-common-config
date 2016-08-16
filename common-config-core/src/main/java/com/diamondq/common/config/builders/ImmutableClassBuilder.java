@@ -188,7 +188,6 @@ public class ImmutableClassBuilder implements ConfigClassBuilder {
             Class<?>[] types = m.getParameterTypes();
 
             if ((name.startsWith("put") == true) && (name.startsWith("putAll") == false) && (types.length == 2)) {
-                matched = true;
                 subName = name.substring(3, 4).toLowerCase().concat(name.substring(4)).concat("s");
 
                 /* Make sure that there is a {subName}(Map) */
@@ -198,9 +197,27 @@ public class ImmutableClassBuilder implements ConfigClassBuilder {
                 } catch (NoSuchMethodException | SecurityException ex) {
                     continue;
                 }
-                
+
                 name = subName;
                 paramType = ParameterType.MAP;
+                matched = true;
+            }
+
+            if ((name.startsWith("add") == true) && (name.startsWith("addAll") == false) && (types.length == 1) &&
+                (types[0].isArray() == false)) {
+                subName = name.substring(3, 4).toLowerCase().concat(name.substring(4)).concat("s");
+
+                /* Make sure that there is a {subName}(Map) */
+
+                try {
+                    builderClass.getMethod(subName, Iterable.class);
+                } catch (NoSuchMethodException | SecurityException ex) {
+                    continue;
+                }
+
+                name = subName;
+                paramType = ParameterType.LIST;
+                matched = true;
             }
 
             if (matched == false) {
@@ -216,13 +233,27 @@ public class ImmutableClassBuilder implements ConfigClassBuilder {
 
                 /* Ignore any method that takes an Iterable, an Array or a Map */
 
-                if ((types[0] != Object.class) && ((types[0].isArray() == true) || (types[0].isAssignableFrom(Map.class) == true)))
+                if ((types[0] != Object.class) && ((types[0].isArray() == true) || (types[0].isAssignableFrom(Map.class) == true) ||
+                    (types[0].isAssignableFrom(Iterable.class) == true)))
                     continue;
 
                 /* If it starts with 'add', and there's a matching Iterable with the subname, then skip it */
 
                 if ((name.startsWith("put") == true) && (name.startsWith("putAll") == false)) {
                     subName = name.substring(3, 4).toLowerCase().concat(name.substring(4)).concat("s");
+                    try {
+                        builderClass.getMethod(subName, Map.class);
+                        continue;
+                    } catch (NoSuchMethodException | SecurityException ex) {
+                    }
+                }
+
+                /*
+                 * If it starts with 'putAll', and there's a matching Map with the subname, then skip it
+                 */
+
+                if (name.startsWith("putAll") == true) {
+                    subName = name.substring(6, 7).toLowerCase().concat(name.substring(7));
                     try {
                         builderClass.getMethod(subName, Map.class);
                         continue;
