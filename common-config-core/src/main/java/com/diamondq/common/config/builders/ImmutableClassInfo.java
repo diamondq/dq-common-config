@@ -59,7 +59,6 @@ public class ImmutableClassInfo<O> implements ClassInfo<Object, O> {
     /**
      * @see com.diamondq.common.config.spi.ClassInfo#builder(com.diamondq.common.config.core.ConfigImpl)
      */
-    @SuppressWarnings("null")
     @Override
     public Pair<Object, BuilderInfo<Object, O>> builder(ConfigImpl pConfigImpl)
         throws IllegalAccessException, IllegalArgumentException, InvocationTargetException {

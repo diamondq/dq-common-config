@@ -5,8 +5,10 @@ import com.diamondq.common.config.builders.ListClassBuilder;
 import com.diamondq.common.config.builders.NoParamConstructorBuilder;
 import com.diamondq.common.config.format.properties.PropertiesParser;
 import com.diamondq.common.config.model.BootstrapSetupConfigHolder;
+import com.diamondq.common.config.resolver.Resolver;
 import com.diamondq.common.config.spi.BootstrapConfigSourceFactory;
 import com.diamondq.common.config.spi.ConfigClassBuilder;
+import com.diamondq.common.config.spi.ConfigNodeResolver;
 import com.diamondq.common.config.spi.ConfigParser;
 import com.diamondq.common.config.spi.ConfigSourceFactoryFactory;
 
@@ -19,8 +21,7 @@ import java.util.Map;
 public class StandardSetup {
 
 	public static List<BootstrapConfigSourceFactory> getStandardBootstrapSources(ConfigSourceFactoryFactory pFactory,
-		Collection<String> pFileSuffixes, BootstrapSetupConfigHolder pHolder, String pApplicationId,
-		String pApplicationVersion, String pApplicationName) {
+		Collection<String> pFileSuffixes, BootstrapSetupConfigHolder pHolder, String pApplicationId) {
 
 		List<BootstrapConfigSourceFactory> results = new ArrayList<>();
 
@@ -53,11 +54,7 @@ public class StandardSetup {
 
 		Map<String, String> data = new HashMap<>();
 		if (pApplicationId != null)
-			data.put("application.id", pApplicationId);
-		if (pApplicationName != null)
-			data.put("application.name", pApplicationName);
-		if (pApplicationVersion != null)
-			data.put("application.version", pApplicationVersion);
+			data.put("application.name", pApplicationId);
 		results.add(new WrappedBootstrapSource(pFactory.getInMemoryConfigSourceFactory().create(null, data)));
 
 		return results;
@@ -75,6 +72,12 @@ public class StandardSetup {
 		results.add(new ImmutableClassBuilder());
 		results.add(new NoParamConstructorBuilder());
 		results.add(new ListClassBuilder());
+		return results;
+	}
+
+	public static Collection<ConfigNodeResolver> getStandardNodeResolvers() {
+		List<ConfigNodeResolver> results = new ArrayList<>();
+		results.add(new Resolver());
 		return results;
 	}
 

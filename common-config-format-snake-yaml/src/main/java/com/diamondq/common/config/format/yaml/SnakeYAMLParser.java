@@ -47,7 +47,6 @@ public class SnakeYAMLParser extends AbstractYAMLConfigParser implements ConfigP
     /**
      * @see com.diamondq.common.config.spi.ConfigParser#parse(com.diamondq.common.config.spi.ConfigDataTuple)
      */
-    @SuppressWarnings("resource")
     @Override
     public List<ConfigNode> parse(ConfigDataTuple pData) throws IOException {
         Yaml yaml = new Yaml(new SafeConstructor());

@@ -38,7 +38,6 @@ public class FileConfigSource extends AbstractPathDrivenConfigSource {
     protected void processPath(Path pPath, List<ConfigDataTuple> pResults) throws IOException {
 
         if (Files.exists(pPath) == true) {
-            @SuppressWarnings("resource")
             InputStream input = Files.newInputStream(pPath, StandardOpenOption.READ);
             pResults.add(ConfigDataTuple.builder().name(pPath.toString()).source(this).stream(input).build());
         }

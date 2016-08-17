@@ -4,8 +4,12 @@ import com.diamondq.common.config.spi.ConfigNode;
 import com.diamondq.common.config.spi.ConfigProp;
 import com.diamondq.common.config.spi.NodeType;
 
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,7 +23,21 @@ public class DebugUtils {
 		if (sLogger.isDebugEnabled() == false)
 			return;
 
-		recursiveDebug(true, "", pRootSource, pValue);
+		Set<String> skip = new HashSet<>();
+		for (String k : System.getenv().keySet())
+			skip.add("." + k);
+		@SuppressWarnings({"cast", "unchecked", "rawtypes"})
+		Set<String> sysprops = (Set<String>) (Set) System.getProperties().keySet();
+		for (String k : sysprops)
+			skip.add("." + k);
+
+		/* Remove some special ones */
+
+		for (Iterator<String> i = skip.iterator(); i.hasNext();)
+			if (i.next().startsWith(".application."))
+				i.remove();
+
+		recursiveDebug(true, skip, "", pRootSource, pValue);
 
 	}
 
@@ -28,11 +46,12 @@ public class DebugUtils {
 		if (sLogger.isTraceEnabled() == false)
 			return;
 
-		recursiveDebug(false, "", pRootSource, pValue);
+		recursiveDebug(false, Collections.emptySet(), "", pRootSource, pValue);
 
 	}
 
-	private static void recursiveDebug(boolean pIsDebug, String pPrefix, String pRootSource, ConfigNode pValue) {
+	private static void recursiveDebug(boolean pIsDebug, Set<String> pSkipSet, String pPrefix, String pRootSource,
+		ConfigNode pValue) {
 
 		StringBuilder typeBuilder = new StringBuilder();
 		NodeType type = pValue.getType();
@@ -91,17 +110,20 @@ public class DebugUtils {
 		}
 		if (useMeta == true)
 			metaBuilder.append('}');
-		if (pIsDebug)
-			sLogger.debug("{}{}={}{}{}", pPrefix, pValue.getName(), typeBuilder.toString(), valueBuilder.toString(),
-				metaBuilder.toString());
-		else
-			sLogger.trace("{}{}={}{}{}", pPrefix, pValue.getName(), typeBuilder.toString(), valueBuilder.toString(),
-				metaBuilder.toString());
+		String fullName = pPrefix + pValue.getName();
+		if (pSkipSet.contains(fullName) == false) {
+			if (pIsDebug)
+				sLogger.debug("{}={}{}{}", fullName, typeBuilder.toString(), valueBuilder.toString(),
+					metaBuilder.toString());
+			else
+				sLogger.trace("{}={}{}{}", fullName, typeBuilder.toString(), valueBuilder.toString(),
+					metaBuilder.toString());
 
-		/* Children */
+			/* Children */
 
-		for (Map.Entry<String, ConfigNode> childPair : pValue.getChildren().entrySet()) {
-			recursiveDebug(pIsDebug, pPrefix + pValue.getName() + ".", pRootSource, childPair.getValue());
+			for (Map.Entry<String, ConfigNode> childPair : pValue.getChildren().entrySet()) {
+				recursiveDebug(pIsDebug, pSkipSet, pPrefix + pValue.getName() + ".", pRootSource, childPair.getValue());
+			}
 		}
 	}
 

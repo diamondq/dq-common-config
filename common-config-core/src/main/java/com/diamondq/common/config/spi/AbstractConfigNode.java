@@ -1,5 +1,6 @@
 package com.diamondq.common.config.spi;
 
+import java.util.Map;
 import java.util.Optional;
 import java.util.SortedMap;
 
@@ -48,5 +49,18 @@ public abstract class AbstractConfigNode {
 	 */
 	@Value.NaturalOrder
 	public abstract SortedMap<String, ConfigNode> getChildren();
+
+	/**
+	 * This is a temporary due to the bug in withChildren (see https://github.com/immutables/immutables/issues/419) This
+	 * is NOT as fast as the real method, and should be replaced once the bug is fixed.
+	 * 
+	 * @param pChildren the children
+	 * @return the new node
+	 */
+	public final ConfigNode withChildrenEx(Map<String, ? extends ConfigNode> pChildren) {
+		if (pChildren == getChildren())
+			return (ConfigNode) this;
+		return ConfigNode.builder().from(this).children(pChildren).build();
+	}
 
 }

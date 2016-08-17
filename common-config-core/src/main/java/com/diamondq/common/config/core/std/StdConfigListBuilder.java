@@ -45,7 +45,7 @@ public class StdConfigListBuilder {
 		@SuppressWarnings("unchecked")
 		List<ConfigParser> parsers = pConfig.bind("bootstrap.parsers", List.class);
 
-		String appName = pConfig.bind("application.id", String.class);
+		String appName = pConfig.bind("application.name", String.class);
 
 		/* Get all the supported extensions */
 

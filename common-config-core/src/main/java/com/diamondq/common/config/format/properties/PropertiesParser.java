@@ -89,8 +89,7 @@ public class PropertiesParser implements ConfigParser {
 	/**
 	 * @see com.diamondq.common.config.spi.ConfigParser#parse(com.diamondq.common.config.spi.ConfigDataTuple)
 	 */
-	@SuppressWarnings("resource")
-    @Override
+	@Override
 	public List<ConfigNode> parse(ConfigDataTuple pData) throws IOException {
 		InputStream stream = pData.getStream();
 		List<ConfigNode> results = new ArrayList<>();
