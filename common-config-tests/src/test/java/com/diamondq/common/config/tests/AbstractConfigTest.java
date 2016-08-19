@@ -56,7 +56,7 @@ public class AbstractConfigTest {
 	protected List<BootstrapConfigSourceFactory> getBootstrapSources(ConfigSourceFactoryFactory pFactory,
 		Collection<String> pExtensions, BootstrapSetupConfigHolder pHolder, String pAppId) {
 		return new ArrayList<BootstrapConfigSourceFactory>(
-			StandardSetup.getStandardBootstrapSources(pFactory, pExtensions, pHolder, pAppId, null, null));
+			StandardSetup.getStandardBootstrapSources(pFactory, pExtensions, pHolder, pAppId));
 	}
 
 	protected List<ConfigClassBuilder> getClassBuilders() {
