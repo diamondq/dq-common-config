@@ -85,7 +85,7 @@ public class Resolver implements ConfigNodeResolver {
 		}
 
 		if (replacementChildren != null)
-			replacement = (replacement == null ? pNode : replacement).withChildrenEx(replacementChildren);
+			replacement = (replacement == null ? pNode : replacement).withChildren(replacementChildren);
 
 		return replacement;
 	}
