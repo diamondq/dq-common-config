@@ -53,6 +53,16 @@ public class DebugUtils {
 	private static void recursiveDebug(boolean pIsDebug, Set<String> pSkipSet, String pPrefix, String pRootSource,
 		ConfigNode pValue) {
 
+		/* Value */
+
+		String valueSource;
+		Optional<ConfigProp> value = pValue.getValue();
+		StringBuilder valueBuilder = new StringBuilder();
+		if (value.isPresent() == true)
+			valueSource = writeProp(pRootSource, valueBuilder, value.get());
+		else
+			valueSource = pRootSource;
+
 		StringBuilder typeBuilder = new StringBuilder();
 		NodeType type = pValue.getType();
 		boolean useType = false;
@@ -60,7 +70,7 @@ public class DebugUtils {
 			useType = true;
 			typeBuilder.append('[');
 			if (type.getType().isPresent()) {
-				writeProp(pRootSource, typeBuilder, type.getType().get());
+				writeProp(valueSource, typeBuilder, type.getType().get());
 			}
 		}
 		if (type.getFactory().isPresent()) {
@@ -71,7 +81,7 @@ public class DebugUtils {
 			else
 				typeBuilder.append(',');
 			typeBuilder.append("factory=");
-			writeProp(pRootSource, typeBuilder, type.getFactory().get());
+			writeProp(valueSource, typeBuilder, type.getFactory().get());
 		}
 		if (type.getFactoryArg().isPresent()) {
 			if (useType == false) {
@@ -81,18 +91,10 @@ public class DebugUtils {
 			else
 				typeBuilder.append(',');
 			typeBuilder.append("arg=");
-			writeProp(pRootSource, typeBuilder, type.getFactoryArg().get());
+			writeProp(valueSource, typeBuilder, type.getFactoryArg().get());
 		}
 		if (useType == true)
 			typeBuilder.append(']');
-
-		/* Value */
-
-		Optional<ConfigProp> value = pValue.getValue();
-		StringBuilder valueBuilder = new StringBuilder();
-		if (value.isPresent() == true) {
-			writeProp(pRootSource, valueBuilder, value.get());
-		}
 
 		/* Metadata */
 
@@ -106,11 +108,12 @@ public class DebugUtils {
 			else
 				metaBuilder.append(',');
 			metaBuilder.append(metaPair.getKey()).append("=");
-			writeProp(pRootSource, metaBuilder, metaPair.getValue());
+			writeProp(valueSource, metaBuilder, metaPair.getValue());
 		}
 		if (useMeta == true)
 			metaBuilder.append('}');
-		String fullName = pPrefix + pValue.getName();
+		String escapedName = pValue.getName().replaceAll("\\\\", "\\\\").replaceAll("\\.", "\\\\.");
+		String fullName = pPrefix + escapedName;
 		if (pSkipSet.contains(fullName) == false) {
 			if (pIsDebug)
 				sLogger.debug("{}={}{}{}", fullName, typeBuilder.toString(), valueBuilder.toString(),
@@ -122,12 +125,12 @@ public class DebugUtils {
 			/* Children */
 
 			for (Map.Entry<String, ConfigNode> childPair : pValue.getChildren().entrySet()) {
-				recursiveDebug(pIsDebug, pSkipSet, pPrefix + pValue.getName() + ".", pRootSource, childPair.getValue());
+				recursiveDebug(pIsDebug, pSkipSet, pPrefix + escapedName + ".", pRootSource, childPair.getValue());
 			}
 		}
 	}
 
-	private static void writeProp(String pRootSource, StringBuilder pBuilder, ConfigProp p) {
+	private static String writeProp(String pRootSource, StringBuilder pBuilder, ConfigProp p) {
 		String value = p.getValue().orElse("(NULL)");
 		pBuilder.append(value);
 		Optional<String> origValue = p.getOriginalValue();
@@ -136,6 +139,8 @@ public class DebugUtils {
 		String ps = p.getConfigSource();
 		if (pRootSource.equals(ps) == false)
 			pBuilder.append('(').append(ps).append(')');
+
+		return ps;
 	}
 
 }

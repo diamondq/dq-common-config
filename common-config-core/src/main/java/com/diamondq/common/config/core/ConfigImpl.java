@@ -244,12 +244,41 @@ public class ConfigImpl implements Config {
 	}
 
 	private <T> T resolveValue(ConfigNode pNode, Class<T> pType) {
+
+		NodeType type = pNode.getType();
+
+		if (pNode.getChildren().isEmpty() == false) {
+
+			/*
+			 * If there are children, but we're attempting to generate a value, then we need to flatten the children. We
+			 * also assume that the parent has no meaningful value. We'll also assume that it's a one dimensional list
+			 * of elements. Thus, the key is ignored, and the value must not have any children.
+			 */
+
+			StringBuilder flattenedValue = new StringBuilder();
+			boolean first = true;
+			for (ConfigNode child : pNode.getChildren().values()) {
+				if (child.getChildren().isEmpty() == false)
+					throw new IllegalArgumentException();
+
+				String v = resolveValue(child, String.class);
+				if (v != null) {
+					if (first == true)
+						first = false;
+					else
+						flattenedValue.append(',');
+					flattenedValue.append(v);
+				}
+			}
+
+			return convertType(flattenedValue.toString(), pType);
+		}
+
 		Optional<ConfigProp> value = pNode.getValue();
 		if ((value.isPresent() == false) || (value.get().getValue().isPresent() == false))
 			return null;
 
 		String str = value.get().getValue().get();
-		NodeType type = pNode.getType();
 
 		/* First, convert the type into the node type */
 		Object nodeValue;

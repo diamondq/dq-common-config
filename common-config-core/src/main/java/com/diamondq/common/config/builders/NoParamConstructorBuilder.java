@@ -19,77 +19,78 @@ import javax.inject.Singleton;
 @Priority(100)
 public class NoParamConstructorBuilder implements ConfigClassBuilder {
 
-    public NoParamConstructorBuilder() {
+	public NoParamConstructorBuilder() {
 
-    }
+	}
 
-    /**
-     * @see com.diamondq.common.config.spi.ConfigReconstructable#getReconstructionNodeType()
-     */
-    @Override
-    public NodeType getReconstructionNodeType() {
-        return NodeType.builder().isExplicitType(true).type(ConfigProp.builder().configSource("").value(getClass().getName()).build()).build();
-    }
+	/**
+	 * @see com.diamondq.common.config.spi.ConfigReconstructable#getReconstructionNodeType()
+	 */
+	@Override
+	public NodeType getReconstructionNodeType() {
+		return NodeType.builder().isExplicitType(true)
+			.type(ConfigProp.builder().configSource("").value(getClass().getName()).build()).build();
+	}
 
-    /**
-     * @see com.diamondq.common.config.spi.ConfigReconstructable#getReconstructionParams()
-     */
-    @Override
-    public Map<String, String> getReconstructionParams() {
-        return Collections.emptyMap();
-    }
+	/**
+	 * @see com.diamondq.common.config.spi.ConfigReconstructable#getReconstructionParams()
+	 */
+	@Override
+	public Map<String, String> getReconstructionParams() {
+		return Collections.emptyMap();
+	}
 
-    /**
-     * @see com.diamondq.common.config.spi.ConfigClassBuilder#getClassInfo(java.lang.Class, java.lang.Class,
-     *      com.diamondq.common.config.spi.NodeType, java.util.List)
-     */
-    @Override
-    public <T, O> ClassInfo<T, O> getClassInfo(Class<?> pClass, Class<O> pFinalClass, NodeType pType,
-        List<ConfigClassBuilder> pClassBuilders) {
+	/**
+	 * @see com.diamondq.common.config.spi.ConfigClassBuilder#getClassInfo(java.lang.Class, java.lang.Class,
+	 *      com.diamondq.common.config.spi.NodeType, java.util.List)
+	 */
+	@Override
+	public <T, O> ClassInfo<T, O> getClassInfo(Class<?> pClass, Class<O> pFinalClass, NodeType pType,
+		List<ConfigClassBuilder> pClassBuilders) {
 
-        boolean hasFactoryArg = false;
-        if ((pType.getFactoryArg().isPresent() == true) && (pType.getFactoryArg().get().getValue().isPresent() == true))
-            hasFactoryArg = true;
+		boolean hasFactoryArg = false;
+		if ((pType.getFactoryArg().isPresent() == true) && (pType.getFactoryArg().get().getValue().isPresent() == true))
+			hasFactoryArg = true;
 
-        /* This only supports no-argument constructors */
+		/* This only supports no-argument constructors */
 
-        if (hasFactoryArg == true)
-            return null;
+		if (hasFactoryArg == true)
+			return null;
 
-        /* Only support non-private, concrete classes */
+		/* Only support non-private, concrete classes */
 
-        int classModifiers = pClass.getModifiers();
-        if ((pClass.isInterface() == true) || (Modifier.isAbstract(classModifiers) == true) || (Modifier.isPrivate(classModifiers) == true))
-            return null;
+		int classModifiers = pClass.getModifiers();
+		if ((pClass.isInterface() == true) || (Modifier.isAbstract(classModifiers) == true)
+			|| (Modifier.isPrivate(classModifiers) == true))
+			return null;
 
-        Constructor<?> constructor = null;
-        for (Constructor<?> c : pClass.getConstructors()) {
-            Class<?>[] parameterTypes = c.getParameterTypes();
-            if (parameterTypes.length == 0) {
-                int modifiers = c.getModifiers();
-                if (Modifier.isPublic(modifiers) == true) {
-                    constructor = c;
-                    break;
-                }
-            }
-        }
+		Constructor<?> constructor = null;
+		for (Constructor<?> c : pClass.getConstructors()) {
+			Class<?>[] parameterTypes = c.getParameterTypes();
+			if (parameterTypes.length == 0) {
+				int modifiers = c.getModifiers();
+				if (Modifier.isPublic(modifiers) == true) {
+					constructor = c;
+					break;
+				}
+			}
+		}
 
-        if (constructor == null)
-            return null;
+		if (constructor == null)
+			return null;
 
-        @SuppressWarnings("unchecked")
-        ClassInfo<T, O> result = (ClassInfo<T, O>) new NoParamClassInfo<O>(pFinalClass, constructor);
-        return result;
-    }
+		@SuppressWarnings("unchecked")
+		ClassInfo<T, O> result = (ClassInfo<T, O>) new NoParamClassInfo<O>(pFinalClass, constructor);
+		return result;
+	}
 
-    /**
-     * @see com.diamondq.common.config.spi.ConfigClassBuilder#getBuilderInfo(com.diamondq.common.config.spi.ClassInfo,
-     *      java.lang.Object)
-     */
-    @Override
-    public <T, O> BuilderInfo<T, O> getBuilderInfo(ClassInfo<T, O> pClassInfo, T pBuilder) {
-        // TODO Auto-generated method stub
-        return null;
-    }
+	/**
+	 * @see com.diamondq.common.config.spi.ConfigClassBuilder#getBuilderInfo(com.diamondq.common.config.spi.ClassInfo,
+	 *      java.lang.Object)
+	 */
+	@Override
+	public <T, O> BuilderInfo<T, O> getBuilderInfo(ClassInfo<T, O> pClassInfo, T pBuilder) {
+		throw new UnsupportedOperationException();
+	}
 
 }

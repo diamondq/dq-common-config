@@ -8,20 +8,33 @@ import com.diamondq.common.config.spi.NodeType;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public abstract class AbstractStdConfigParser implements ConfigParser {
 
-	public static final String	sMETA_KEY				= "_dqconfig_meta_";
+	public static final String							sMETA_KEY				= "_dqconfig_meta_";
 
-	public static final String	sLIST_KEY				= "_dqconfig_list_";
+	public static final String							sLIST_KEY				= "_dqconfig_list_";
 
-	public static final String	sTYPE_FACTORY_KEY		= "factory";
+	public static final String							sTYPE_FACTORY_KEY		= "factory";
 
-	public static final String	sTYPE_FACTORY_ARG_KEY	= "arg";
+	public static final String							sTYPE_FACTORY_ARG_KEY	= "arg";
 
-	public static final String	sTYPE_TYPE_KEY			= "type";
+	public static final String							sTYPE_TYPE_KEY			= "type";
+
+	private static final ConcurrentMap<String, String>	sPrefixMap				= new ConcurrentHashMap<>();
+
+	private static final AtomicInteger					sPrefixCount			= new AtomicInteger(0);
 
 	protected ConfigNode map(String pSourceName, String pName, Object o) {
+		String prefix = sPrefixMap.get(pSourceName);
+		if (prefix == null) {
+			String newPrefix = String.format("%03d", sPrefixCount.incrementAndGet());
+			if ((prefix = sPrefixMap.putIfAbsent(pSourceName, newPrefix)) == null)
+				prefix = newPrefix;
+		}
 		ConfigNode.Builder builder = ConfigNode.builder().name(pName);
 		if (o instanceof Map) {
 			@SuppressWarnings("unchecked")
@@ -124,7 +137,7 @@ public abstract class AbstractStdConfigParser implements ConfigParser {
 					}
 				}
 
-				String offsetStr = String.format("%05d", offset);
+				String offsetStr = String.format("%s-%05d", prefix, offset);
 				builder.putChildren(offsetStr, map(pSourceName, offsetStr, c));
 				offset++;
 			}
