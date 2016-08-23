@@ -16,9 +16,9 @@ import org.slf4j.LoggerFactory;
 
 public abstract class AbstractPathDrivenConfigSource implements ConfigSource {
 
-	private static final Logger	sLogger	= LoggerFactory.getLogger(AbstractPathDrivenConfigSource.class);
+	private static final Logger sLogger = LoggerFactory.getLogger(AbstractPathDrivenConfigSource.class);
 
-	protected final Path		mPath;
+	protected final Path mPath;
 
 	public AbstractPathDrivenConfigSource(Path pPath) {
 		mPath = pPath;
@@ -30,42 +30,47 @@ public abstract class AbstractPathDrivenConfigSource implements ConfigSource {
 	@Override
 	public NodeType getReconstructionNodeType() {
 		return NodeType.builder().isExplicitType(true)
-			.type(ConfigProp.builder().configSource("").value(getClass().getName()).build()).build();
+				.type(ConfigProp.builder().configSource("").value(getClass().getName()).build()).build();
 	}
 
 	/**
-	 * @see com.diamondq.common.config.spi.ConfigSource#getConfiguration(java.lang.String, java.util.List)
+	 * @see com.diamondq.common.config.spi.ConfigSource#getConfiguration(java.lang.String,
+	 *      java.util.List)
 	 */
 	@Override
 	public List<ConfigDataTuple> getConfiguration(String pEnvironment, List<String> pProfiles) {
 		sLogger.trace("getConfiguration({}, {})", pEnvironment, pProfiles);
 		try {
 
-			Path path = mPath;
-			boolean hasParent = path.getParent() != null;
-			if ((pEnvironment != null) && (pEnvironment.isEmpty() == false))
-				path = (hasParent ? path.getParent().resolve(pEnvironment).resolve(path.getFileName())
-					: Paths.get(pEnvironment, path.toString()));
+			Path[] envPaths;
+			if ((pEnvironment != null) && (pEnvironment.isEmpty() == false)) {
+				Path envPath = (mPath.getParent() != null
+						? mPath.getParent().resolve(pEnvironment).resolve(mPath.getFileName())
+						: Paths.get(pEnvironment, mPath.toString()));
+				envPaths = new Path[] { envPath, mPath };
+			} else
+				envPaths = new Path[] { mPath };
 
 			List<String> profiles = new ArrayList<>(pProfiles);
 			profiles.add(0, "");
 
 			List<ConfigDataTuple> results = new ArrayList<>();
 
-			for (String profile : profiles) {
-				String fileName = path.getFileName().toString();
-				if (profile.isEmpty() == false) {
-					int offset = fileName.lastIndexOf('.');
-					fileName = fileName.substring(0, offset) + "-" + profile + fileName.substring(offset);
+			for (Path path : envPaths)
+				for (String profile : profiles) {
+					String fileName = path.getFileName().toString();
+					if (profile.isEmpty() == false) {
+						int offset = fileName.lastIndexOf('.');
+						fileName = fileName.substring(0, offset) + "-" + profile + fileName.substring(offset);
+					}
+					Path fullPath = (path.getParent() != null ? path.getParent().resolve(fileName)
+							: Paths.get(fileName));
+					processPath(fullPath, results);
 				}
-				Path fullPath = (hasParent ? path.getParent().resolve(fileName) : Paths.get(fileName));
-				processPath(fullPath, results);
 
-			}
 			sLogger.trace("getConfiguration(...) -> {}", results);
 			return results;
-		}
-		catch (IOException ex) {
+		} catch (IOException ex) {
 			throw new RuntimeException(ex);
 		}
 	}
