@@ -44,19 +44,19 @@ public class Resolver implements ConfigNodeResolver {
 	 */
 	@Override
 	public ConfigNode resolve(ConfigNode pNode) {
-		ConfigNode result = internalResolve(pNode, pNode);
+		ConfigNode result = internalResolve(pNode, "", pNode);
 		if (result == null)
 			return pNode;
 		return result;
 	}
 
-	private ConfigNode internalResolve(ConfigNode pRootNode, ConfigNode pNode) {
+	private ConfigNode internalResolve(ConfigNode pRootNode, String pDiagName, ConfigNode pNode) {
 
 		/* Recursively handle all children */
 
 		Map<String, ConfigNode> replacementChildren = null;
 		for (Map.Entry<String, ConfigNode> child : pNode.getChildren().entrySet()) {
-			ConfigNode replaceChild = internalResolve(pRootNode, child.getValue());
+			ConfigNode replaceChild = internalResolve(pRootNode, pDiagName + "." + child.getKey(), child.getValue());
 			if (replaceChild != null) {
 				if (replacementChildren == null)
 					replacementChildren = new HashMap<>(pNode.getChildren());
@@ -72,7 +72,7 @@ public class Resolver implements ConfigNodeResolver {
 			ConfigProp prop = pNode.getValue().get();
 			if (prop.getValue().isPresent() == true) {
 				String actualValue = prop.getValue().get();
-				String replacementValue = resolveStr(actualValue, pRootNode, pNode);
+				String replacementValue = resolveStr(actualValue, pRootNode, pDiagName, pNode);
 				if (replacementValue != null) {
 					Builder builder = ConfigProp.builder().from(prop).value(replacementValue);
 					if (prop.getOriginalValue().isPresent() == false)
@@ -90,7 +90,7 @@ public class Resolver implements ConfigNodeResolver {
 		return replacement;
 	}
 
-	protected String resolveStr(String pValue, ConfigNode pRootNode, ConfigNode pNode) {
+	protected String resolveStr(String pValue, ConfigNode pRootNode, String pDiagName, ConfigNode pNode) {
 		if (pValue != null) {
 			Matcher matcher = mPattern.matcher(pValue);
 			StringBuilder sb = null;
@@ -126,9 +126,9 @@ public class Resolver implements ConfigNodeResolver {
 				}
 
 				if (value == null)
-					throw new RuntimeException("Unresolvable placeholder " + pValue);
+					throw new RuntimeException("Unresolvable placeholder " + pValue + " at " + pDiagName);
 
-				String replacementValue = resolveStr(value, pRootNode, pNode);
+				String replacementValue = resolveStr(value, pRootNode, pDiagName, pNode);
 				sb.append(replacementValue == null ? value : replacementValue);
 			}
 
