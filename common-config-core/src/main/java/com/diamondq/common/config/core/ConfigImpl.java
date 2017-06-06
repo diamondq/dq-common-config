@@ -62,6 +62,14 @@ public class ConfigImpl implements Config {
 	 */
 	@Override
 	public <T> T bind(String pPrefix, Class<T> pClass) {
+		return bind(pPrefix, pClass, null);
+	}
+
+	/**
+	 * @see com.diamondq.common.config.Config#bind(java.lang.String, java.lang.Class, java.util.Map)
+	 */
+	@Override
+	public <T> T bind(String pPrefix, Class<T> pClass, Map<String, Object> pContext) {
 
 		sLogger.trace("Config binding {} to {}...", pPrefix, pClass);
 
@@ -70,11 +78,11 @@ public class ConfigImpl implements Config {
 		if (node == null)
 			return null;
 
-		return internalBind(node, pClass);
+		return internalBind(node, pClass, pContext);
 	}
 
 	@SuppressWarnings("unchecked")
-	private <T> T internalBind(ConfigNode pNode, Class<T> pClass) {
+	private <T> T internalBind(ConfigNode pNode, Class<T> pClass, Map<String, Object> pContext) {
 
 		DebugUtils.trace("", pNode);
 
@@ -112,11 +120,11 @@ public class ConfigImpl implements Config {
 		if (isPrimitive(buildClass) == true)
 			return resolveValue(pNode, pClass);
 
-		T result = internalBind2(pNode, buildClass, finalClass);
+		T result = internalBind2(pNode, buildClass, finalClass, pContext);
 		return result;
 	}
 
-	private <T> T internalBind2(ConfigNode pNode, Class<?> pClass, Class<T> pFinalClass) {
+	private <T> T internalBind2(ConfigNode pNode, Class<?> pClass, Class<T> pFinalClass, Map<String, Object> pContext) {
 		try {
 
 			NodeType type = pNode.getType();
@@ -126,7 +134,7 @@ public class ConfigImpl implements Config {
 			@SuppressWarnings("unchecked")
 			ClassInfo<Object, T> classInfo = (ClassInfo<Object, T>) mClassToConstructorMap.get(classNameKey);
 			if (classInfo == null)
-				classInfo = lookupClassInfo(pClass, pFinalClass, type, classNameKey);
+				classInfo = lookupClassInfo(pClass, pFinalClass, type, classNameKey, pContext);
 
 			/* Create a builder */
 
@@ -152,7 +160,7 @@ public class ConfigImpl implements Config {
 					if (mapValueClass == null) {
 						for (String k : sortedKeys) {
 							Object result = isPrimitive(typeClass) ? resolveValue(children.get(k), typeClass)
-								: internalBind(children.get(k), typeClass);
+								: internalBind(children.get(k), typeClass, pContext);
 							sLogger.trace("P: Name: {} Type: {} = {}", origName, typeClass, result);
 							p.set1(builder, result);
 						}
@@ -160,7 +168,7 @@ public class ConfigImpl implements Config {
 					else {
 						for (String k : sortedKeys) {
 							Object result = isPrimitive(mapValueClass) ? resolveValue(children.get(k), mapValueClass)
-								: internalBind(children.get(k), mapValueClass);
+								: internalBind(children.get(k), mapValueClass, pContext);
 							sLogger.trace("P: Name: {} Type: {} = {}", k, mapValueClass, result);
 							p.set2(builder, k, result);
 						}
@@ -176,7 +184,7 @@ public class ConfigImpl implements Config {
 							case NORMAL: {
 								Class<?> typeClass = p.getClassType1();
 								Object result = isPrimitive(typeClass) ? resolveValue(children.get(name), typeClass)
-									: internalBind(children.get(name), typeClass);
+									: internalBind(children.get(name), typeClass, pContext);
 								sLogger.trace("P: Name: {} -> {} Type: {} = {}", origName, name, typeClass, result);
 								p.set1(builder, result);
 								match = true;
@@ -192,13 +200,13 @@ public class ConfigImpl implements Config {
 									/* There is a factory, so resolve that first to get the initial set of values */
 
 									@SuppressWarnings("rawtypes")
-									List initialList = internalBind(listChildren, List.class);
+									List initialList = internalBind(listChildren, List.class, pContext);
 									for (Object o : initialList)
 										p.set1(builder, o);
 								}
 								for (Map.Entry<String, ConfigNode> childPair : listChildren.getChildren().entrySet()) {
 									Object listResult = isPrimitive ? resolveValue(childPair.getValue(), valueClass)
-										: internalBind(childPair.getValue(), valueClass);
+										: internalBind(childPair.getValue(), valueClass, pContext);
 									sLogger.trace("P: Name: {} -> {} Type: {} = {}", origName, name, valueClass,
 										listResult);
 									p.set1(builder, listResult);
@@ -214,9 +222,29 @@ public class ConfigImpl implements Config {
 								for (Map.Entry<String, ConfigNode> childPair : mapChildren.getChildren().entrySet()) {
 									Object key = convertType(childPair.getKey(), keyClass);
 									Object value = isPrimitive ? resolveValue(childPair.getValue(), mapValueClass)
-										: internalBind(childPair.getValue(), mapValueClass);
+										: internalBind(childPair.getValue(), mapValueClass, pContext);
 									p.set2(builder, key, value);
 								}
+								match = true;
+								break;
+							}
+							default:
+								throw new UnsupportedOperationException();
+							}
+							if (match == true)
+								break;
+						}
+
+						/* See if the context has the child */
+
+						else if ((pContext != null) && (pContext.containsKey(name))) {
+
+							switch (p.getType()) {
+							case NORMAL: {
+								Class<?> typeClass = p.getClassType1();
+								Object result = convertType(pContext.get(name), typeClass);
+								sLogger.trace("P: Name: {} -> {} Type: {} = {}", origName, name, typeClass, result);
+								p.set1(builder, result);
 								match = true;
 								break;
 							}
@@ -400,14 +428,18 @@ public class ConfigImpl implements Config {
 	 * This is responsible to analyze a class and figure out the constructor, parameters, and builder methods.
 	 * 
 	 * @param pClass the class
+	 * @param pFinalClass the final class
+	 * @param pType the type
+	 * @param pClassNameKey the class name key
+	 * @param pContext the context
 	 * @return the class info
 	 */
 	private <T> ClassInfo<Object, T> lookupClassInfo(Class<?> pClass, Class<T> pFinalClass, NodeType pType,
-		String pClassNameKey) {
+		String pClassNameKey, Map<String, Object> pContext) {
 
 		ClassInfo<Object, T> result = null;
 		for (ConfigClassBuilder ccb : mClassBuilders) {
-			result = ccb.getClassInfo(pClass, pFinalClass, pType, mClassBuilders);
+			result = ccb.getClassInfo(pClass, pFinalClass, pType, mClassBuilders, pContext);
 			if (result != null)
 				break;
 		}

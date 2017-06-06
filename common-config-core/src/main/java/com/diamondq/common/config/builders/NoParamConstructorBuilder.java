@@ -42,11 +42,11 @@ public class NoParamConstructorBuilder implements ConfigClassBuilder {
 
 	/**
 	 * @see com.diamondq.common.config.spi.ConfigClassBuilder#getClassInfo(java.lang.Class, java.lang.Class,
-	 *      com.diamondq.common.config.spi.NodeType, java.util.List)
+	 *      com.diamondq.common.config.spi.NodeType, java.util.List, java.util.Map)
 	 */
 	@Override
 	public <T, O> ClassInfo<T, O> getClassInfo(Class<?> pClass, Class<O> pFinalClass, NodeType pType,
-		List<ConfigClassBuilder> pClassBuilders) {
+		List<ConfigClassBuilder> pClassBuilders, Map<String, Object> pContext) {
 
 		boolean hasFactoryArg = false;
 		if ((pType.getFactoryArg().isPresent() == true) && (pType.getFactoryArg().get().getValue().isPresent() == true))
