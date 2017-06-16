@@ -228,6 +228,12 @@ public class ImmutableClassBuilder implements ConfigClassBuilder {
 				matched = true;
 			}
 
+			/* If it is the special wildcard put, then use it */
+
+			if ((name.equals("putAnything") == true) && (types.length == 1) && (types[0].isArray() == false)) {
+				matched = true;
+			}
+
 			if (matched == false) {
 
 				/* Make sure it only takes one parameter, and that parameter is not an Optional */
@@ -297,6 +303,7 @@ public class ImmutableClassBuilder implements ConfigClassBuilder {
 					catch (NoSuchMethodException | SecurityException ex) {
 					}
 				}
+
 			}
 
 			/* Check if there is a ConfigKey annotation override */
