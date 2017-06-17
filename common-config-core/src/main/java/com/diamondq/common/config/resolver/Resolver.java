@@ -5,10 +5,12 @@ import com.diamondq.common.config.spi.ConfigNodeResolver;
 import com.diamondq.common.config.spi.ConfigProp;
 import com.diamondq.common.config.spi.ConfigProp.Builder;
 import com.diamondq.common.config.spi.NodeType;
+import com.diamondq.common.config.spi.Pair;
 
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.SortedMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -72,14 +74,25 @@ public class Resolver implements ConfigNodeResolver {
 			ConfigProp prop = pNode.getValue().get();
 			if (prop.getValue().isPresent() == true) {
 				String actualValue = prop.getValue().get();
-				String replacementValue = resolveStr(actualValue, pRootNode, pDiagName, pNode);
+				Pair<String, Boolean> replacementValue = resolveStr(actualValue, pRootNode, pDiagName, pNode);
 				if (replacementValue != null) {
-					Builder builder = ConfigProp.builder().from(prop).value(replacementValue);
+					Builder builder = ConfigProp.builder().from(prop).value(replacementValue._1);
 					if (prop.getOriginalValue().isPresent() == false)
 						builder = builder.originalValue(actualValue);
 					ConfigProp replacementProp = builder.build();
 
 					replacement = pNode.withValue(replacementProp);
+					if (replacementValue._2 == true) {
+						SortedMap<String, ConfigProp> existingMeta = replacement.getMetaData();
+						Map<String, ConfigProp> newMeta;
+						if (existingMeta == null)
+							newMeta = new HashMap<>();
+						else
+							newMeta = new HashMap<>(existingMeta);
+						newMeta.put("redact",
+							ConfigProp.builder().configSource(prop.getConfigSource()).value("true").build());
+						replacement = replacement.withMetaData(newMeta);
+					}
 				}
 			}
 		}
@@ -90,15 +103,18 @@ public class Resolver implements ConfigNodeResolver {
 		return replacement;
 	}
 
-	protected String resolveStr(String pValue, ConfigNode pRootNode, String pDiagName, ConfigNode pNode) {
+	protected Pair<String, Boolean> resolveStr(String pValue, ConfigNode pRootNode, String pDiagName,
+		ConfigNode pNode) {
 		if (pValue != null) {
 			Matcher matcher = mPattern.matcher(pValue);
 			StringBuilder sb = null;
+			int startingPoint = 0;
+			boolean redact = false;
 			while (matcher.find() == true) {
-				if (sb == null) {
+				if (sb == null)
 					sb = new StringBuilder();
-					sb.append(pValue.substring(0, matcher.start()));
-				}
+				sb.append(pValue.substring(startingPoint, matcher.start()));
+				startingPoint = matcher.end();
 				String key = matcher.group(1);
 				String[] keys = key.split("\\.");
 				ConfigNode n = pRootNode;
@@ -106,6 +122,10 @@ public class Resolver implements ConfigNodeResolver {
 					n = n.getChildren().get(k);
 					if (n == null)
 						break;
+					ConfigProp redactProp = n.getMetaData().get("redact");
+					if ((redactProp != null) && (redactProp.getValue().isPresent() == true)
+						&& ("true".equalsIgnoreCase(redactProp.getValue().get())))
+						redact = true;
 				}
 				String value = null;
 				if (n != null) {
@@ -128,8 +148,10 @@ public class Resolver implements ConfigNodeResolver {
 				if (value == null)
 					throw new RuntimeException("Unresolvable placeholder " + pValue + " at " + pDiagName);
 
-				String replacementValue = resolveStr(value, pRootNode, pDiagName, pNode);
-				sb.append(replacementValue == null ? value : replacementValue);
+				Pair<String, Boolean> replacementValue = resolveStr(value, pRootNode, pDiagName, pNode);
+				if ((replacementValue != null) && (replacementValue._2 == true))
+					redact = true;
+				sb.append(replacementValue == null ? value : replacementValue._1);
 			}
 
 			if (sb == null)
@@ -138,7 +160,7 @@ public class Resolver implements ConfigNodeResolver {
 			if (finalValue.equals(pValue) == true)
 				return null;
 
-			return finalValue;
+			return new Pair<String, Boolean>(finalValue, redact);
 		}
 		return null;
 	}
