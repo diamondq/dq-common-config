@@ -39,7 +39,7 @@ public class AbstractConfigTest {
 		BootstrapConfigImpl impl = new BootstrapConfigImpl(build);
 		Locale locale = getLocale();
 		impl.setLocale(locale);
-		return impl.bootstrapConfig();
+		return impl.bootstrapConfig(null);
 	}
 
 	protected List<ConfigNodeResolver> getNodeResolvers() {

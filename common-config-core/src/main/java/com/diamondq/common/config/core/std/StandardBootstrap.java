@@ -15,9 +15,11 @@ import com.diamondq.common.config.spi.ConfigSourceFactoryFactory;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.ServiceLoader;
+import java.util.Set;
 
 public class StandardBootstrap {
 
@@ -50,7 +52,10 @@ public class StandardBootstrap {
 		holder.value = build;
 		BootstrapConfigImpl impl = new BootstrapConfigImpl(build);
 		impl.setLocale(getDefaultLocale());
-		return impl.bootstrapConfig();
+		Set<String> filterSet = new HashSet<>();
+		filterSet.add(".application");
+		filterSet.add(".web");
+		return impl.bootstrapConfig(filterSet);
 	}
 
 	private Collection<BootstrapConfigSourceFactory> getBootstrapSources() {

@@ -19,6 +19,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.slf4j.ext.XLogger;
@@ -26,11 +27,11 @@ import org.slf4j.ext.XLoggerFactory;
 
 public class BootstrapConfigImpl implements Bootstrap {
 
-	private static final XLogger sLogger = XLoggerFactory.getXLogger(BootstrapConfigImpl.class);
+	private static final XLogger		sLogger	= XLoggerFactory.getXLogger(BootstrapConfigImpl.class);
 
-	private final BootstrapSetupConfig mSetupConfig;
+	private final BootstrapSetupConfig	mSetupConfig;
 
-	private volatile Locale mLocale;
+	private volatile Locale				mLocale;
 
 	public BootstrapConfigImpl(BootstrapSetupConfig pSetupConfig) {
 		mSetupConfig = pSetupConfig;
@@ -43,10 +44,10 @@ public class BootstrapConfigImpl implements Bootstrap {
 	}
 
 	/**
-	 * @see com.diamondq.common.config.Bootstrap#bootstrapConfig()
+	 * @see com.diamondq.common.config.Bootstrap#bootstrapConfig(java.util.Set)
 	 */
 	@Override
-	public Config bootstrapConfig() {
+	public Config bootstrapConfig(Set<String> pFilterTo) {
 		sLogger.entry();
 		try {
 			sLogger.debug("Starting bootstrap config");
@@ -62,15 +63,19 @@ public class BootstrapConfigImpl implements Bootstrap {
 			/* Now, get the list of source factories, and sort them */
 
 			List<ConfigSource> sortedSources = mSetupConfig.getBootstrapSources().stream()
-					.sorted((a, b) -> a.getBootstrapPriority() - b.getBootstrapPriority())
-					.map(t -> t.create(environment, profiles)).collect(Collectors.toList());
+				.sorted((a, b) -> a.getBootstrapPriority() - b.getBootstrapPriority())
+				.map(t -> t.create(environment, profiles)).collect(Collectors.toList());
 
 			sLogger.trace("Bootstrap Sources: {}", sortedSources);
 
 			/* Now run the query */
 
 			ConfigNode bootstrapProperties = resolve(sortedSources, environment, profiles, mSetupConfig.getParsers(),
-					mSetupConfig.getNodeResolvers());
+				mSetupConfig.getNodeResolvers());
+			if (sLogger.isDebugEnabled()) {
+				sLogger.debug("Final document:");
+				DebugUtils.debug("", bootstrapProperties, true, true, Collections.singleton(".bootstrap"));
+			}
 
 			/* Now, bind against the BootstrapConfig */
 
@@ -91,19 +96,23 @@ public class BootstrapConfigImpl implements Bootstrap {
 			/* Now run the actual query */
 
 			ConfigNode finalProperties = resolve(actualSources, actualEnvironment, actualProfiles,
-					bootstrapConfig.getParsers(), bootstrapConfig.getNodeResolvers());
+				bootstrapConfig.getParsers(), bootstrapConfig.getNodeResolvers());
+			if (sLogger.isDebugEnabled()) {
+				sLogger.debug("Final document:");
+				DebugUtils.debug("", finalProperties, false, false, pFilterTo);
+			}
 
 			ConfigImpl finalConfigImpl = new ConfigImpl(finalProperties, bootstrapConfig.getClassBuilders());
 			finalConfigImpl.setThreadLocale(mLocale);
 			return sLogger.exit(finalConfigImpl);
-		} catch (IOException ex) {
+		}
+		catch (IOException ex) {
 			throw new RuntimeException(ex);
 		}
 	}
 
 	/**
-	 * For each source, we load the ConfigNode's and merge them into the growing
-	 * set of data
+	 * For each source, we load the ConfigNode's and merge them into the growing set of data
 	 *
 	 * @param pSortedSources
 	 * @param pEnvironment
@@ -113,7 +122,7 @@ public class BootstrapConfigImpl implements Bootstrap {
 	 * @throws IOException
 	 */
 	private ConfigNode resolve(List<ConfigSource> pSortedSources, String pEnvironment, List<String> pProfiles,
-			List<ConfigParser> pConfigParsers, List<ConfigNodeResolver> pNodeResolvers) throws IOException {
+		List<ConfigParser> pConfigParsers, List<ConfigNodeResolver> pNodeResolvers) throws IOException {
 		sLogger.entry(pSortedSources, pEnvironment, pProfiles, pConfigParsers, pNodeResolvers);
 
 		/* Define the root node */
@@ -183,14 +192,16 @@ public class BootstrapConfigImpl implements Bootstrap {
 					}
 				}
 
-			} finally {
+			}
+			finally {
 
 				/* Make sure that the stream is closed */
 
 				try {
 					for (ConfigDataTuple cdt : dataList)
 						cdt.getStream().close();
-				} catch (IOException ex) {
+				}
+				catch (IOException ex) {
 					throw new RuntimeException(ex);
 				}
 			}
@@ -199,28 +210,22 @@ public class BootstrapConfigImpl implements Bootstrap {
 
 		/* Now, perform any PropertiesResolver */
 
-		boolean printedFinal = false;
 		for (ConfigNodeResolver cnr : pNodeResolvers) {
 
 			sLogger.trace("Resolving with {}", cnr);
 
 			try {
 				rootNode = cnr.resolve(rootNode);
-			} catch (RuntimeException ex) {
+			}
+			catch (RuntimeException ex) {
 				sLogger.debug("Tree before resolving (for debugging the error):");
-				DebugUtils.debug("", rootNode);
+				DebugUtils.debug("", rootNode, false, false, null);
 				throw ex;
 			}
 			if (sLogger.isTraceEnabled()) {
 				sLogger.trace("Resolved document:");
 				DebugUtils.trace("", rootNode);
-				printedFinal = true;
 			}
-		}
-
-		if ((sLogger.isDebugEnabled()) && (printedFinal == false)) {
-			sLogger.debug("Final document:");
-			DebugUtils.debug("", rootNode);
 		}
 
 		return sLogger.exit(rootNode);
@@ -233,12 +238,12 @@ public class BootstrapConfigImpl implements Bootstrap {
 		if (pTarget == null) {
 
 			/*
-			 * If the provided node does not have a value under the given key,
-			 * then simply put the node into that key
+			 * If the provided node does not have a value under the given key, then simply put the node into that key
 			 */
 
 			pTarget = pSource;
-		} else {
+		}
+		else {
 
 			ConfigNode.Builder builder = ConfigNode.builder().name(pTarget.getName());
 
@@ -284,7 +289,8 @@ public class BootstrapConfigImpl implements Bootstrap {
 					nodeTypeBuilder = nodeTypeBuilder.factoryArg(childType.getFactoryArg());
 
 				builder.type(nodeTypeBuilder.build());
-			} else
+			}
+			else
 				builder.type(pTarget.getType());
 
 			/* Handle the metadata */

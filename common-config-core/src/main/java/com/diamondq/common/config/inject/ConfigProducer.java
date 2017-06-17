@@ -55,7 +55,7 @@ public class ConfigProducer {
 		holder.value = build;
 		BootstrapConfigImpl impl = new BootstrapConfigImpl(build);
 		impl.setLocale(pDefaultLocale);
-		return impl.bootstrapConfig();
+		return impl.bootstrapConfig(null);
 	}
 
 	@Produces
