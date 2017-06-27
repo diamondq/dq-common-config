@@ -7,27 +7,37 @@ import java.util.concurrent.ConcurrentMap;
 
 import javax.annotation.Priority;
 
+/**
+ * Injection/CDI helper
+ */
 public class InjectUtils {
 
-    private static final ConcurrentMap<Class<?>, Integer> sClassToPriorityStringMap = new ConcurrentHashMap<>();
+	private static final ConcurrentMap<Class<?>, Integer> sClassToPriorityStringMap = new ConcurrentHashMap<>();
 
-    public static <T> Collection<T> orderByPriority(Iterable<T> pIterable) {
-        TreeMap<String, T> m = new TreeMap<>();
+	/**
+	 * Reorders a Iterable of entries based on their Priority
+	 * 
+	 * @param pIterable the entries
+	 * @return the sorted collection
+	 */
+	public static <T> Collection<T> orderByPriority(Iterable<T> pIterable) {
+		TreeMap<String, T> m = new TreeMap<>();
 
-        for (T val : pIterable) {
-            Class<? extends Object> c = val.getClass();
-            Integer priorityKey = sClassToPriorityStringMap.get(c);
-            if (priorityKey == null) {
-                Priority priority = c.getAnnotation(Priority.class);
-                if (priority == null)
-                    priorityKey = Integer.MAX_VALUE;
-                else
-                    priorityKey = priority.value();
-                sClassToPriorityStringMap.put(c, priorityKey);
-            }
-            m.put(String.format("%010d-%s@%s", priorityKey, c.getName(), Integer.toHexString(System.identityHashCode(val))), val);
-        }
+		for (T val : pIterable) {
+			Class<?> c = val.getClass();
+			Integer priorityKey = sClassToPriorityStringMap.get(c);
+			if (priorityKey == null) {
+				Priority priority = c.getAnnotation(Priority.class);
+				if (priority == null)
+					priorityKey = Integer.MAX_VALUE;
+				else
+					priorityKey = priority.value();
+				sClassToPriorityStringMap.put(c, priorityKey);
+			}
+			m.put(String.format("%010d-%s@%s", priorityKey, c.getName(),
+				Integer.toHexString(System.identityHashCode(val))), val);
+		}
 
-        return m.values();
-    }
+		return m.values();
+	}
 }

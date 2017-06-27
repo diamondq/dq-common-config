@@ -23,8 +23,25 @@ import javax.enterprise.inject.Produces;
 import javax.inject.Named;
 import javax.inject.Singleton;
 
+/**
+ * This is a CDI based Producer that will generate a Config given some injectables
+ */
 public class ConfigProducer {
 
+	/**
+	 * Retrieves a Config based on a variety of injectables
+	 * 
+	 * @param pEnvironment the named environment
+	 * @param pProfiles the named profiles
+	 * @param pAppId the named application id
+	 * @param pFactoryFactory the factory factory
+	 * @param pDefaultLocale the default locale
+	 * @param pParsers the set of parsers
+	 * @param pClassBuilders the set of class builders
+	 * @param pBootstrapSources the set of sources
+	 * @param pNodeResolvers the set of resolvers
+	 * @return the config
+	 */
 	@Produces
 	@Singleton
 	public Config getConfig(@Named("application.environment") String pEnvironment,
@@ -58,29 +75,63 @@ public class ConfigProducer {
 		return impl.bootstrapConfig(null);
 	}
 
+	/**
+	 * Returns the named environment based on the system property "application.environment"
+	 * 
+	 * @return the environment
+	 */
 	@Produces
 	@Named("application.environment")
 	public String getEnvironment() {
-		return System.getProperty("application.environment", "");
+		String prop = System.getProperty("application.environment", null);
+		if (prop == null)
+			return "";
+		return prop;
 	}
 
+	/**
+	 * Returns the name profiles based on the system property "application.profiles"
+	 * 
+	 * @return the profiles
+	 */
 	@Produces
 	@Named("application.profiles")
 	public String getProfiles() {
-		return System.getProperty("application.profiles", "");
+		String prop = System.getProperty("application.profiles", null);
+		if (prop == null)
+			return "";
+		return prop;
 	}
 
+	/**
+	 * Returns the application name based on the system property "application.name"
+	 * 
+	 * @return the name
+	 */
 	@Produces
 	@Named("application.name")
 	public String getAppId() {
-		return System.getProperty("application.name", "");
+		String prop = System.getProperty("application.name", null);
+		if (prop == null)
+			return "";
+		return prop;
 	}
 
+	/**
+	 * Returns the locale default
+	 * 
+	 * @return the locale
+	 */
 	@Produces
 	public Locale getDefaultLocale() {
 		return Locale.getDefault();
 	}
 
+	/**
+	 * Returns the factory factory
+	 * 
+	 * @return the factory factory
+	 */
 	@Produces
 	public ConfigSourceFactoryFactory getFactoryFactory() {
 		return new CoreFactoryFactory();

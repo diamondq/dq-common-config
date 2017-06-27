@@ -17,9 +17,15 @@ import java.util.Properties;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * A ConfigSource based on the Environment Variables
+ */
 public class EnvironmentalVariablesConfigSource implements ConfigSource {
 	private static final Logger sLogger = LoggerFactory.getLogger(EnvironmentalVariablesConfigSource.class);
 
+	/**
+	 * Default constructor
+	 */
 	public EnvironmentalVariablesConfigSource() {
 	}
 
@@ -79,6 +85,8 @@ public class EnvironmentalVariablesConfigSource implements ConfigSource {
 
 			for (Map.Entry<String, String> pair : env.entrySet()) {
 				String key = pair.getKey();
+				if (key == null)
+					continue;
 				if ((prefix == null) || (key.startsWith(prefix)))
 					p.put(key, pair.getValue());
 			}

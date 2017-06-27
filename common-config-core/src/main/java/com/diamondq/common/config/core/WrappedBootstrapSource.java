@@ -5,10 +5,18 @@ import com.diamondq.common.config.spi.ConfigSource;
 
 import java.util.List;
 
+/**
+ * A factory that always just returns the same previously created source
+ */
 public class WrappedBootstrapSource implements BootstrapConfigSourceFactory {
 
 	private final ConfigSource mSource;
 
+	/**
+	 * Default constructor
+	 * 
+	 * @param pSource the source to return
+	 */
 	public WrappedBootstrapSource(ConfigSource pSource) {
 		mSource = pSource;
 	}

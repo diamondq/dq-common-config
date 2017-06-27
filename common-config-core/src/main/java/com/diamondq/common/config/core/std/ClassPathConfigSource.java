@@ -12,10 +12,16 @@ import java.util.Enumeration;
 import java.util.List;
 import java.util.Map;
 
-import javax.annotation.Nonnull;
-
+/**
+ * A ConfigSource based on reading from a ClassPath entry
+ */
 public class ClassPathConfigSource extends AbstractPathDrivenConfigSource {
 
+	/**
+	 * Default constructor
+	 * 
+	 * @param pPath the path
+	 */
 	public ClassPathConfigSource(String pPath) {
 		super(Paths.get(pPath));
 	}
@@ -38,12 +44,12 @@ public class ClassPathConfigSource extends AbstractPathDrivenConfigSource {
 
 	@Override
 	protected void processPath(Path pPath, List<ConfigDataTuple> pResults) throws IOException {
-		@SuppressWarnings("nullness")
-		@Nonnull
 		ClassLoader classLoader = ClassPathConfigSource.class.getClassLoader();
 		Enumeration<URL> urls = classLoader.getResources(pPath.toString());
 		for (; urls.hasMoreElements();) {
 			URL url = urls.nextElement();
+			if (url == null)
+				continue;
 			InputStream stream = url.openStream();
 			pResults.add(ConfigDataTuple.builder().name(url.toExternalForm()).source(this).stream(stream).build());
 		}

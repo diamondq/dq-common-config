@@ -12,12 +12,6 @@
 	<name>DiamondQ Common: Config: Core</name>
 	<dependencies>
 		<dependency>
-			<groupId>com.google.code.findbugs</groupId>
-			<artifactId>jsr305</artifactId>
-			<scope>compile</scope>
-			<optional>true</optional>
-		</dependency>
-		<dependency>
 			<groupId>com.diamondq.common.java.config</groupId>
 			<artifactId>common-config-api</artifactId>
 		</dependency>
@@ -31,9 +25,12 @@
 			<scope>provided</scope>
 		</dependency>
 		<!-- CDI Dependencies -->
+		<!-- javax.annotation can't be optional because it's not included when 
+			CDI is later included, but it's Priority definitions are necessary -->
 		<dependency>
 			<groupId>javax.annotation</groupId>
 			<artifactId>javax.annotation-api</artifactId>
+			<scope>compile</scope>
 		</dependency>
 		<dependency>
 			<groupId>javax.enterprise</groupId>
@@ -44,8 +41,7 @@
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
-			<scope>compile</scope>
-			<optional>true</optional>
+			<scope>test</scope>
 		</dependency>
 	</dependencies>
 </project>

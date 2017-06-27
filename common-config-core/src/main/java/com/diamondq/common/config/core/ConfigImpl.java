@@ -22,9 +22,14 @@ import java.util.SortedSet;
 import java.util.TreeSet;
 import java.util.concurrent.ConcurrentHashMap;
 
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * This is the default implementation of Config
+ */
 public class ConfigImpl implements Config {
 
 	private static final Logger								sLogger					=
@@ -43,10 +48,24 @@ public class ConfigImpl implements Config {
 																						}
 																					};
 
+	/**
+	 * Standard constructor
+	 * 
+	 * @param pConfigNode the config node
+	 * @param pClassBuilders the list of class builders
+	 */
 	public ConfigImpl(ConfigNode pConfigNode, List<ConfigClassBuilder> pClassBuilders) {
 
 		mConfigNode = pConfigNode;
 		mClassBuilders = pClassBuilders;
+	}
+
+	/**
+	 * @see com.diamondq.common.config.Config#getCurrentConfigInterfaceVersion()
+	 */
+	@Override
+	public int getCurrentConfigInterfaceVersion() {
+		return Config.CURRENT_INTERFACE_VERSION;
 	}
 
 	/**
@@ -61,7 +80,7 @@ public class ConfigImpl implements Config {
 	 * @see com.diamondq.common.config.Config#bind(java.lang.String, java.lang.Class)
 	 */
 	@Override
-	public <T> T bind(String pPrefix, Class<T> pClass) {
+	public <@NonNull T> @Nullable T bind(String pPrefix, Class<T> pClass) {
 		return bind(pPrefix, pClass, null);
 	}
 
@@ -69,7 +88,7 @@ public class ConfigImpl implements Config {
 	 * @see com.diamondq.common.config.Config#bind(java.lang.String, java.lang.Class, java.util.Map)
 	 */
 	@Override
-	public <T> T bind(String pPrefix, Class<T> pClass, Map<String, Object> pContext) {
+	public <@NonNull T> @Nullable T bind(String pPrefix, Class<T> pClass, @Nullable Map<String, Object> pContext) {
 
 		sLogger.trace("Config binding {} to {}...", pPrefix, pClass);
 
@@ -82,7 +101,8 @@ public class ConfigImpl implements Config {
 	}
 
 	@SuppressWarnings("unchecked")
-	private <T> T internalBind(ConfigNode pNode, Class<T> pClass, Map<String, Object> pContext) {
+	private <@NonNull T> @Nullable T internalBind(ConfigNode pNode, Class<T> pClass,
+		@Nullable Map<String, Object> pContext) {
 
 		DebugUtils.trace("", pNode);
 
@@ -120,11 +140,13 @@ public class ConfigImpl implements Config {
 		if (isPrimitive(buildClass) == true)
 			return resolveValue(pNode, pClass);
 
+		@Nullable
 		T result = internalBind2(pNode, buildClass, finalClass, pContext);
 		return result;
 	}
 
-	private <T> T internalBind2(ConfigNode pNode, Class<?> pClass, Class<T> pFinalClass, Map<String, Object> pContext) {
+	private <@NonNull T> @Nullable T internalBind2(ConfigNode pNode, Class<?> pClass, Class<T> pFinalClass,
+		@Nullable Map<String, Object> pContext) {
 		try {
 
 			NodeType type = pNode.getType();
@@ -141,6 +163,9 @@ public class ConfigImpl implements Config {
 			Pair<Object, BuilderInfo<Object, T>> builderPair = classInfo.builder(this);
 			Object builder = builderPair._1;
 			BuilderInfo<Object, T> builderInfo = builderPair._2;
+
+			if ((builder == null) || (builderInfo == null))
+				throw new IllegalArgumentException();
 
 			List<ParameterInfo<Object>> parameters = builderInfo.getParameters();
 			Map<String, ConfigNode> children = pNode.getChildren();
@@ -159,16 +184,27 @@ public class ConfigImpl implements Config {
 					Class<?> mapValueClass = p.getClassType2();
 					if (mapValueClass == null) {
 						for (String k : sortedKeys) {
-							Object result = isPrimitive(typeClass) ? resolveValue(children.get(k), typeClass)
-								: internalBind(children.get(k), typeClass, pContext);
+							@org.eclipse.jdt.annotation.Nullable
+							ConfigNode childNode = children.get(k);
+							Object result;
+							if (childNode != null)
+								result = isPrimitive(typeClass) ? resolveValue(childNode, typeClass)
+									: internalBind(childNode, typeClass, pContext);
+							else
+								result = null;
 							sLogger.trace("P: Name: {} Type: {} = {}", origName, typeClass, result);
 							p.set1(builder, result);
 						}
 					}
 					else {
 						for (String k : sortedKeys) {
-							Object result = isPrimitive(mapValueClass) ? resolveValue(children.get(k), mapValueClass)
-								: internalBind(children.get(k), mapValueClass, pContext);
+							ConfigNode childNode = children.get(k);
+							Object result;
+							if (childNode != null)
+								result = isPrimitive(mapValueClass) ? resolveValue(childNode, mapValueClass)
+									: internalBind(childNode, mapValueClass, pContext);
+							else
+								result = null;
 							sLogger.trace("P: Name: {} Type: {} = {}", k, mapValueClass, result);
 							p.set2(builder, k, result);
 						}
@@ -180,11 +216,17 @@ public class ConfigImpl implements Config {
 					for (String name : names) {
 						if (children.containsKey(name)) {
 
+							@org.eclipse.jdt.annotation.Nullable
+							ConfigNode childNode = children.get(name);
 							switch (p.getType()) {
 							case NORMAL: {
 								Class<?> typeClass = p.getClassType1();
-								Object result = isPrimitive(typeClass) ? resolveValue(children.get(name), typeClass)
-									: internalBind(children.get(name), typeClass, pContext);
+								Object result;
+								if (childNode != null)
+									result = isPrimitive(typeClass) ? resolveValue(childNode, typeClass)
+										: internalBind(childNode, typeClass, pContext);
+								else
+									result = null;
 								sLogger.trace("P: Name: {} -> {} Type: {} = {}", origName, name, typeClass, result);
 								p.set1(builder, result);
 								match = true;
@@ -193,7 +235,9 @@ public class ConfigImpl implements Config {
 							case LIST: {
 								Class<?> valueClass = p.getClassType1();
 								boolean isPrimitive = isPrimitive(valueClass);
-								ConfigNode listChildren = children.get(name);
+								ConfigNode listChildren = childNode;
+								if (listChildren == null)
+									throw new IllegalArgumentException();
 								if ((listChildren.getType().getFactory().isPresent() == true)
 									&& (listChildren.getType().getFactory().get().getValue().isPresent() == true)) {
 
@@ -201,8 +245,9 @@ public class ConfigImpl implements Config {
 
 									@SuppressWarnings("rawtypes")
 									List initialList = internalBind(listChildren, List.class, pContext);
-									for (Object o : initialList)
-										p.set1(builder, o);
+									if (initialList != null)
+										for (Object o : initialList)
+											p.set1(builder, o);
 								}
 								for (Map.Entry<String, ConfigNode> childPair : listChildren.getChildren().entrySet()) {
 									Object listResult = isPrimitive ? resolveValue(childPair.getValue(), valueClass)
@@ -217,12 +262,21 @@ public class ConfigImpl implements Config {
 							case MAP: {
 								Class<?> keyClass = p.getClassType1();
 								Class<?> mapValueClass = p.getClassType2();
-								ConfigNode mapChildren = children.get(name);
-								boolean isPrimitive = isPrimitive(mapValueClass);
+								ConfigNode mapChildren = childNode;
+								if (mapChildren == null)
+									throw new IllegalArgumentException();
+								boolean isPrimitive = (mapValueClass == null ? false : isPrimitive(mapValueClass));
 								for (Map.Entry<String, ConfigNode> childPair : mapChildren.getChildren().entrySet()) {
-									Object key = convertType(childPair.getKey(), keyClass);
-									Object value = isPrimitive ? resolveValue(childPair.getValue(), mapValueClass)
-										: internalBind(childPair.getValue(), mapValueClass, pContext);
+									String childPairKey = childPair.getKey();
+									if (childPairKey == null)
+										throw new IllegalArgumentException();
+									Object key = convertType(childPairKey, keyClass);
+									Object value;
+									if (mapValueClass == null)
+										value = null;
+									else
+										value = isPrimitive ? resolveValue(childPair.getValue(), mapValueClass)
+											: internalBind(childPair.getValue(), mapValueClass, pContext);
 									p.set2(builder, key, value);
 								}
 								match = true;
@@ -242,7 +296,10 @@ public class ConfigImpl implements Config {
 							switch (p.getType()) {
 							case NORMAL: {
 								Class<?> typeClass = p.getClassType1();
-								Object result = convertType(pContext.get(name), typeClass);
+								Object value = pContext.get(name);
+								if (value == null)
+									throw new IllegalArgumentException();
+								Object result = convertType(value, typeClass);
 								sLogger.trace("P: Name: {} -> {} Type: {} = {}", origName, name, typeClass, result);
 								p.set1(builder, result);
 								match = true;
@@ -271,7 +328,7 @@ public class ConfigImpl implements Config {
 		}
 	}
 
-	private <T> T resolveValue(ConfigNode pNode, Class<T> pType) {
+	private <@NonNull T> @Nullable T resolveValue(ConfigNode pNode, Class<T> pType) {
 
 		NodeType type = pNode.getType();
 
@@ -335,7 +392,7 @@ public class ConfigImpl implements Config {
 			}
 		}
 		else if ((type.getType().isPresent() == true) && (type.getType().get().getValue().isPresent() == true)) {
-			Class<?> typeClass = resolveType(type.getType().get().getValue().get());
+			Class<@NonNull ?> typeClass = resolveType(type.getType().get().getValue().get());
 			nodeValue = convertType(str, typeClass);
 		}
 		else if (type.isExplicitType() == false)
@@ -345,10 +402,12 @@ public class ConfigImpl implements Config {
 
 		/* Now convert the node value into the requested value */
 
+		if (nodeValue == null)
+			return null;
 		return convertType(nodeValue, pType);
 	}
 
-	private Class<?> resolveType(String pType) {
+	private Class<@NonNull ?> resolveType(String pType) {
 		try {
 			return Class.forName(pType);
 		}
@@ -358,7 +417,7 @@ public class ConfigImpl implements Config {
 	}
 
 	@SuppressWarnings("unchecked")
-	private <T> T convertType(Object pValue, Class<T> pTypeClass) {
+	private <@NonNull T> @NonNull T convertType(Object pValue, Class<T> pTypeClass) {
 		if (pTypeClass.isInstance(pValue))
 			return (T) pValue;
 		String str = (pValue instanceof String ? (String) pValue : pValue.toString());
@@ -379,7 +438,7 @@ public class ConfigImpl implements Config {
 		throw new IllegalArgumentException();
 	}
 
-	private ConfigNode findNode(String[] pPrefixKeys) {
+	private @Nullable ConfigNode findNode(String[] pPrefixKeys) {
 		ConfigNode n = mConfigNode;
 		for (String k : pPrefixKeys) {
 			n = n.getChildren().get(k);
@@ -434,8 +493,8 @@ public class ConfigImpl implements Config {
 	 * @param pContext the context
 	 * @return the class info
 	 */
-	private <T> ClassInfo<Object, T> lookupClassInfo(Class<?> pClass, Class<T> pFinalClass, NodeType pType,
-		String pClassNameKey, Map<String, Object> pContext) {
+	private <@NonNull T> ClassInfo<Object, T> lookupClassInfo(Class<?> pClass, Class<T> pFinalClass, NodeType pType,
+		String pClassNameKey, @Nullable Map<String, Object> pContext) {
 
 		ClassInfo<Object, T> result = null;
 		for (ConfigClassBuilder ccb : mClassBuilders) {

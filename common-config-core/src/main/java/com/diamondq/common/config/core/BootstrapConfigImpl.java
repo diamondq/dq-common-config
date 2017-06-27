@@ -22,9 +22,13 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import org.checkerframework.checker.nullness.qual.Nullable;
 import org.slf4j.ext.XLogger;
 import org.slf4j.ext.XLoggerFactory;
 
+/**
+ * Main implementation of the Bootstrap interface
+ */
 public class BootstrapConfigImpl implements Bootstrap {
 
 	private static final XLogger		sLogger	= XLoggerFactory.getXLogger(BootstrapConfigImpl.class);
@@ -33,9 +37,22 @@ public class BootstrapConfigImpl implements Bootstrap {
 
 	private volatile Locale				mLocale;
 
+	/**
+	 * Default constructor
+	 * 
+	 * @param pSetupConfig the bootstrap config
+	 */
 	public BootstrapConfigImpl(BootstrapSetupConfig pSetupConfig) {
 		mSetupConfig = pSetupConfig;
 		mLocale = pSetupConfig.getDefaultLocale().orElse(Locale.getDefault());
+	}
+
+	/**
+	 * @see com.diamondq.common.config.Bootstrap#getCurrentBootstrapInterfaceVersion()
+	 */
+	@Override
+	public int getCurrentBootstrapInterfaceVersion() {
+		return Bootstrap.CURRENT_INTERFACE_VERSION;
 	}
 
 	@Override
@@ -47,7 +64,7 @@ public class BootstrapConfigImpl implements Bootstrap {
 	 * @see com.diamondq.common.config.Bootstrap#bootstrapConfig(java.util.Set)
 	 */
 	@Override
-	public Config bootstrapConfig(Set<String> pFilterTo) {
+	public Config bootstrapConfig(@Nullable Set<String> pFilterTo) {
 		sLogger.entry();
 		try {
 			sLogger.debug("Starting bootstrap config");
@@ -65,6 +82,8 @@ public class BootstrapConfigImpl implements Bootstrap {
 			List<ConfigSource> sortedSources = mSetupConfig.getBootstrapSources().stream()
 				.sorted((a, b) -> a.getBootstrapPriority() - b.getBootstrapPriority())
 				.map(t -> t.create(environment, profiles)).collect(Collectors.toList());
+			if (sortedSources == null)
+				throw new IllegalArgumentException();
 
 			sLogger.trace("Bootstrap Sources: {}", sortedSources);
 
@@ -85,6 +104,9 @@ public class BootstrapConfigImpl implements Bootstrap {
 
 			sLogger.debug("Bootstrap Config: {}", bootstrapConfig);
 
+			if (bootstrapConfig == null)
+				throw new IllegalArgumentException();
+
 			/*
 			 * Next, let's use this information to load the main set of sources
 			 */
@@ -104,7 +126,7 @@ public class BootstrapConfigImpl implements Bootstrap {
 
 			ConfigImpl finalConfigImpl = new ConfigImpl(finalProperties, bootstrapConfig.getClassBuilders());
 			finalConfigImpl.setThreadLocale(mLocale);
-			return sLogger.exit(finalConfigImpl);
+			return LoggerUtils.nonNullExit(sLogger, finalConfigImpl);
 		}
 		catch (IOException ex) {
 			throw new RuntimeException(ex);
@@ -159,8 +181,8 @@ public class BootstrapConfigImpl implements Bootstrap {
 
 					if (parser == null) {
 						String format;
-						if (mediaType == null)
-							format = I18N.getFormat(mLocale, "bootstrap.noparser.both", mediaType, fileName);
+						if (mediaType.isPresent() == true)
+							format = I18N.getFormat(mLocale, "bootstrap.noparser.both", mediaType.get(), fileName);
 						else
 							format = I18N.getFormat(mLocale, "bootstrap.noparser.name", fileName);
 						throw new IllegalArgumentException(format);
@@ -228,10 +250,10 @@ public class BootstrapConfigImpl implements Bootstrap {
 			}
 		}
 
-		return sLogger.exit(rootNode);
+		return LoggerUtils.nonNullExit(sLogger, rootNode);
 	}
 
-	private ConfigNode recursiveMerge(ConfigNode pTarget, ConfigNode pSource) {
+	private ConfigNode recursiveMerge(@Nullable ConfigNode pTarget, ConfigNode pSource) {
 
 		/* Take each entry, and merge it into the provided node */
 
@@ -318,6 +340,8 @@ public class BootstrapConfigImpl implements Bootstrap {
 
 			for (Map.Entry<String, ConfigNode> mergePair : mergeChildren.entrySet()) {
 				String mergeChildKey = mergePair.getKey();
+				if (mergeChildKey == null)
+					continue;
 				ConfigNode targetChildNode = childChildren.remove(mergeChildKey);
 				ConfigNode mergeChildNode = mergePair.getValue();
 				if (targetChildNode == null)

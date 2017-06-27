@@ -14,16 +14,34 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.atomic.AtomicInteger;
 
+/**
+ * Abstract base for different format parsers
+ */
 public abstract class AbstractStdConfigParser implements ConfigParser {
 
+	/**
+	 * The main meta key for any given object. It may be used as a prefix when attached to a Map.
+	 */
 	public static final String							sMETA_KEY				= "_dqconfig_meta_";
 
+	/**
+	 * The key for meta information about the list itself.
+	 */
 	public static final String							sLIST_KEY				= "_dqconfig_list_";
 
+	/**
+	 * The constant representing the factory to use
+	 */
 	public static final String							sTYPE_FACTORY_KEY		= "factory";
 
+	/**
+	 * The constant representing the argument to the factory to provide
+	 */
 	public static final String							sTYPE_FACTORY_ARG_KEY	= "arg";
 
+	/**
+	 * The constant representing the type to use
+	 */
 	public static final String							sTYPE_TYPE_KEY			= "type";
 
 	private static final ConcurrentMap<String, String>	sPrefixMap				= new ConcurrentHashMap<>();
@@ -53,6 +71,8 @@ public abstract class AbstractStdConfigParser implements ConfigParser {
 				if ((metaValueObj instanceof Map) || (metaValueObj instanceof List))
 					throw new IllegalStateException();
 				String metaKey = metaPair.getKey();
+				if (metaKey == null)
+					continue;
 				if (sTYPE_FACTORY_KEY.equals(metaKey))
 					result.factory = Optional
 						.of(ConfigProp.builder().configSource(pSourceName).value(metaValueObj.toString()).build());
@@ -90,6 +110,8 @@ public abstract class AbstractStdConfigParser implements ConfigParser {
 			for (Map.Entry<String, Object> pair : map.entrySet()) {
 
 				String key = pair.getKey();
+				if (key == null)
+					continue;
 
 				/* Check if it's a meta indicator */
 
@@ -130,16 +152,20 @@ public abstract class AbstractStdConfigParser implements ConfigParser {
 
 				for (Map.Entry<String, MetaInfo> pair : pendingMeta.entrySet()) {
 
-					ConfigNode.Builder emptyBuilder = ConfigNode.builder().name(pair.getKey());
+					String key = pair.getKey();
+					if (key == null)
+						continue;
+					ConfigNode.Builder emptyBuilder = ConfigNode.builder().name(key);
 					emptyBuilder = emptyBuilder.type(NodeType.builder().isExplicitType(false)
 						.type(ConfigProp.builder().configSource(pSourceName).value(String.class.getName()).build())
 						.build());
 
-					emptyBuilder = emptyBuilder.value(ConfigProp.builder().configSource(pSourceName).value(o.toString()).build());
+					emptyBuilder =
+						emptyBuilder.value(ConfigProp.builder().configSource(pSourceName).value(o.toString()).build());
 					ConfigNode emptyNode = emptyBuilder.build();
 					MetaInfo emptyMeta = pair.getValue();
 					emptyNode = mergeMeta(emptyMeta, emptyNode);
-					builder.putChildren(pair.getKey(), emptyNode);
+					builder.putChildren(key, emptyNode);
 				}
 			}
 			builder = builder.type(NodeType.builder().isExplicitType(parentMeta.type.isPresent()).type(parentMeta.type)
@@ -174,7 +200,8 @@ public abstract class AbstractStdConfigParser implements ConfigParser {
 										throw new IllegalStateException();
 
 									String metaKey = metaPair.getKey();
-
+									if (metaKey == null)
+										continue;
 									if (sTYPE_FACTORY_KEY.equals(metaKey))
 										factory = Optional.of(ConfigProp.builder().configSource(pSourceName)
 											.value(metaValueObj.toString()).build());
@@ -229,7 +256,7 @@ public abstract class AbstractStdConfigParser implements ConfigParser {
 		if (pMeta.meta.isEmpty() == false) {
 			SortedMap<String, ConfigProp> existingMeta = pChildNode.getMetaData();
 			Map<String, ConfigProp> newMeta;
-			if (existingMeta == null)
+			if (existingMeta.isEmpty() == true)
 				newMeta = pMeta.meta;
 			else {
 				newMeta = new HashMap<>();

@@ -1,5 +1,6 @@
 package com.diamondq.common.config.core.std;
 
+import com.diamondq.common.config.core.LoggerUtils;
 import com.diamondq.common.config.spi.ConfigDataTuple;
 import com.diamondq.common.config.spi.ConfigProp;
 import com.diamondq.common.config.spi.ConfigSource;
@@ -16,11 +17,19 @@ import java.util.Properties;
 import org.slf4j.ext.XLogger;
 import org.slf4j.ext.XLoggerFactory;
 
+/**
+ * A ConfigSource based on a Map of key/values. Usually used for testing purposes.
+ */
 public class InMemoryConfigSource implements ConfigSource {
 	private static final XLogger		sLogger	= XLoggerFactory.getXLogger(InMemoryConfigSource.class);
 
 	private final Map<String, String>	mArgs;
 
+	/**
+	 * Default constructor
+	 * 
+	 * @param pArgs the key/values
+	 */
 	public InMemoryConfigSource(Map<String, String> pArgs) {
 		mArgs = pArgs;
 	}
@@ -53,7 +62,7 @@ public class InMemoryConfigSource implements ConfigSource {
 
 		Properties p = new Properties();
 		p.putAll(mArgs);
-		
+
 		/* Now write the properties out to a stream */
 
 		ByteArrayOutputStream baos = new ByteArrayOutputStream();
@@ -73,7 +82,7 @@ public class InMemoryConfigSource implements ConfigSource {
 		List<ConfigDataTuple> results = new ArrayList<>();
 		ConfigDataTuple t = ConfigDataTuple.builder().source(this).name("system.properties").stream(stream).build();
 		results.add(t);
-		return sLogger.exit(results);
+		return LoggerUtils.nonNullExit(sLogger, results);
 	}
 
 	/**

@@ -2,6 +2,7 @@ package com.diamondq.common.config.core.std;
 
 import com.diamondq.common.config.Config;
 import com.diamondq.common.config.ConfigKey;
+import com.diamondq.common.config.core.LoggerUtils;
 import com.diamondq.common.config.spi.ConfigParser;
 import com.diamondq.common.config.spi.ConfigSource;
 import com.diamondq.common.config.spi.ConfigSourceFactoryFactory;
@@ -15,28 +16,55 @@ import java.util.Set;
 import org.slf4j.ext.XLogger;
 import org.slf4j.ext.XLoggerFactory;
 
+/**
+ * Builder for ConfigSource Lists
+ */
 public class StdConfigListBuilder {
 
 	private static final XLogger sLogger = XLoggerFactory.getXLogger(StdConfigListBuilder.class);
 
+	/**
+	 * The ListBuilder
+	 */
 	public static class ListBuilder {
 
 		private List<ConfigSource> mList;
 
+		/**
+		 * Default constructor
+		 * 
+		 * @param pList
+		 */
 		public ListBuilder(List<ConfigSource> pList) {
 			mList = pList;
 		}
 
+		/**
+		 * Adds a new value
+		 * 
+		 * @param pValue
+		 */
 		@ConfigKey("*")
 		public void set(ConfigSource pValue) {
 			mList.add(pValue);
 		}
 
+		/**
+		 * Builds the list
+		 * 
+		 * @return the list
+		 */
 		public List<?> build() {
 			return Collections.unmodifiableList(mList);
 		}
 	}
 
+	/**
+	 * Generates a builder
+	 * 
+	 * @param pConfig the Config
+	 * @return the ListBuilder
+	 */
 	public static ListBuilder builder(Config pConfig) {
 		sLogger.entry();
 
@@ -44,6 +72,8 @@ public class StdConfigListBuilder {
 
 		@SuppressWarnings("unchecked")
 		List<ConfigParser> parsers = pConfig.bind("bootstrap.parsers", List.class);
+		if (parsers == null)
+			throw new IllegalArgumentException();
 
 		String appName = pConfig.bind("application.name", String.class);
 
@@ -89,6 +119,6 @@ public class StdConfigListBuilder {
 
 		sources.add(factory.getSystemPropertiesConfigSourceFactory().create(null, null));
 
-		return sLogger.exit(new ListBuilder(sources));
+		return LoggerUtils.nonNullExit(sLogger, new ListBuilder(sources));
 	}
 }

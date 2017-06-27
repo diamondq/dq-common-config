@@ -16,6 +16,9 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * System Properties based ConfigSource
+ */
 public class SystemPropertiesConfigSource implements ConfigSource {
 	private static final Logger sLogger = LoggerFactory.getLogger(SystemPropertiesConfigSource.class);
 

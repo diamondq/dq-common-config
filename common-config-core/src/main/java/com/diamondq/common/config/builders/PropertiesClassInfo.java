@@ -15,8 +15,11 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import javax.annotation.Nonnull;
-
+/**
+ * Class information for the Properties builder
+ * 
+ * @param <O>
+ */
 public class PropertiesClassInfo<O> implements ClassInfo<Object, O> {
 
 	private final Class<O>								mFinalClass;
@@ -41,6 +44,11 @@ public class PropertiesClassInfo<O> implements ClassInfo<Object, O> {
 		}
 	}
 
+	/**
+	 * Default constructor
+	 * 
+	 * @param pFinalClass
+	 */
 	public PropertiesClassInfo(Class<O> pFinalClass) {
 		mFinalClass = pFinalClass;
 	}
@@ -61,7 +69,6 @@ public class PropertiesClassInfo<O> implements ClassInfo<Object, O> {
 		throws IllegalAccessException, IllegalArgumentException, InvocationTargetException, InstantiationException {
 
 		@SuppressWarnings("nullness")
-		@Nonnull
 		Object builder = new PropertiesFactory();
 
 		BuilderInfo<Object, O> builderInfo = new StdBuilderInfo<>(sBuildMethod, sParameters);

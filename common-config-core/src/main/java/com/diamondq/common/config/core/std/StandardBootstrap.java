@@ -21,12 +21,23 @@ import java.util.Locale;
 import java.util.ServiceLoader;
 import java.util.Set;
 
+/**
+ * The standard bootstrap algorithm. Used in most cases
+ */
 public class StandardBootstrap {
 
+	/**
+	 * Default constructor
+	 */
 	public StandardBootstrap() {
 
 	}
 
+	/**
+	 * Generate the bootstrap config
+	 * 
+	 * @return the config
+	 */
 	public Config bootstrap() {
 		BootstrapSetupConfigHolder holder = new BootstrapSetupConfigHolder();
 		String[] profiles = getProfiles().split(",");
@@ -58,19 +69,19 @@ public class StandardBootstrap {
 		return impl.bootstrapConfig(filterSet);
 	}
 
-	private Collection<BootstrapConfigSourceFactory> getBootstrapSources() {
+	protected Collection<BootstrapConfigSourceFactory> getBootstrapSources() {
 		return Collections.emptyList();
 	}
 
-	private Collection<ConfigNodeResolver> getNodeResolvers() {
+	protected Collection<ConfigNodeResolver> getNodeResolvers() {
 		return StandardSetup.getStandardNodeResolvers();
 	}
 
-	private Collection<ConfigClassBuilder> getClassBuilders() {
+	protected Collection<ConfigClassBuilder> getClassBuilders() {
 		return StandardSetup.getStandardClassBuilders();
 	}
 
-	private Collection<ConfigParser> getParsers() {
+	protected Collection<ConfigParser> getParsers() {
 		Collection<ConfigParser> results = new ArrayList<>(StandardSetup.getStandardParsers());
 		ServiceLoader<ConfigParser> loader = ServiceLoader.load(ConfigParser.class);
 		for (ConfigParser cp : loader)
@@ -78,23 +89,32 @@ public class StandardBootstrap {
 		return results;
 	}
 
-	public String getEnvironment() {
-		return System.getProperty("application.environment", "");
+	protected String getEnvironment() {
+		String prop = System.getProperty("application.environment", null);
+		if (prop == null)
+			return "";
+		return prop;
 	}
 
-	public String getProfiles() {
-		return System.getProperty("application.profiles", "");
+	protected String getProfiles() {
+		String prop = System.getProperty("application.profiles", null);
+		if (prop == null)
+			return "";
+		return prop;
 	}
 
-	public String getAppId() {
-		return System.getProperty("application.name", "");
+	protected String getAppId() {
+		String prop = System.getProperty("application.name", null);
+		if (prop == null)
+			return "";
+		return prop;
 	}
 
-	public Locale getDefaultLocale() {
+	protected Locale getDefaultLocale() {
 		return Locale.getDefault();
 	}
 
-	public ConfigSourceFactoryFactory getFactoryFactory() {
+	protected ConfigSourceFactoryFactory getFactoryFactory() {
 		return new CoreFactoryFactory();
 	}
 }

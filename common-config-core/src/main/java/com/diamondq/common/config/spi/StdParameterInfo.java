@@ -3,6 +3,8 @@ package com.diamondq.common.config.spi;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
+import org.checkerframework.checker.nullness.qual.Nullable;
+
 public class StdParameterInfo<T> implements ParameterInfo<T> {
 
     private final String        mName;
@@ -11,11 +13,12 @@ public class StdParameterInfo<T> implements ParameterInfo<T> {
 
     private final Class<?>      mClassType1;
 
+    @Nullable
     private final Class<?>      mClassType2;
 
     private final Method        mMethod;
 
-    public StdParameterInfo(String pName, ParameterType pType, Class<?> pClassType1, Class<?> pClassType2, Method pMethod) {
+    public StdParameterInfo(String pName, ParameterType pType, Class<?> pClassType1, @Nullable Class<?> pClassType2, Method pMethod) {
         mName = pName;
         mType = pType;
         mClassType1 = pClassType1;
@@ -51,7 +54,7 @@ public class StdParameterInfo<T> implements ParameterInfo<T> {
      * @see com.diamondq.common.config.spi.ParameterInfo#getClassType2()
      */
     @Override
-    public Class<?> getClassType2() {
+    public @Nullable Class<?> getClassType2() {
         return mClassType2;
     }
 

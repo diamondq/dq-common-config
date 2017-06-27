@@ -7,6 +7,9 @@ import com.diamondq.common.config.spi.ConfigSourceFactoryFactory;
 import javax.annotation.Priority;
 import javax.enterprise.inject.Alternative;
 
+/**
+ * A factory for the ConfigSourceFactory.
+ */
 @Alternative
 @Priority(10)
 public class CoreFactoryFactory implements ConfigSourceFactoryFactory {
@@ -21,6 +24,9 @@ public class CoreFactoryFactory implements ConfigSourceFactoryFactory {
 
 	private final ConfigSourceFactory	mInMemFactory;
 
+	/**
+	 * Default constructor
+	 */
 	public CoreFactoryFactory() {
 		mClassPathFactory = new CommonConfigSourceFactory(ConfigSourceType.CLASSPATH);
 		mEnvFactory = new CommonConfigSourceFactory(ConfigSourceType.ENV);

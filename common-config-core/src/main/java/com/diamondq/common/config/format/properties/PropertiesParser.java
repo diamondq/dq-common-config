@@ -24,6 +24,8 @@ import java.util.Set;
 
 import javax.inject.Singleton;
 
+import org.checkerframework.checker.nullness.qual.Nullable;
+
 /**
  * The properties file format allows meta data and type data to be added via sibling keys.
  * 
@@ -48,6 +50,9 @@ public class PropertiesParser implements ConfigParser {
 		sFileExtensions = Collections.unmodifiableSet(r);
 	}
 
+	/**
+	 * Default constructor
+	 */
 	public PropertiesParser() {
 
 	}
@@ -68,18 +73,19 @@ public class PropertiesParser implements ConfigParser {
 		return Collections.emptyMap();
 	}
 
-	public static class MutableConfigNode {
+	static class MutableConfigNode {
 		public String							name;
 
 		public NodeType							type;
 
-		public ConfigProp						value;
+		public @Nullable ConfigProp				value;
 
 		public Map<String, ConfigProp>			metaData;
 
 		public Map<String, MutableConfigNode>	children;
 
-		public MutableConfigNode() {
+		MutableConfigNode() {
+			name = "";
 			metaData = new HashMap<>();
 			children = new HashMap<>();
 			type = NodeType.builder().isExplicitType(false).build();
@@ -101,14 +107,23 @@ public class PropertiesParser implements ConfigParser {
 		root.name = "";
 		@SuppressWarnings({"cast", "unchecked", "rawtypes"})
 		Map<String, String> map = (Map<String, String>) (Map) p;
-		map.entrySet().stream().map(m -> new AbstractMap.SimpleImmutableEntry<>(m.getKey().split("\\."), m.getValue()))
-			.forEach(e -> {
+		map.entrySet().stream().map(m -> {
+			String[] outputKey;
+			String key = m.getKey();
+			if (key != null)
+				outputKey = key.split("\\.");
+			else
+				outputKey = null;
+			return new AbstractMap.SimpleImmutableEntry<>(outputKey, m.getValue());
+		}).forEach(e -> {
 
-				/* Find the MutableConfigNode */
+			/* Find the MutableConfigNode */
 
-				MutableConfigNode node = root;
-				String metaKey = null;
-				for (String k : e.getKey()) {
+			MutableConfigNode node = root;
+			String metaKey = null;
+			String[] keys = e.getKey();
+			if (keys != null)
+				for (String k : keys) {
 					if (metaKey != null) {
 						if (metaKey.isEmpty() == false)
 							throw new IllegalArgumentException("Multi-level meta not supported");
@@ -139,25 +154,25 @@ public class PropertiesParser implements ConfigParser {
 					}
 				}
 
-				/* Now assign the data */
+			/* Now assign the data */
 
-				String value = e.getValue();
+			String value = e.getValue();
 
-				ConfigProp valueProp = ConfigProp.builder().value(value).configSource(configSource).build();
-				if (metaKey != null) {
-					if (AbstractStdConfigParser.sTYPE_FACTORY_ARG_KEY.equals(metaKey))
-						node.type = node.type.withFactoryArg(valueProp);
-					else if (AbstractStdConfigParser.sTYPE_FACTORY_KEY.equals(metaKey))
-						node.type = node.type.withFactory(valueProp);
-					else if (AbstractStdConfigParser.sTYPE_TYPE_KEY.equals(metaKey))
-						node.type = node.type.withType(valueProp).withIsExplicitType(true);
-					else
-						node.metaData.put(metaKey, valueProp);
-				}
+			ConfigProp valueProp = ConfigProp.builder().value(value).configSource(configSource).build();
+			if (metaKey != null) {
+				if (AbstractStdConfigParser.sTYPE_FACTORY_ARG_KEY.equals(metaKey))
+					node.type = node.type.withFactoryArg(valueProp);
+				else if (AbstractStdConfigParser.sTYPE_FACTORY_KEY.equals(metaKey))
+					node.type = node.type.withFactory(valueProp);
+				else if (AbstractStdConfigParser.sTYPE_TYPE_KEY.equals(metaKey))
+					node.type = node.type.withType(valueProp).withIsExplicitType(true);
 				else
-					node.value = valueProp;
+					node.metaData.put(metaKey, valueProp);
+			}
+			else
+				node.value = valueProp;
 
-			});
+		});
 
 		/* Now freeze the MutableNode's into a ConfigNode */
 
@@ -172,8 +187,12 @@ public class PropertiesParser implements ConfigParser {
 			builder = builder.value(pRoot.value);
 		builder = builder.putAllMetaData(pRoot.metaData);
 
-		for (Map.Entry<String, MutableConfigNode> pair : pRoot.children.entrySet())
-			builder = builder.putChildren(pair.getKey(), recursiveFreeze(pair.getValue()));
+		for (Map.Entry<String, MutableConfigNode> pair : pRoot.children.entrySet()) {
+			String key = pair.getKey();
+			if (key == null)
+				continue;
+			builder = builder.putChildren(key, recursiveFreeze(pair.getValue()));
+		}
 
 		return builder.build();
 	}

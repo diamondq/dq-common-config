@@ -27,6 +27,12 @@ import java.util.concurrent.ConcurrentHashMap;
 import javax.annotation.Priority;
 import javax.inject.Singleton;
 
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
+
+/**
+ * The ImmutableClassBuilder is responsible for handling Immutable classes as a bind destination for Configs
+ */
 @Singleton
 @Priority(1)
 public class ImmutableClassBuilder implements ConfigClassBuilder {
@@ -49,6 +55,9 @@ public class ImmutableClassBuilder implements ConfigClassBuilder {
 
 	private final Map<Class<?>, BuilderInfo<?, ?>> mCachedBuilderMap = new ConcurrentHashMap<>();
 
+	/**
+	 * Default constructor
+	 */
 	public ImmutableClassBuilder() {
 	}
 
@@ -74,13 +83,14 @@ public class ImmutableClassBuilder implements ConfigClassBuilder {
 	 *      com.diamondq.common.config.spi.NodeType, java.util.List, java.util.Map)
 	 */
 	@Override
-	public <T, O> ClassInfo<T, O> getClassInfo(Class<?> pClass, Class<O> pFinalClass, NodeType pType,
-		List<ConfigClassBuilder> pClassBuilders, Map<String, Object> pContext) {
+	public <@NonNull T, @NonNull O> @Nullable ClassInfo<T, O> getClassInfo(Class<?> pClass, Class<O> pFinalClass,
+		NodeType pType, List<ConfigClassBuilder> pClassBuilders, @Nullable Map<String, Object> pContext) {
 
 		boolean hasFactoryArg = false;
 		if ((pType.getFactoryArg().isPresent() == true) && (pType.getFactoryArg().get().getValue().isPresent() == true))
 			hasFactoryArg = true;
 
+		@Nullable
 		Method builderMethod = null;
 		int constructorArgPos = -1;
 		int configArgPos = -1;
@@ -88,7 +98,7 @@ public class ImmutableClassBuilder implements ConfigClassBuilder {
 
 			/* Look for an Immutable's builder method or a builder that takes a ConfigImpl or a Config */
 
-			if (m.getName().equals("builder")) {
+			if (m.getName() == "builder") {
 				int modifiers = m.getModifiers();
 				if ((Modifier.isStatic(modifiers) == true) && (Modifier.isPublic(modifiers) == true)) {
 					if (hasFactoryArg == true) {
@@ -141,6 +151,7 @@ public class ImmutableClassBuilder implements ConfigClassBuilder {
 		if (builderMethod == null)
 			return null;
 
+		@Nullable
 		Object constructorArg;
 		if (hasFactoryArg == true)
 			constructorArg = pType.getFactoryArg().get().getValue().get();
@@ -158,12 +169,13 @@ public class ImmutableClassBuilder implements ConfigClassBuilder {
 	 *      java.lang.Object)
 	 */
 	@Override
-	public <T, O> BuilderInfo<T, O> getBuilderInfo(ClassInfo<T, O> pClassInfo, T pBuilder) {
+	public <@NonNull T, @NonNull O> BuilderInfo<T, O> getBuilderInfo(ClassInfo<T, O> pClassInfo, @NonNull T pBuilder) {
 
 		Class<?> builderClass = pBuilder.getClass();
 
 		/* See if we have a cached copy of the builder info */
 
+		@Nullable
 		BuilderInfo<?, ?> builderInfo = mCachedBuilderMap.get(builderClass);
 		if (builderInfo != null) {
 			@SuppressWarnings("unchecked")
@@ -181,7 +193,7 @@ public class ImmutableClassBuilder implements ConfigClassBuilder {
 			ParameterType paramType = ParameterType.NORMAL;
 			boolean matched = false;
 
-			if (name.equals("build")) {
+			if (name == "build") {
 				buildMethod = m;
 				continue;
 			}
@@ -191,6 +203,7 @@ public class ImmutableClassBuilder implements ConfigClassBuilder {
 			if (sIgnorableBuilderMethods.contains(name) == true)
 				continue;
 
+			@NonNull
 			Class<?>[] types = m.getParameterTypes();
 
 			if ((name.startsWith("put") == true) && (name.startsWith("putAll") == false) && (types.length == 2)) {
@@ -343,7 +356,7 @@ public class ImmutableClassBuilder implements ConfigClassBuilder {
 		/* If there is no build method, then this isn't supported by this builder */
 
 		if (buildMethod == null)
-			return null;
+			throw new IllegalArgumentException();
 
 		List<ParameterInfo<Object>> immutableParamList = Collections.unmodifiableList(paramList);
 		@SuppressWarnings("unchecked")

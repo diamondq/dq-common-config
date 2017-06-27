@@ -14,10 +14,19 @@ import java.util.Map;
 import javax.annotation.Priority;
 import javax.inject.Singleton;
 
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
+
+/**
+ * Handler for List based classes
+ */
 @Singleton
 @Priority(200)
 public class ListClassBuilder implements ConfigClassBuilder {
 
+	/**
+	 * Default constructor
+	 */
 	public ListClassBuilder() {
 
 	}
@@ -44,8 +53,8 @@ public class ListClassBuilder implements ConfigClassBuilder {
 	 *      com.diamondq.common.config.spi.NodeType, java.util.List, java.util.Map)
 	 */
 	@Override
-	public <T, O> ClassInfo<T, O> getClassInfo(Class<?> pClass, Class<O> pFinalClass, NodeType pType,
-		List<ConfigClassBuilder> pClassBuilders, Map<String, Object> pContext) {
+	public <@NonNull T, @NonNull O> @Nullable ClassInfo<T, O> getClassInfo(Class<?> pClass, Class<O> pFinalClass,
+		NodeType pType, List<ConfigClassBuilder> pClassBuilders, @Nullable Map<String, Object> pContext) {
 
 		boolean hasFactoryArg = false;
 		if ((pType.getFactoryArg().isPresent() == true) && (pType.getFactoryArg().get().getValue().isPresent() == true))
@@ -97,7 +106,7 @@ public class ListClassBuilder implements ConfigClassBuilder {
 	 *      java.lang.Object)
 	 */
 	@Override
-	public <T, O> BuilderInfo<T, O> getBuilderInfo(ClassInfo<T, O> pClassInfo, T pBuilder) {
+	public <@NonNull T, @NonNull O> BuilderInfo<T, O> getBuilderInfo(ClassInfo<T, O> pClassInfo, T pBuilder) {
 		throw new UnsupportedOperationException();
 	}
 

@@ -11,15 +11,28 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 
+import org.checkerframework.checker.nullness.qual.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * Helper class for debugging
+ */
 public class DebugUtils {
 
 	private static final Logger sLogger = LoggerFactory.getLogger(DebugUtils.class);
 
+	/**
+	 * Send a ConfigNode (and all children) to the debug logger
+	 * 
+	 * @param pRootSource the name of the root source
+	 * @param pValue the root node
+	 * @param pSkipEnv true if environment variables should be skipped
+	 * @param pSkipProperties true if properties should be skipped
+	 * @param pFilterTo a list of things that should be skipped (or null)
+	 */
 	public static void debug(String pRootSource, ConfigNode pValue, boolean pSkipEnv, boolean pSkipProperties,
-		Set<String> pFilterTo) {
+		@Nullable Set<String> pFilterTo) {
 
 		if (sLogger.isDebugEnabled() == false)
 			return;
@@ -43,9 +56,11 @@ public class DebugUtils {
 
 		/* Remove some special ones */
 
-		for (Iterator<String> i = skip.iterator(); i.hasNext();)
-			if (i.next().startsWith(".application."))
+		for (Iterator<String> i = skip.iterator(); i.hasNext();) {
+			String nextProp = i.next();
+			if ((nextProp == null) || (nextProp.startsWith(".application.") == true))
 				i.remove();
+		}
 
 		if ((pFilterTo != null) && (pFilterTo.isEmpty() == false)) {
 			if (info.length() > 0)
@@ -58,6 +73,12 @@ public class DebugUtils {
 
 	}
 
+	/**
+	 * Sends a ConfigNode to the trace logger
+	 * 
+	 * @param pRootSource the root source
+	 * @param pValue the node to trace
+	 */
 	public static void trace(String pRootSource, ConfigNode pValue) {
 
 		if (sLogger.isTraceEnabled() == false)
@@ -67,7 +88,7 @@ public class DebugUtils {
 
 	}
 
-	private static String recursiveDebug(Set<String> pSkipSet, Set<String> pFilterTo, String pPrefix,
+	private static @Nullable String recursiveDebug(Set<String> pSkipSet, @Nullable Set<String> pFilterTo, String pPrefix,
 		String pRootSource, ConfigNode pValue) {
 
 		/* Value */

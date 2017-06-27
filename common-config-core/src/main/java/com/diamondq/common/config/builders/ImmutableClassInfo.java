@@ -9,73 +9,96 @@ import com.diamondq.common.config.spi.Pair;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
-import javax.annotation.Nonnull;
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
-public class ImmutableClassInfo<O> implements ClassInfo<Object, O> {
+/**
+ * Information about an Immutable class
+ * 
+ * @param <O> the class
+ */
+public class ImmutableClassInfo<@NonNull O> implements ClassInfo<Object, O> {
 
-    private final Method             mConstructor;
+	private final Method				mConstructor;
 
-    private final Object             mConstructorArg;
+	@Nullable
+	private final Object				mConstructorArg;
 
-    private final int                mConstructorArgPos;
+	private final int					mConstructorArgPos;
 
-    private final int                mConfigArgPos;
+	private final int					mConfigArgPos;
 
-    private final int                mParamCount;
+	private final int					mParamCount;
 
-    private final ConfigClassBuilder mClassBuilder;
+	private final ConfigClassBuilder	mClassBuilder;
 
-    private final Class<O>           mFinalClass;
+	private final Class<O>				mFinalClass;
 
-    public ImmutableClassInfo(Class<O> pFinalClass, ConfigClassBuilder pClassBuilder, Method pConstructor, Object pConstructorArg,
-        int pConstructorArgPos, int pConfigArgPos) {
-        mFinalClass = pFinalClass;
-        mClassBuilder = pClassBuilder;
-        mConstructor = pConstructor;
-        mConstructorArgPos = pConstructorArgPos;
-        mConfigArgPos = pConfigArgPos;
-        if (mConstructorArgPos == -1) {
-            if (mConfigArgPos == -1)
-                mParamCount = 0;
-            else
-                mParamCount = 1;
-        } else {
-            if (mConfigArgPos == -1)
-                mParamCount = 1;
-            else
-                mParamCount = 2;
-        }
-        mConstructorArg = pConstructorArg;
-    }
+	/**
+	 * Constructor
+	 * 
+	 * @param pFinalClass the final class (non builder) to build
+	 * @param pClassBuilder the config class builder
+	 * @param pConstructor the constructor of the final class
+	 * @param pConstructorArg the argument to pass
+	 * @param pConstructorArgPos the position of the argument
+	 * @param pConfigArgPos
+	 */
+	public ImmutableClassInfo(Class<O> pFinalClass, ConfigClassBuilder pClassBuilder, Method pConstructor,
+		@Nullable Object pConstructorArg, int pConstructorArgPos, int pConfigArgPos) {
+		mFinalClass = pFinalClass;
+		mClassBuilder = pClassBuilder;
+		mConstructor = pConstructor;
+		mConstructorArgPos = pConstructorArgPos;
+		mConfigArgPos = pConfigArgPos;
+		if (mConstructorArgPos == -1) {
+			if (mConfigArgPos == -1)
+				mParamCount = 0;
+			else
+				mParamCount = 1;
+		}
+		else {
+			if (mConfigArgPos == -1)
+				mParamCount = 1;
+			else
+				mParamCount = 2;
+		}
+		mConstructorArg = pConstructorArg;
+	}
 
-    /** 
-     * @see com.diamondq.common.config.spi.ClassInfo#getFinalClass()
-     */
-    @Override
-    public Class<O> getFinalClass() {
-        return mFinalClass;
-    }
+	/**
+	 * @see com.diamondq.common.config.spi.ClassInfo#getFinalClass()
+	 */
+	@Override
+	public Class<O> getFinalClass() {
+		return mFinalClass;
+	}
 
-    /**
-     * @see com.diamondq.common.config.spi.ClassInfo#builder(com.diamondq.common.config.core.ConfigImpl)
-     */
-    @Override
-    public Pair<Object, BuilderInfo<Object, O>> builder(ConfigImpl pConfigImpl)
-        throws IllegalAccessException, IllegalArgumentException, InvocationTargetException {
+	/**
+	 * @see com.diamondq.common.config.spi.ClassInfo#builder(com.diamondq.common.config.core.ConfigImpl)
+	 */
+	@Override
+	public Pair<Object, BuilderInfo<Object, O>> builder(ConfigImpl pConfigImpl)
+		throws IllegalAccessException, IllegalArgumentException, InvocationTargetException {
 
-        Object[] params = (mParamCount == 0 ? null : new Object[mParamCount]);
-        if (mConfigArgPos != -1)
-            params[mConfigArgPos] = pConfigImpl;
-        if (mConstructorArgPos != -1)
-            params[mConstructorArgPos] = mConstructorArg;
+		Object builder;
+		if (mParamCount == 0)
+			builder = mConstructor.invoke(null, (Object[]) null);
+		else {
+			Object[] params = new Object[mParamCount];
+			if (mConfigArgPos != -1)
+				params[mConfigArgPos] = pConfigImpl;
+			if (mConstructorArgPos != -1)
+				params[mConstructorArgPos] = mConstructorArg;
 
-        @SuppressWarnings("nullness")
-        @Nonnull
-        Object builder = mConstructor.invoke(null, params);
+			builder = mConstructor.invoke(null, params);
+		}
+		if (builder == null)
+			throw new IllegalArgumentException();
 
-        BuilderInfo<Object, O> builderInfo = mClassBuilder.getBuilderInfo(this, builder);
+		BuilderInfo<Object, O> builderInfo = mClassBuilder.getBuilderInfo(this, builder);
 
-        return new Pair<Object, BuilderInfo<Object, O>>(builder, builderInfo);
-    }
+		return new Pair<Object, BuilderInfo<Object, O>>(builder, builderInfo);
+	}
 
 }

@@ -6,6 +6,8 @@ import com.diamondq.common.config.Config;
 import com.diamondq.common.config.core.WrappedBootstrapSource;
 import com.diamondq.common.config.model.BootstrapSetupConfigHolder;
 import com.diamondq.common.config.spi.BootstrapConfigSourceFactory;
+import com.diamondq.common.config.spi.ConfigSource;
+import com.diamondq.common.config.spi.ConfigSourceFactory;
 import com.diamondq.common.config.spi.ConfigSourceFactoryFactory;
 import com.diamondq.common.config.tests.AbstractYamlTest;
 
@@ -16,8 +18,14 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
+/**
+ * Invalid test
+ */
 public class InvalidYAMLFileTypeTest extends AbstractYamlTest {
 
+	/**
+	 * Holder of the expected exception
+	 */
 	@Rule
 	public ExpectedException thrown = ExpectedException.none();
 
@@ -29,11 +37,15 @@ public class InvalidYAMLFileTypeTest extends AbstractYamlTest {
 	protected List<BootstrapConfigSourceFactory> getBootstrapSources(ConfigSourceFactoryFactory pFactory,
 		Collection<String> pExtensions, BootstrapSetupConfigHolder pHolder, String pAppId) {
 		List<BootstrapConfigSourceFactory> sources = super.getBootstrapSources(pFactory, pExtensions, pHolder, pAppId);
-		sources.add(new WrappedBootstrapSource(
-			pFactory.getClassPathConfigSourceFactory().create("yaml/unknown.unknown", null)));
+		ConfigSourceFactory factory = pFactory.getClassPathConfigSourceFactory();
+		ConfigSource source = factory.create("yaml/unknown.unknown", null);
+		sources.add(new WrappedBootstrapSource(source));
 		return sources;
 	}
 
+	/**
+	 * Tests when the file isn't the correct type
+	 */
 	@Test()
 	public void testUnknownFile() {
 		thrown.expect(IllegalArgumentException.class);

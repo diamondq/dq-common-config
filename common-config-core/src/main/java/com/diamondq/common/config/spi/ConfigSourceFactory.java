@@ -2,6 +2,8 @@ package com.diamondq.common.config.spi;
 
 import java.util.Map;
 
+import org.checkerframework.checker.nullness.qual.Nullable;
+
 /**
  * A ConfigSourceFactory is responsible for creating a ConfigSource within a given engine.
  */
@@ -14,6 +16,6 @@ public interface ConfigSourceFactory {
 	 * @param pOtherArgs the other arguments (if needed)
 	 * @return the ConfigSource
 	 */
-	public ConfigSource create(String pArg1, Map<String, String> pOtherArgs);
+	public ConfigSource create(@Nullable String pArg1, @Nullable Map<String, String> pOtherArgs);
 
 }

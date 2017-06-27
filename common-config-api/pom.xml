@@ -10,4 +10,10 @@
 	<artifactId>common-config-api</artifactId>
 	<packaging>jar</packaging>
 	<name>DiamondQ Common: Config: API</name>
+	<dependencies>
+	  <dependency>
+            <groupId>org.checkerframework</groupId>
+            <artifactId>checker-qual</artifactId>
+        </dependency>
+	</dependencies>
 </project>

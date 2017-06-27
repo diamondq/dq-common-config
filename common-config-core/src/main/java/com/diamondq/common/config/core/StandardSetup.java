@@ -18,8 +18,20 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * The standard setup. Responsible for building the bootstrap enviroment that is most commonly used
+ */
 public class StandardSetup {
 
+	/**
+	 * Returns a list of bootstrap sources
+	 * 
+	 * @param pFactory the factory
+	 * @param pFileSuffixes the file suffixes
+	 * @param pHolder the config holder
+	 * @param pApplicationId the app id
+	 * @return the list of sources
+	 */
 	public static List<BootstrapConfigSourceFactory> getStandardBootstrapSources(ConfigSourceFactoryFactory pFactory,
 		Collection<String> pFileSuffixes, BootstrapSetupConfigHolder pHolder, String pApplicationId) {
 
@@ -61,12 +73,23 @@ public class StandardSetup {
 
 	}
 
+	/**
+	 * Returns the standard set of parsers (Property files)
+	 * 
+	 * @return the list of parsers
+	 */
 	public static Collection<ConfigParser> getStandardParsers() {
 		List<ConfigParser> results = new ArrayList<>();
 		results.add(new PropertiesParser());
 		return results;
 	}
 
+	/**
+	 * Returns the standard set of class builders. This currently means Immutable classes, No Param Construction
+	 * Classes, and List classes.
+	 * 
+	 * @return the list of class builders
+	 */
 	public static List<ConfigClassBuilder> getStandardClassBuilders() {
 		List<ConfigClassBuilder> results = new ArrayList<>();
 		results.add(new ImmutableClassBuilder());
@@ -75,6 +98,11 @@ public class StandardSetup {
 		return results;
 	}
 
+	/**
+	 * Returns the standard set of node resolvers, which currently means the standard resolver
+	 * 
+	 * @return the list of resolvers
+	 */
 	public static Collection<ConfigNodeResolver> getStandardNodeResolvers() {
 		List<ConfigNodeResolver> results = new ArrayList<>();
 		results.add(new Resolver());

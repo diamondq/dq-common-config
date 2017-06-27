@@ -14,12 +14,20 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * An abstract ConfigSource based on a Path to a document of some format.
+ */
 public abstract class AbstractPathDrivenConfigSource implements ConfigSource {
 
-	private static final Logger sLogger = LoggerFactory.getLogger(AbstractPathDrivenConfigSource.class);
+	private static final Logger	sLogger	= LoggerFactory.getLogger(AbstractPathDrivenConfigSource.class);
 
-	protected final Path mPath;
+	protected final Path		mPath;
 
+	/**
+	 * Default constructor
+	 * 
+	 * @param pPath the path
+	 */
 	public AbstractPathDrivenConfigSource(Path pPath) {
 		mPath = pPath;
 	}
@@ -30,12 +38,11 @@ public abstract class AbstractPathDrivenConfigSource implements ConfigSource {
 	@Override
 	public NodeType getReconstructionNodeType() {
 		return NodeType.builder().isExplicitType(true)
-				.type(ConfigProp.builder().configSource("").value(getClass().getName()).build()).build();
+			.type(ConfigProp.builder().configSource("").value(getClass().getName()).build()).build();
 	}
 
 	/**
-	 * @see com.diamondq.common.config.spi.ConfigSource#getConfiguration(java.lang.String,
-	 *      java.util.List)
+	 * @see com.diamondq.common.config.spi.ConfigSource#getConfiguration(java.lang.String, java.util.List)
 	 */
 	@Override
 	public List<ConfigDataTuple> getConfiguration(String pEnvironment, List<String> pProfiles) {
@@ -44,12 +51,13 @@ public abstract class AbstractPathDrivenConfigSource implements ConfigSource {
 
 			Path[] envPaths;
 			if ((pEnvironment != null) && (pEnvironment.isEmpty() == false)) {
-				Path envPath = (mPath.getParent() != null
-						? mPath.getParent().resolve(pEnvironment).resolve(mPath.getFileName())
+				Path envPath =
+					(mPath.getParent() != null ? mPath.getParent().resolve(pEnvironment).resolve(mPath.getFileName())
 						: Paths.get(pEnvironment, mPath.toString()));
-				envPaths = new Path[] { envPath, mPath };
-			} else
-				envPaths = new Path[] { mPath };
+				envPaths = new Path[] {envPath, mPath};
+			}
+			else
+				envPaths = new Path[] {mPath};
 
 			List<String> profiles = new ArrayList<>(pProfiles);
 			profiles.add(0, "");
@@ -63,14 +71,15 @@ public abstract class AbstractPathDrivenConfigSource implements ConfigSource {
 						int offset = fileName.lastIndexOf('.');
 						fileName = fileName.substring(0, offset) + "-" + profile + fileName.substring(offset);
 					}
-					Path fullPath = (path.getParent() != null ? path.getParent().resolve(fileName)
-							: Paths.get(fileName));
+					Path fullPath =
+						(path.getParent() != null ? path.getParent().resolve(fileName) : Paths.get(fileName));
 					processPath(fullPath, results);
 				}
 
 			sLogger.trace("getConfiguration(...) -> {}", results);
 			return results;
-		} catch (IOException ex) {
+		}
+		catch (IOException ex) {
 			throw new RuntimeException(ex);
 		}
 	}

@@ -1,24 +1,45 @@
 package com.diamondq.common.config.core;
 
+import org.checkerframework.checker.nullness.qual.Nullable;
+
+/**
+ * A Runtime Exception that holds on to a future localizable key
+ */
 public class I18NRuntimeException extends RuntimeException {
 
-	private static final long	serialVersionUID	= 7324214310087208692L;
+	private static final long					serialVersionUID	= 7324214310087208692L;
 
-	private final String		mFormatKey;
+	private final String						mFormatKey;
 
-	private final Object[]		mArgs;
+	private final @Nullable Object @Nullable []	mArgs;
 
-	public I18NRuntimeException(String pFormatKey, Object... pArgs) {
+	/**
+	 * The constructor
+	 * 
+	 * @param pFormatKey
+	 * @param pArgs
+	 */
+	public I18NRuntimeException(String pFormatKey, @Nullable Object @Nullable... pArgs) {
 		super();
 		mFormatKey = pFormatKey;
 		mArgs = pArgs;
 	}
 
+	/**
+	 * The key
+	 * 
+	 * @return the key
+	 */
 	public String getFormatKey() {
 		return mFormatKey;
 	}
 
-	public Object[] getArgs() {
+	/**
+	 * The arguments (if any)
+	 * 
+	 * @return the arguments
+	 */
+	public @Nullable Object @Nullable [] getArgs() {
 		return mArgs;
 	}
 }

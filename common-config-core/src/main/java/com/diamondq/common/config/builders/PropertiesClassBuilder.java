@@ -14,12 +14,20 @@ import java.util.Properties;
 import javax.annotation.Priority;
 import javax.inject.Singleton;
 
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
+
+/**
+ * The builder for java Properties
+ */
 @Singleton
 @Priority(10)
 public class PropertiesClassBuilder implements ConfigClassBuilder {
 
+	/**
+	 * The default constructor
+	 */
 	public PropertiesClassBuilder() {
-
 	}
 
 	/**
@@ -44,8 +52,8 @@ public class PropertiesClassBuilder implements ConfigClassBuilder {
 	 *      com.diamondq.common.config.spi.NodeType, java.util.List, java.util.Map)
 	 */
 	@Override
-	public <T, O> ClassInfo<T, O> getClassInfo(Class<?> pClass, Class<O> pFinalClass, NodeType pType,
-		List<ConfigClassBuilder> pClassBuilders, Map<String, Object> pContext) {
+	public <@NonNull T, @NonNull O> @Nullable ClassInfo<T, O> getClassInfo(Class<?> pClass, Class<O> pFinalClass,
+		NodeType pType, List<ConfigClassBuilder> pClassBuilders, @Nullable Map<String, Object> pContext) {
 
 		boolean hasFactoryArg = false;
 		if ((pType.getFactoryArg().isPresent() == true) && (pType.getFactoryArg().get().getValue().isPresent() == true))
@@ -69,9 +77,8 @@ public class PropertiesClassBuilder implements ConfigClassBuilder {
 	 *      java.lang.Object)
 	 */
 	@Override
-	public <T, O> BuilderInfo<T, O> getBuilderInfo(ClassInfo<T, O> pClassInfo, T pBuilder) {
-		// TODO Auto-generated method stub
-		return null;
+	public <@NonNull T, @NonNull O> BuilderInfo<T, O> getBuilderInfo(ClassInfo<T, O> pClassInfo, T pBuilder) {
+		throw new UnsupportedOperationException();
 	}
 
 }

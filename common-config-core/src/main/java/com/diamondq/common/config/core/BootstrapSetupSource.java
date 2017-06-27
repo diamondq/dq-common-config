@@ -21,10 +21,18 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
+/**
+ * A ConfigSource used for Bootstrap purposes
+ */
 public class BootstrapSetupSource implements ConfigSource {
 
 	private final BootstrapSetupConfigHolder mHolder;
 
+	/**
+	 * Default constructor
+	 * 
+	 * @param pHolder the holder
+	 */
 	public BootstrapSetupSource(BootstrapSetupConfigHolder pHolder) {
 		mHolder = pHolder;
 	}
