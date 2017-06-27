@@ -123,6 +123,8 @@ public class BootstrapSetupSource implements ConfigSource {
 		Properties p = new Properties();
 
 		BootstrapSetupConfig config = mHolder.value;
+		if (config == null)
+			throw new IllegalArgumentException();
 
 		/* Environment */
 

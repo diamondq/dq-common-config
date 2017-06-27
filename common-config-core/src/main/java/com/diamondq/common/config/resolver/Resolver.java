@@ -14,6 +14,11 @@ import java.util.SortedMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.checkerframework.checker.nullness.qual.Nullable;
+
+/**
+ * The generic resolver
+ */
 public class Resolver implements ConfigNodeResolver {
 
 	private Pattern					mPattern;
@@ -21,6 +26,9 @@ public class Resolver implements ConfigNodeResolver {
 	private static final NodeType	sNodeType	= NodeType.builder().isExplicitType(true)
 		.type(ConfigProp.builder().configSource("").value(Resolver.class.getName()).build()).build();
 
+	/**
+	 * Default constructor
+	 */
 	public Resolver() {
 		mPattern = Pattern.compile("\\$\\{([^:}]+)(:[^}]*)?\\}");
 	}
@@ -52,17 +60,20 @@ public class Resolver implements ConfigNodeResolver {
 		return result;
 	}
 
-	private ConfigNode internalResolve(ConfigNode pRootNode, String pDiagName, ConfigNode pNode) {
+	private @Nullable ConfigNode internalResolve(ConfigNode pRootNode, String pDiagName, ConfigNode pNode) {
 
 		/* Recursively handle all children */
 
 		Map<String, ConfigNode> replacementChildren = null;
 		for (Map.Entry<String, ConfigNode> child : pNode.getChildren().entrySet()) {
-			ConfigNode replaceChild = internalResolve(pRootNode, pDiagName + "." + child.getKey(), child.getValue());
+			String childKey = child.getKey();
+			if (childKey == null)
+				continue;
+			ConfigNode replaceChild = internalResolve(pRootNode, pDiagName + "." + childKey, child.getValue());
 			if (replaceChild != null) {
 				if (replacementChildren == null)
 					replacementChildren = new HashMap<>(pNode.getChildren());
-				replacementChildren.put(child.getKey(), replaceChild);
+				replacementChildren.put(childKey, replaceChild);
 			}
 		}
 
@@ -84,11 +95,7 @@ public class Resolver implements ConfigNodeResolver {
 					replacement = pNode.withValue(replacementProp);
 					if (replacementValue._2 == true) {
 						SortedMap<String, ConfigProp> existingMeta = replacement.getMetaData();
-						Map<String, ConfigProp> newMeta;
-						if (existingMeta == null)
-							newMeta = new HashMap<>();
-						else
-							newMeta = new HashMap<>(existingMeta);
+						Map<String, ConfigProp> newMeta = new HashMap<>(existingMeta);
 						newMeta.put("redact",
 							ConfigProp.builder().configSource(prop.getConfigSource()).value("true").build());
 						replacement = replacement.withMetaData(newMeta);
@@ -103,7 +110,7 @@ public class Resolver implements ConfigNodeResolver {
 		return replacement;
 	}
 
-	protected Pair<String, Boolean> resolveStr(String pValue, ConfigNode pRootNode, String pDiagName,
+	protected @Nullable Pair<String, Boolean> resolveStr(@Nullable String pValue, ConfigNode pRootNode, String pDiagName,
 		ConfigNode pNode) {
 		if (pValue != null) {
 			Matcher matcher = mPattern.matcher(pValue);

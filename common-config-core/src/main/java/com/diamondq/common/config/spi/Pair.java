@@ -1,7 +1,5 @@
 package com.diamondq.common.config.spi;
 
-import org.checkerframework.checker.nullness.qual.Nullable;
-
 /**
  * A single Pair class to make it easy to return two things from a method
  * 
@@ -13,13 +11,11 @@ public class Pair<T1, T2> {
 	/**
 	 * The first param (naming convention is based on javatuples)
 	 */
-	@Nullable
 	public T1	_1;
 
 	/**
 	 * The second param (naming convention is based on javatuples)
 	 */
-	@Nullable
 	public T2	_2;
 
 	/**
@@ -28,8 +24,9 @@ public class Pair<T1, T2> {
 	 * @param pA
 	 * @param pB
 	 */
-	public Pair(@Nullable T1 pA, @Nullable T2 pB) {
+	public Pair(T1 pA, T2 pB) {
 		_1 = pA;
 		_2 = pB;
 	}
+
 }

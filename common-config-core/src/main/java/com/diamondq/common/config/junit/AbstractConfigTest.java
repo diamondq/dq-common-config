@@ -19,6 +19,9 @@ import java.util.Locale;
 import java.util.ServiceLoader;
 import java.util.stream.Collectors;
 
+/**
+ * Abstract test class. Useful for building quick tests
+ */
 public class AbstractConfigTest {
 
 	protected Config buildConfig(String pAppId) {
@@ -28,6 +31,8 @@ public class AbstractConfigTest {
 		List<ConfigParser> parsers = getParsers();
 		List<String> extensions =
 			parsers.stream().flatMap(p -> p.getFileExtensions().stream()).collect(Collectors.toList());
+		if (extensions == null)
+			throw new IllegalArgumentException();
 		List<ConfigClassBuilder> classBuilders = getClassBuilders();
 		List<ConfigNodeResolver> nodeResolvers = getNodeResolvers();
 		ConfigSourceFactoryFactory factory = getFactoryFactory();

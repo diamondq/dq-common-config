@@ -10,14 +10,13 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
-import org.checkerframework.checker.nullness.qual.Nullable;
 
 /**
  * Class information for a class that takes no parameters during the constructor
  * 
  * @param <O>
  */
-public class NoParamClassInfo<O> implements ClassInfo<Object, O> {
+public class NoParamClassInfo<@NonNull O> implements ClassInfo<Object, O> {
 
 	private Constructor<?>	mConstructor;
 
@@ -46,21 +45,21 @@ public class NoParamClassInfo<O> implements ClassInfo<Object, O> {
 	 * @see com.diamondq.common.config.spi.ClassInfo#builder(com.diamondq.common.config.core.ConfigImpl)
 	 */
 	@Override
-	public Pair<Object, BuilderInfo<Object, O>> builder(ConfigImpl pConfigImpl)
+	@SuppressWarnings("nullness")
+	public Pair<@NonNull Object, @NonNull BuilderInfo<@NonNull Object, @NonNull O>> builder(ConfigImpl pConfigImpl)
 		throws IllegalAccessException, IllegalArgumentException, InvocationTargetException, InstantiationException {
 
 		/*
-		 * This is done with an extra parameter to make both the Eclipse Null checker and the CheckerFramework null
-		 * checker happy. Eventually, the CheckerFramework should support a null array in their annotated JDK. Opened
-		 * https://github.com/typetools/checker-framework/issues/1365 to track.
+		 * After discussion with the CheckerFramework folks (see
+		 * https://github.com/typetools/checker-framework/issues/1365), the best solution is to just suppress the
+		 * warning, as the -AresolveReflection doesn't work since the info about the Constructor isn't easily
+		 * accessible.
 		 */
-		@NonNull
-		Object @Nullable [] params = new Object[0];
-		Object builder = mConstructor.newInstance(params);
+		Object builder = mConstructor.newInstance((Object[]) null);
 
-		BuilderInfo<Object, O> builderInfo = new StdNoopBuilderInfo<O>();
+		BuilderInfo<@NonNull Object, @NonNull O> builderInfo = new StdNoopBuilderInfo<@NonNull O>();
 
-		return new Pair<Object, BuilderInfo<Object, O>>(builder, builderInfo);
+		return new Pair<@NonNull Object, @NonNull BuilderInfo<@NonNull Object, @NonNull O>>(builder, builderInfo);
 
 	}
 

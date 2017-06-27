@@ -4,6 +4,8 @@ import com.diamondq.common.config.core.ConfigImpl;
 
 import java.lang.reflect.InvocationTargetException;
 
+import org.checkerframework.checker.nullness.qual.NonNull;
+
 /**
  * Defines information about a given class
  * 
@@ -29,7 +31,7 @@ public interface ClassInfo<T, O> {
 	 * @throws InvocationTargetException
 	 * @throws InstantiationException
 	 */
-	public Pair<T, BuilderInfo<T, O>> builder(ConfigImpl pConfigImpl)
+	public Pair<@NonNull T, @NonNull BuilderInfo<@NonNull T, @NonNull O>> builder(ConfigImpl pConfigImpl)
 		throws IllegalAccessException, IllegalArgumentException, InvocationTargetException, InstantiationException;
 
 }

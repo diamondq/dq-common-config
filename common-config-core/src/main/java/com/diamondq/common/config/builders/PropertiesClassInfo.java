@@ -15,12 +15,14 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import org.checkerframework.checker.nullness.qual.NonNull;
+
 /**
  * Class information for the Properties builder
  * 
  * @param <O>
  */
-public class PropertiesClassInfo<O> implements ClassInfo<Object, O> {
+public class PropertiesClassInfo<@NonNull O> implements ClassInfo<Object, O> {
 
 	private final Class<O>								mFinalClass;
 

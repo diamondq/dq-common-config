@@ -3,7 +3,9 @@ package com.diamondq.common.config.spi;
 import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 
-public interface BuilderInfo<T, O> {
+import org.checkerframework.checker.nullness.qual.NonNull;
+
+public interface BuilderInfo<@NonNull T, @NonNull O> {
 
 	public List<ParameterInfo<T>> getParameters();
 
