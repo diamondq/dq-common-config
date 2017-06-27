@@ -6,8 +6,14 @@ import com.diamondq.common.config.tests.AbstractYamlTest;
 import org.junit.Assert;
 import org.junit.Test;
 
+/**
+ * Basic YAML tests
+ */
 public class BasicYAMLTest extends AbstractYamlTest {
 
+	/**
+	 * Test that the meta data can be read
+	 */
 	@Test
 	public void testMetaValue() {
 		Config config = buildConfig("yaml/meta");

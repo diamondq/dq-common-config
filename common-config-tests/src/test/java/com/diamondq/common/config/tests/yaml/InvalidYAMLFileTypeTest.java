@@ -12,6 +12,7 @@ import com.diamondq.common.config.spi.ConfigSourceFactoryFactory;
 import com.diamondq.common.config.tests.AbstractYamlTest;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 import org.junit.Rule;
@@ -38,7 +39,7 @@ public class InvalidYAMLFileTypeTest extends AbstractYamlTest {
 		Collection<String> pExtensions, BootstrapSetupConfigHolder pHolder, String pAppId) {
 		List<BootstrapConfigSourceFactory> sources = super.getBootstrapSources(pFactory, pExtensions, pHolder, pAppId);
 		ConfigSourceFactory factory = pFactory.getClassPathConfigSourceFactory();
-		ConfigSource source = factory.create("yaml/unknown.unknown", null);
+		ConfigSource source = factory.create("yaml/unknown.unknown", Collections.emptyMap());
 		sources.add(new WrappedBootstrapSource(source));
 		return sources;
 	}

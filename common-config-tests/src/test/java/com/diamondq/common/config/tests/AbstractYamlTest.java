@@ -5,6 +5,9 @@ import com.diamondq.common.config.spi.ConfigParser;
 
 import java.util.List;
 
+/**
+ * Abstract tests for YAML
+ */
 public class AbstractYamlTest extends AbstractConfigTest {
 
 	/**

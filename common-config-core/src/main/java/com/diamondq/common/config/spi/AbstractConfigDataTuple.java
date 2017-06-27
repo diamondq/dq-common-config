@@ -6,6 +6,9 @@ import java.util.Optional;
 import org.immutables.value.Value;
 import org.immutables.value.Value.Style.ImplementationVisibility;
 
+/**
+ * Immutable model for ConfigDataTuple
+ */
 @Value.Immutable
 @Value.Style(depluralize = true, typeImmutable = "*", visibility = ImplementationVisibility.PUBLIC)
 public abstract class AbstractConfigDataTuple {

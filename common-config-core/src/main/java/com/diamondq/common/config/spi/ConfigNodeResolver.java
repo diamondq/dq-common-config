@@ -5,6 +5,12 @@ package com.diamondq.common.config.spi;
  */
 public interface ConfigNodeResolver extends ConfigReconstructable {
 
+	/**
+	 * Resolves all placeholders within the node
+	 * 
+	 * @param pNode the node to resolve
+	 * @return the resolved node
+	 */
 	public ConfigNode resolve(ConfigNode pNode);
-	
+
 }

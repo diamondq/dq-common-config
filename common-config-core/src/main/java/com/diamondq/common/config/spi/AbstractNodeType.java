@@ -5,6 +5,9 @@ import java.util.Optional;
 import org.immutables.value.Value;
 import org.immutables.value.Value.Style.ImplementationVisibility;
 
+/**
+ * Immutable model for NodeType
+ */
 @Value.Immutable
 @Value.Style(depluralize = true, typeImmutable = "*", visibility = ImplementationVisibility.PUBLIC)
 public abstract class AbstractNodeType {
@@ -20,12 +23,26 @@ public abstract class AbstractNodeType {
 		return false;
 	}
 
+	/**
+	 * @return the type
+	 */
 	public abstract Optional<ConfigProp> getType();
 
+	/**
+	 * @return the factory
+	 */
 	public abstract Optional<ConfigProp> getFactory();
 
+	/**
+	 * @return the factory argument
+	 */
 	public abstract Optional<ConfigProp> getFactoryArg();
 
+	/**
+	 * The simple name
+	 * 
+	 * @return the name
+	 */
 	public String getSimpleName() {
 		StringBuilder sb = new StringBuilder();
 		if ((getType().isPresent() == true) && (getType().get().getValue().isPresent() == true))

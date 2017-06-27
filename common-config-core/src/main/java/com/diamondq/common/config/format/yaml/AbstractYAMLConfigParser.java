@@ -8,6 +8,8 @@ import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
 
+import org.checkerframework.checker.nullness.qual.Nullable;
+
 /**
  * Generically, the YAML format has 3 types of entries, a Map, a List and a Value. Lists are translated into Maps where
  * each zero-based offset is the key. Maps are flattened using the period (.) as the separator.
@@ -100,7 +102,9 @@ public abstract class AbstractYAMLConfigParser extends AbstractStdConfigParser {
 	 * @see com.diamondq.common.config.spi.ConfigParser#canParse(java.util.Optional, java.lang.String)
 	 */
 	@Override
-	public boolean canParse(Optional<String> pMediaType, String pFileName) {
+	public boolean canParse(Optional<String> pMediaType, @Nullable String pFileName) {
+		if (pFileName == null)
+			return false;
 		int offset = pFileName.lastIndexOf('.');
 		String suffix = pFileName.substring(offset + 1);
 		if (sFileExtensions.contains(suffix))

@@ -18,6 +18,9 @@ import java.util.List;
 import java.util.Locale;
 import java.util.stream.Collectors;
 
+/**
+ * General config test
+ */
 public class AbstractConfigTest {
 
 	protected Config buildConfig(String pAppId) {
@@ -27,6 +30,8 @@ public class AbstractConfigTest {
 		List<ConfigParser> parsers = getParsers();
 		List<String> extensions =
 			parsers.stream().flatMap(p -> p.getFileExtensions().stream()).collect(Collectors.toList());
+		if (extensions == null)
+			throw new IllegalArgumentException();
 		List<ConfigClassBuilder> classBuilders = getClassBuilders();
 		List<ConfigNodeResolver> nodeResolvers = getNodeResolvers();
 		ConfigSourceFactoryFactory factory = getFactoryFactory();

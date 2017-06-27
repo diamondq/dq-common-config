@@ -4,12 +4,25 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.List;
 
-public class StdBuilderInfo<O> implements BuilderInfo<Object, O> {
+import org.checkerframework.checker.nullness.qual.NonNull;
+
+/**
+ * A standard BuilderInfo
+ * 
+ * @param <O> the 'final' object type
+ */
+public class StdBuilderInfo<@NonNull O> implements BuilderInfo<Object, O> {
 
 	private final Method						mBuildMethod;
 
 	private final List<ParameterInfo<Object>>	mParameters;
 
+	/**
+	 * Default constructor
+	 * 
+	 * @param pBuildMethod the method to trigger the build on the builder
+	 * @param pParameters the list of parameters
+	 */
 	public StdBuilderInfo(Method pBuildMethod, List<ParameterInfo<Object>> pParameters) {
 		mBuildMethod = pBuildMethod;
 		mParameters = pParameters;

@@ -4,8 +4,18 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.Collections;
 import java.util.List;
 
-public class StdNoopBuilderInfo<O> implements BuilderInfo<Object, O> {
+import org.checkerframework.checker.nullness.qual.NonNull;
 
+/**
+ * A standard Builder that just returns the Builder
+ * 
+ * @param <O>
+ */
+public class StdNoopBuilderInfo<@NonNull O> implements BuilderInfo<Object, O> {
+
+	/**
+	 * Default constructor
+	 */
 	public StdNoopBuilderInfo() {
 	}
 

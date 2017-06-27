@@ -201,7 +201,9 @@ public class PropertiesParser implements ConfigParser {
 	 * @see com.diamondq.common.config.spi.ConfigParser#canParse(java.util.Optional, java.lang.String)
 	 */
 	@Override
-	public boolean canParse(Optional<String> pMediaType, String pFileName) {
+	public boolean canParse(Optional<String> pMediaType, @Nullable String pFileName) {
+		if (pFileName == null)
+			return false;
 		int offset = pFileName.lastIndexOf('.');
 		String suffix = pFileName.substring(offset + 1);
 		if (sFileExtensions.contains(suffix))

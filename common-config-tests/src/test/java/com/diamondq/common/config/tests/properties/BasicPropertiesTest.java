@@ -6,8 +6,14 @@ import com.diamondq.common.config.tests.AbstractYamlTest;
 import org.junit.Assert;
 import org.junit.Test;
 
+/**
+ * Basic Properties Tests
+ */
 public class BasicPropertiesTest extends AbstractYamlTest {
 
+	/**
+	 * Simple key
+	 */
 	@Test
 	public void testSimpleKey() {
 		Config config = buildConfig("properties/test1");
@@ -15,6 +21,9 @@ public class BasicPropertiesTest extends AbstractYamlTest {
 		Assert.assertEquals("testValue", value);
 	}
 
+	/**
+	 * Simple meta value
+	 */
 	@Test
 	public void testMetaValue() {
 		Config config = buildConfig("properties/meta");
