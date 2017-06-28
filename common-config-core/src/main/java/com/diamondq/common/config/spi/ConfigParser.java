@@ -19,7 +19,7 @@ public interface ConfigParser extends ConfigReconstructable {
 	 * 
 	 * @param pData the ConfigDataTuple
 	 * @return the list of ConfigNode's
-	 * @throws IOException
+	 * @throws IOException an exception
 	 */
 	public List<@NonNull ConfigNode> parse(ConfigDataTuple pData) throws IOException;
 

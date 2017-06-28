@@ -42,7 +42,7 @@ public class ImmutableClassInfo<@NonNull O> implements ClassInfo<Object, O> {
 	 * @param pConstructor the constructor of the final class
 	 * @param pConstructorArg the argument to pass
 	 * @param pConstructorArgPos the position of the argument
-	 * @param pConfigArgPos
+	 * @param pConfigArgPos the arg pos
 	 */
 	public ImmutableClassInfo(Class<O> pFinalClass, ConfigClassBuilder pClassBuilder, Method pConstructor,
 		@Nullable Object pConstructorArg, int pConstructorArgPos, int pConfigArgPos) {

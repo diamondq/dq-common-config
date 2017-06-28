@@ -16,8 +16,8 @@ public class I18NRuntimeException extends RuntimeException {
 	/**
 	 * The constructor
 	 * 
-	 * @param pFormatKey
-	 * @param pArgs
+	 * @param pFormatKey the format key
+	 * @param pArgs the optional arguments
 	 */
 	public I18NRuntimeException(String pFormatKey, @Nullable Object @Nullable... pArgs) {
 		super();

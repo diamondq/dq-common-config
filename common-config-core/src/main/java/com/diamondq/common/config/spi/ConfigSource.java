@@ -18,8 +18,8 @@ public interface ConfigSource extends ConfigReconstructable {
 	/**
 	 * Returns the configuration provided by this source.
 	 * 
-	 * @param pEnvironment
-	 * @param pProfiles
+	 * @param pEnvironment the environment
+	 * @param pProfiles the profiles
 	 * @return the configuration data
 	 */
 	public List<ConfigDataTuple> getConfiguration(String pEnvironment, List<String> pProfiles);

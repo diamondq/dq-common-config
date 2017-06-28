@@ -25,9 +25,9 @@ public interface BuilderInfo<@NonNull T, @NonNull O> {
 	 * 
 	 * @param pBuilder the 'state' object
 	 * @return the 'final' object
-	 * @throws IllegalAccessException
-	 * @throws IllegalArgumentException
-	 * @throws InvocationTargetException
+	 * @throws IllegalAccessException exception
+	 * @throws IllegalArgumentException exception
+	 * @throws InvocationTargetException exception
 	 */
 	public O build(T pBuilder) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException;
 }

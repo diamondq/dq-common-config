@@ -9,7 +9,7 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 /**
  * A standard Builder that just returns the Builder
  * 
- * @param <O>
+ * @param <O> the 'final' object
  */
 public class StdNoopBuilderInfo<@NonNull O> implements BuilderInfo<Object, O> {
 

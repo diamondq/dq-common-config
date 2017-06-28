@@ -20,7 +20,7 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 /**
  * Class information for the Properties builder
  * 
- * @param <O>
+ * @param <O> the 'final' class
  */
 public class PropertiesClassInfo<@NonNull O> implements ClassInfo<Object, O> {
 
@@ -49,7 +49,7 @@ public class PropertiesClassInfo<@NonNull O> implements ClassInfo<Object, O> {
 	/**
 	 * Default constructor
 	 * 
-	 * @param pFinalClass
+	 * @param pFinalClass the final class
 	 */
 	public PropertiesClassInfo(Class<O> pFinalClass) {
 		mFinalClass = pFinalClass;

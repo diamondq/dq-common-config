@@ -33,7 +33,7 @@ public class StdConfigListBuilder {
 		/**
 		 * Default constructor
 		 * 
-		 * @param pList
+		 * @param pList the list
 		 */
 		public ListBuilder(List<ConfigSource> pList) {
 			mList = pList;
@@ -42,7 +42,7 @@ public class StdConfigListBuilder {
 		/**
 		 * Adds a new value
 		 * 
-		 * @param pValue
+		 * @param pValue the value
 		 */
 		@ConfigKey("*")
 		public void set(ConfigSource pValue) {

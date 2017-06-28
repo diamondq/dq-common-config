@@ -29,7 +29,7 @@ public abstract class ListBuilderFactory {
 		/**
 		 * The wildcard set. Any 'child' is automatically bound here.
 		 * 
-		 * @param pValue
+		 * @param pValue the value
 		 */
 		@ConfigKey("*")
 		public void set(Object pValue) {

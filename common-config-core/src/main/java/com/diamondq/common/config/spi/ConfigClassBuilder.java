@@ -19,14 +19,18 @@ public interface ConfigClassBuilder extends ConfigReconstructable {
 	 * @param pType the node type
 	 * @param pClassBuilders the list of builders
 	 * @param pContext the context
+	 * @param <T> the 'state' object
+	 * @param <O> the 'final' object
 	 * @return the class info
 	 */
 	public <@NonNull T, @NonNull O> @Nullable ClassInfo<T, O> getClassInfo(Class<?> pClass, Class<O> pFinalClass,
 		NodeType pType, List<ConfigClassBuilder> pClassBuilders, @Nullable Map<String, Object> pContext);
 
 	/**
-	 * @param pClassInfo
-	 * @param pBuilder
+	 * @param pClassInfo the class info
+	 * @param pBuilder the builder
+	 * @param <T> the 'state' object
+	 * @param <O> the 'final' object
 	 * @return the builder information
 	 */
 	public <@NonNull T, @NonNull O> BuilderInfo<T, O> getBuilderInfo(ClassInfo<T, O> pClassInfo, T pBuilder);

@@ -62,9 +62,9 @@ public interface ParameterInfo<T> {
 	 * 
 	 * @param pBuilder the builder
 	 * @param pValue1 the object
-	 * @throws IllegalAccessException
-	 * @throws IllegalArgumentException
-	 * @throws InvocationTargetException
+	 * @throws IllegalAccessException exception
+	 * @throws IllegalArgumentException exception
+	 * @throws InvocationTargetException exception
 	 */
 	public void set1(T pBuilder, @Nullable Object pValue1)
 		throws IllegalAccessException, IllegalArgumentException, InvocationTargetException;
@@ -75,9 +75,9 @@ public interface ParameterInfo<T> {
 	 * @param pBuilder the builder
 	 * @param pValue1 the first object
 	 * @param pValue2 the second object
-	 * @throws IllegalAccessException
-	 * @throws IllegalArgumentException
-	 * @throws InvocationTargetException
+	 * @throws IllegalAccessException exception
+	 * @throws IllegalArgumentException exception
+	 * @throws InvocationTargetException exception
 	 */
 	public void set2(T pBuilder, Object pValue1, @Nullable Object pValue2)
 		throws IllegalAccessException, IllegalArgumentException, InvocationTargetException;

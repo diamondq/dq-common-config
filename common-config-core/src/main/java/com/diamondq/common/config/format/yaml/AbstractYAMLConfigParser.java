@@ -28,8 +28,8 @@ import org.checkerframework.checker.nullness.qual.Nullable;
  * bootstrap.profiles.1 = test
  * </pre>
  * 
- * Additional meta data (such as the type, help, etc.) is associated based on the type of entry. <br/>
- * <br/>
+ * Additional meta data (such as the type, help, etc.) is associated based on the type of entry. <br>
+ * <br>
  * A Map is associated by placing a child map with the key of <code>_dqconfig_meta_</code>. Each child is associated in
  * the meta data.
  * 

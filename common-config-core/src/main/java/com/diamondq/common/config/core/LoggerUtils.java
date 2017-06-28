@@ -12,6 +12,7 @@ public class LoggerUtils {
 	 * Helper method to make sure that the value passed is NonNull and the result is NonNull. Unfortunately, the Eclipse
 	 * External Annotations doesn't support a @PolyNull.
 	 * 
+	 * @param <T> the value type
 	 * @param pLogger the logger
 	 * @param pValue the value
 	 * @return the value

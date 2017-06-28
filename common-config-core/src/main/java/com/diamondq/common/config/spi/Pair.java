@@ -21,8 +21,8 @@ public class Pair<T1, T2> {
 	/**
 	 * Constructor
 	 * 
-	 * @param pA
-	 * @param pB
+	 * @param pA first param
+	 * @param pB second param
 	 */
 	public Pair(T1 pA, T2 pB) {
 		_1 = pA;

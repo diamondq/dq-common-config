@@ -9,8 +9,8 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 /**
  * Defines information about a given class
  * 
- * @param <T>
- * @param <O> the class
+ * @param <T> the 'state' object
+ * @param <O> the 'final' object
  */
 public interface ClassInfo<T, O> {
 
@@ -26,10 +26,10 @@ public interface ClassInfo<T, O> {
 	 * 
 	 * @param pConfigImpl the config to use
 	 * @return the pair
-	 * @throws IllegalAccessException
-	 * @throws IllegalArgumentException
-	 * @throws InvocationTargetException
-	 * @throws InstantiationException
+	 * @throws IllegalAccessException exceptions from reflection
+	 * @throws IllegalArgumentException exceptions from reflection
+	 * @throws InvocationTargetException exceptions from reflection
+	 * @throws InstantiationException exceptions from reflection
 	 */
 	public Pair<@NonNull T, @NonNull BuilderInfo<@NonNull T, @NonNull O>> builder(ConfigImpl pConfigImpl)
 		throws IllegalAccessException, IllegalArgumentException, InvocationTargetException, InstantiationException;

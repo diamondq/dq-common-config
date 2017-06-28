@@ -14,7 +14,7 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 /**
  * Class information for a class that takes no parameters during the constructor
  * 
- * @param <O>
+ * @param <O> the 'final' object
  */
 public class NoParamClassInfo<@NonNull O> implements ClassInfo<Object, O> {
 
@@ -25,8 +25,8 @@ public class NoParamClassInfo<@NonNull O> implements ClassInfo<Object, O> {
 	/**
 	 * The constructor
 	 * 
-	 * @param pFinalClass
-	 * @param pConstructor
+	 * @param pFinalClass the 'final' class
+	 * @param pConstructor the constructor
 	 */
 	public NoParamClassInfo(Class<O> pFinalClass, Constructor<?> pConstructor) {
 		mFinalClass = pFinalClass;

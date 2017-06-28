@@ -17,6 +17,7 @@ public class InjectUtils {
 	/**
 	 * Reorders a Iterable of entries based on their Priority
 	 * 
+	 * @param <T> the entry type
 	 * @param pIterable the entries
 	 * @return the sorted collection
 	 */

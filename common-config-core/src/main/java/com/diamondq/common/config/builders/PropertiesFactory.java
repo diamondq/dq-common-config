@@ -21,8 +21,8 @@ public class PropertiesFactory {
 	/**
 	 * The method that is called for all key/values
 	 * 
-	 * @param pKey
-	 * @param pValue
+	 * @param pKey the key
+	 * @param pValue the value
 	 */
 	@ConfigKey("*")
 	public void add(Object pKey, Object pValue) {

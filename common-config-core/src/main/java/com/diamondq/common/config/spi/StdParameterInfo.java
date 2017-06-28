@@ -74,9 +74,9 @@ public class StdParameterInfo<T> implements ParameterInfo<T> {
 	}
 
 	/**
-	 * @throws InvocationTargetException
-	 * @throws IllegalArgumentException
-	 * @throws IllegalAccessException
+	 * @throws InvocationTargetException exception
+	 * @throws IllegalArgumentException exception
+	 * @throws IllegalAccessException exception
 	 * @see com.diamondq.common.config.spi.ParameterInfo#set1(java.lang.Object, java.lang.Object)
 	 */
 	@Override
@@ -86,9 +86,9 @@ public class StdParameterInfo<T> implements ParameterInfo<T> {
 	}
 
 	/**
-	 * @throws InvocationTargetException
-	 * @throws IllegalArgumentException
-	 * @throws IllegalAccessException
+	 * @throws InvocationTargetException exception
+	 * @throws IllegalArgumentException exception
+	 * @throws IllegalAccessException exception
 	 * @see com.diamondq.common.config.spi.ParameterInfo#set2(java.lang.Object, java.lang.Object, java.lang.Object)
 	 */
 	@Override
