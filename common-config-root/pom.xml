@@ -194,6 +194,7 @@
 					<target>1.8</target>
 					<debug>true</debug>
 					<debuglevel>lines,vars,source</debuglevel>
+					<fork>true</fork>
 					<compilerArgs>
 						<arg>-parameters</arg>
 					</compilerArgs>

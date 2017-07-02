@@ -80,7 +80,7 @@ public class ConfigImpl implements Config {
 	 * @see com.diamondq.common.config.Config#bind(java.lang.String, java.lang.Class)
 	 */
 	@Override
-	public <@NonNull T> @Nullable T bind(String pPrefix, Class<T> pClass) {
+	public <T> @Nullable T bind(String pPrefix, Class<T> pClass) {
 		return bind(pPrefix, pClass, null);
 	}
 
@@ -88,7 +88,7 @@ public class ConfigImpl implements Config {
 	 * @see com.diamondq.common.config.Config#bind(java.lang.String, java.lang.Class, java.util.Map)
 	 */
 	@Override
-	public <@NonNull T> @Nullable T bind(String pPrefix, Class<T> pClass, @Nullable Map<String, Object> pContext) {
+	public <T> @Nullable T bind(String pPrefix, Class<T> pClass, @Nullable Map<String, Object> pContext) {
 
 		sLogger.trace("Config binding {} to {}...", pPrefix, pClass);
 
@@ -101,7 +101,7 @@ public class ConfigImpl implements Config {
 	}
 
 	@SuppressWarnings("unchecked")
-	private <@NonNull T> @Nullable T internalBind(ConfigNode pNode, Class<T> pClass,
+	private <T> @Nullable T internalBind(ConfigNode pNode, Class<T> pClass,
 		@Nullable Map<String, Object> pContext) {
 
 		DebugUtils.trace("", pNode);
@@ -145,7 +145,7 @@ public class ConfigImpl implements Config {
 		return result;
 	}
 
-	private <@NonNull T> @Nullable T internalBind2(ConfigNode pNode, Class<?> pClass, Class<T> pFinalClass,
+	private <T> @Nullable T internalBind2(ConfigNode pNode, Class<?> pClass, Class<T> pFinalClass,
 		@Nullable Map<String, Object> pContext) {
 		try {
 
@@ -268,8 +268,6 @@ public class ConfigImpl implements Config {
 								boolean isPrimitive = (mapValueClass == null ? false : isPrimitive(mapValueClass));
 								for (Map.Entry<String, ConfigNode> childPair : mapChildren.getChildren().entrySet()) {
 									String childPairKey = childPair.getKey();
-									if (childPairKey == null)
-										throw new IllegalArgumentException();
 									Object key = convertType(childPairKey, keyClass);
 									Object value;
 									if (mapValueClass == null)
@@ -328,7 +326,7 @@ public class ConfigImpl implements Config {
 		}
 	}
 
-	private <@NonNull T> @Nullable T resolveValue(ConfigNode pNode, Class<T> pType) {
+	private <T> @Nullable T resolveValue(ConfigNode pNode, Class<T> pType) {
 
 		NodeType type = pNode.getType();
 
@@ -417,7 +415,7 @@ public class ConfigImpl implements Config {
 	}
 
 	@SuppressWarnings("unchecked")
-	private <@NonNull T> @NonNull T convertType(Object pValue, Class<T> pTypeClass) {
+	private <T> @NonNull T convertType(Object pValue, Class<T> pTypeClass) {
 		if (pTypeClass.isInstance(pValue))
 			return (T) pValue;
 		String str = (pValue instanceof String ? (String) pValue : pValue.toString());
@@ -493,7 +491,7 @@ public class ConfigImpl implements Config {
 	 * @param pContext the context
 	 * @return the class info
 	 */
-	private <@NonNull T> ClassInfo<Object, T> lookupClassInfo(Class<?> pClass, Class<T> pFinalClass, NodeType pType,
+	private <T> ClassInfo<Object, T> lookupClassInfo(Class<?> pClass, Class<T> pFinalClass, NodeType pType,
 		String pClassNameKey, @Nullable Map<String, Object> pContext) {
 
 		ClassInfo<Object, T> result = null;

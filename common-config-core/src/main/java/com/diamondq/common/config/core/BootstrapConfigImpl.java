@@ -340,8 +340,6 @@ public class BootstrapConfigImpl implements Bootstrap {
 
 			for (Map.Entry<String, ConfigNode> mergePair : mergeChildren.entrySet()) {
 				String mergeChildKey = mergePair.getKey();
-				if (mergeChildKey == null)
-					continue;
 				ConfigNode targetChildNode = childChildren.remove(mergeChildKey);
 				ConfigNode mergeChildNode = mergePair.getValue();
 				if (targetChildNode == null)

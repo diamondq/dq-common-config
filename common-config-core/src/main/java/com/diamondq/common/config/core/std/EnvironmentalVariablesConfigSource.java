@@ -85,8 +85,6 @@ public class EnvironmentalVariablesConfigSource implements ConfigSource {
 
 			for (Map.Entry<String, String> pair : env.entrySet()) {
 				String key = pair.getKey();
-				if (key == null)
-					continue;
 				if ((prefix == null) || (key.startsWith(prefix)))
 					p.put(key, pair.getValue());
 			}

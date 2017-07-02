@@ -67,8 +67,6 @@ public class Resolver implements ConfigNodeResolver {
 		Map<String, ConfigNode> replacementChildren = null;
 		for (Map.Entry<String, ConfigNode> child : pNode.getChildren().entrySet()) {
 			String childKey = child.getKey();
-			if (childKey == null)
-				continue;
 			ConfigNode replaceChild = internalResolve(pRootNode, pDiagName + "." + childKey, child.getValue());
 			if (replaceChild != null) {
 				if (replacementChildren == null)

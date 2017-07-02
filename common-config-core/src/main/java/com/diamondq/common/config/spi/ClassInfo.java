@@ -31,7 +31,7 @@ public interface ClassInfo<T, O> {
 	 * @throws InvocationTargetException exceptions from reflection
 	 * @throws InstantiationException exceptions from reflection
 	 */
-	public Pair<@NonNull T, @NonNull BuilderInfo<@NonNull T, @NonNull O>> builder(ConfigImpl pConfigImpl)
+	public Pair<T, @NonNull BuilderInfo<T, O>> builder(ConfigImpl pConfigImpl)
 		throws IllegalAccessException, IllegalArgumentException, InvocationTargetException, InstantiationException;
 
 }

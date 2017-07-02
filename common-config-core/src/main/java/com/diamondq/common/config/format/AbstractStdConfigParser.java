@@ -71,8 +71,6 @@ public abstract class AbstractStdConfigParser implements ConfigParser {
 				if ((metaValueObj instanceof Map) || (metaValueObj instanceof List))
 					throw new IllegalStateException();
 				String metaKey = metaPair.getKey();
-				if (metaKey == null)
-					continue;
 				if (sTYPE_FACTORY_KEY.equals(metaKey))
 					result.factory = Optional
 						.of(ConfigProp.builder().configSource(pSourceName).value(metaValueObj.toString()).build());
@@ -110,8 +108,6 @@ public abstract class AbstractStdConfigParser implements ConfigParser {
 			for (Map.Entry<String, Object> pair : map.entrySet()) {
 
 				String key = pair.getKey();
-				if (key == null)
-					continue;
 
 				/* Check if it's a meta indicator */
 
@@ -153,8 +149,6 @@ public abstract class AbstractStdConfigParser implements ConfigParser {
 				for (Map.Entry<String, MetaInfo> pair : pendingMeta.entrySet()) {
 
 					String key = pair.getKey();
-					if (key == null)
-						continue;
 					ConfigNode.Builder emptyBuilder = ConfigNode.builder().name(key);
 					emptyBuilder = emptyBuilder.type(NodeType.builder().isExplicitType(false)
 						.type(ConfigProp.builder().configSource(pSourceName).value(String.class.getName()).build())
@@ -200,8 +194,6 @@ public abstract class AbstractStdConfigParser implements ConfigParser {
 										throw new IllegalStateException();
 
 									String metaKey = metaPair.getKey();
-									if (metaKey == null)
-										continue;
 									if (sTYPE_FACTORY_KEY.equals(metaKey))
 										factory = Optional.of(ConfigProp.builder().configSource(pSourceName)
 											.value(metaValueObj.toString()).build());

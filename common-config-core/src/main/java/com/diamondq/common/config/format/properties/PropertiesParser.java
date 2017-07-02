@@ -110,10 +110,7 @@ public class PropertiesParser implements ConfigParser {
 		map.entrySet().stream().map(m -> {
 			String[] outputKey;
 			String key = m.getKey();
-			if (key != null)
-				outputKey = key.split("\\.");
-			else
-				outputKey = null;
+			outputKey = key.split("\\.");
 			return new AbstractMap.SimpleImmutableEntry<>(outputKey, m.getValue());
 		}).forEach(e -> {
 
@@ -189,8 +186,6 @@ public class PropertiesParser implements ConfigParser {
 
 		for (Map.Entry<String, MutableConfigNode> pair : pRoot.children.entrySet()) {
 			String key = pair.getKey();
-			if (key == null)
-				continue;
 			builder = builder.putChildren(key, recursiveFreeze(pair.getValue()));
 		}
 

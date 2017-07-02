@@ -3,7 +3,6 @@ package com.diamondq.common.config;
 import java.util.Locale;
 import java.util.Map;
 
-import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 /**
@@ -39,7 +38,7 @@ public interface Config {
 	 * @param <T> the class type
 	 * @return the result
 	 */
-	public <@NonNull T> @Nullable T bind(String pPrefix, Class<T> pClass);
+	public <T> @Nullable T bind(String pPrefix, Class<T> pClass);
 
 	/**
 	 * Returns an instance of the given class with all the data bound to the correct variables
@@ -50,5 +49,5 @@ public interface Config {
 	 * @param <T> the class type
 	 * @return the result
 	 */
-	public <@NonNull T> @Nullable T bind(String pPrefix, Class<T> pClass, @Nullable Map<String, Object> pContext);
+	public <T> @Nullable T bind(String pPrefix, Class<T> pClass, @Nullable Map<String, Object> pContext);
 }
