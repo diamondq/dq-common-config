@@ -44,7 +44,10 @@ public class BootstrapConfigImpl implements Bootstrap {
 	 */
 	public BootstrapConfigImpl(BootstrapSetupConfig pSetupConfig) {
 		mSetupConfig = pSetupConfig;
-		mLocale = pSetupConfig.getDefaultLocale().orElse(Locale.getDefault());
+		Locale locale = pSetupConfig.getDefaultLocale().orElse(Locale.getDefault());
+		if (locale == null)
+			throw new IllegalStateException("Unable to find a locale.");
+		mLocale = locale;
 	}
 
 	/**
