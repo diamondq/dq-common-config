@@ -48,8 +48,6 @@ public class ClassPathConfigSource extends AbstractPathDrivenConfigSource {
 		Enumeration<URL> urls = classLoader.getResources(pPath.toString());
 		for (; urls.hasMoreElements();) {
 			URL url = urls.nextElement();
-			if (url == null)
-				continue;
 			InputStream stream = url.openStream();
 			pResults.add(ConfigDataTuple.builder().name(url.toExternalForm()).source(this).stream(stream).build());
 		}
