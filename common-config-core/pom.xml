@@ -18,7 +18,8 @@
 			<id>m2e</id>
 			<activation>
 				<property>
-					<name>!m2e.version</name>
+					<!-- <name>!m2e.version</name> -->
+					<name>not-used</name>
 				</property>
 			</activation>
 			<dependencies>
