@@ -161,6 +161,9 @@ public class Resolver implements ConfigNodeResolver {
 
 			if (sb == null)
 				return null;
+			
+			if (startingPoint > 0)
+				sb.append(pValue.substring(startingPoint));
 			String finalValue = sb.toString();
 			if (finalValue.equals(pValue) == true)
 				return null;
