@@ -14,6 +14,8 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import org.checkerframework.checker.nullness.qual.Nullable;
+
 /**
  * Abstract base for different format parsers
  */
@@ -91,7 +93,7 @@ public abstract class AbstractStdConfigParser implements ConfigParser {
 			throw new IllegalStateException();
 	}
 
-	protected ConfigNode map(String pSourceName, String pName, Object o) {
+	protected ConfigNode map(String pSourceName, String pName, @Nullable Object o) {
 		String prefix = sPrefixMap.get(pSourceName);
 		if (prefix == null) {
 			String newPrefix = String.format("%03d", sPrefixCount.incrementAndGet());
@@ -235,7 +237,12 @@ public abstract class AbstractStdConfigParser implements ConfigParser {
 					.type(ConfigProp.builder().configSource(pSourceName).value(String.class.getName()).build())
 					.build());
 
-			builder = builder.value(ConfigProp.builder().configSource(pSourceName).value(o.toString()).build());
+			ConfigProp.Builder configSourceBuilder = ConfigProp.builder().configSource(pSourceName);
+			if (o != null)
+				configSourceBuilder = configSourceBuilder.value(o.toString());
+			else
+				configSourceBuilder = configSourceBuilder.value("");
+			builder = builder.value(configSourceBuilder.build());
 
 		}
 		return builder.build();
