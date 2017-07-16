@@ -59,7 +59,7 @@ public class EnvironmentalVariablesConfigSource implements ConfigSource {
 		List<ConfigDataTuple> results = new ArrayList<>();
 
 		StringBuilder prefixBuilder = new StringBuilder();
-		if ((pEnvironment != null) && (pEnvironment.isEmpty() == false))
+		if (pEnvironment.isEmpty() == false)
 			prefixBuilder.append(formatEnvStr(pEnvironment));
 
 		List<String> profiles = new ArrayList<>(pProfiles);

@@ -101,8 +101,7 @@ public class ConfigImpl implements Config {
 	}
 
 	@SuppressWarnings("unchecked")
-	private <T> @Nullable T internalBind(ConfigNode pNode, Class<T> pClass,
-		@Nullable Map<String, Object> pContext) {
+	private <T> @Nullable T internalBind(ConfigNode pNode, Class<T> pClass, @Nullable Map<String, Object> pContext) {
 
 		DebugUtils.trace("", pNode);
 
@@ -163,9 +162,6 @@ public class ConfigImpl implements Config {
 			Pair<Object, BuilderInfo<Object, T>> builderPair = classInfo.builder(this);
 			Object builder = builderPair._1;
 			BuilderInfo<Object, T> builderInfo = builderPair._2;
-
-			if ((builder == null) || (builderInfo == null))
-				throw new IllegalArgumentException();
 
 			List<ParameterInfo<Object>> parameters = builderInfo.getParameters();
 			Map<String, ConfigNode> children = pNode.getChildren();

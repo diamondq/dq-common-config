@@ -65,8 +65,7 @@ public class StandardSetup {
 		/* Add the application data */
 
 		Map<String, String> data = new HashMap<>();
-		if (pApplicationId != null)
-			data.put("application.name", pApplicationId);
+		data.put("application.name", pApplicationId);
 		results.add(new WrappedBootstrapSource(pFactory.getInMemoryConfigSourceFactory().create(null, data)));
 
 		return results;

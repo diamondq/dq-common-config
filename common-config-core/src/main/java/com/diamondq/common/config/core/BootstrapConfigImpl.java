@@ -322,8 +322,7 @@ public class BootstrapConfigImpl implements Bootstrap {
 
 			Map<String, ConfigProp> metaData = pSource.getMetaData();
 			builder.putAllMetaData(pTarget.getMetaData());
-			if (metaData != null)
-				builder.putAllMetaData(metaData);
+			builder.putAllMetaData(metaData);
 
 			/* Handle the children */
 

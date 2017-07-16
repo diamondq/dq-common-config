@@ -58,7 +58,7 @@ public class DebugUtils {
 
 		for (Iterator<String> i = skip.iterator(); i.hasNext();) {
 			String nextProp = i.next();
-			if ((nextProp == null) || (nextProp.startsWith(".application.") == true))
+			if (nextProp.startsWith(".application.") == true)
 				i.remove();
 		}
 
@@ -88,8 +88,8 @@ public class DebugUtils {
 
 	}
 
-	private static @Nullable String recursiveDebug(Set<String> pSkipSet, @Nullable Set<String> pFilterTo, String pPrefix,
-		String pRootSource, ConfigNode pValue) {
+	private static @Nullable String recursiveDebug(Set<String> pSkipSet, @Nullable Set<String> pFilterTo,
+		String pPrefix, String pRootSource, ConfigNode pValue) {
 
 		/* Value */
 

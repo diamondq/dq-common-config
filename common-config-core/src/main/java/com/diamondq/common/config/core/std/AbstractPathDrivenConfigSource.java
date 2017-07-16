@@ -50,7 +50,7 @@ public abstract class AbstractPathDrivenConfigSource implements ConfigSource {
 		try {
 
 			Path[] envPaths;
-			if ((pEnvironment != null) && (pEnvironment.isEmpty() == false)) {
+			if (pEnvironment.isEmpty() == false) {
 				Path envPath =
 					(mPath.getParent() != null ? mPath.getParent().resolve(pEnvironment).resolve(mPath.getFileName())
 						: Paths.get(pEnvironment, mPath.toString()));
