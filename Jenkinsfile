@@ -8,13 +8,15 @@ pipeline {
   stages {
     stage('Test') {
       steps {
-        sh 'mvn clean'
+        sh '''cd common-config-root
+mvn clean'''
         echo 'Test Again'
       }
     }
     stage('Build') {
       steps {
-        sh 'mvn install'
+        sh '''cd common-config-root
+mvn install'''
       }
     }
   }
