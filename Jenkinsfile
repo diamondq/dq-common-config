@@ -2,7 +2,7 @@ pipeline {
   agent {
     docker {
       image 'maven:3-jdk-8'
-      args '-v /data/jenkins/m2:/root/.m2'
+      args '-v /data/jenkins/m2:/root/.m2 -v /data/jenkins/gpg:/root/.gnupg'
     }
     
   }
@@ -11,7 +11,6 @@ pipeline {
       steps {
         sh '''cd common-config-root
 mvn clean'''
-        echo 'Test Again'
       }
     }
     stage('Build') {
@@ -20,5 +19,8 @@ mvn clean'''
 mvn install'''
       }
     }
+  }
+  environment {
+    gpg = '/root/.gnupg'
   }
 }
