@@ -21,6 +21,6 @@ mvn install'''
     }
   }
   environment {
-    'gpg.homedir' = '/root/.gnupg'
+    gpg\.homedir = '/root/.gnupg'
   }
 }
