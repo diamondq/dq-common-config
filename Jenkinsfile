@@ -2,7 +2,7 @@ pipeline {
   agent {
     docker {
       image 'maven:3-jdk-8'
-      args '-v /data/jenkins/m2:/root/.m2 -v /data/jenkins/gpg:/root/.gnupg'
+      args '-v /data/jenkins/m2:/.m2 -v /data/jenkins/gpg:/.gnupg'
     }
     
   }
@@ -10,17 +10,17 @@ pipeline {
     stage('Test') {
       steps {
         sh '''cd common-config-root
-mvn clean'''
+mvn "-Duser.home=/" clean'''
       }
     }
     stage('Build') {
       steps {
         sh '''cd common-config-root
-mvn install'''
+mvn "-Duser.home=/" install'''
       }
     }
   }
   environment {
-    gpg\.homedir = '/root/.gnupg'
+    GPG_TTY=/dev/console
   }
 }
