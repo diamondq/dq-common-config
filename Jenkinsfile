@@ -7,7 +7,7 @@ pipeline {
     
   }
   stages {
-    stage('Test') {
+    stage('Clean') {
       steps {
         sh '''cd common-config-root
 mvn "-Duser.home=/" clean'''
@@ -17,6 +17,12 @@ mvn "-Duser.home=/" clean'''
       steps {
         sh '''cd common-config-root
 mvn "-Duser.home=/" install'''
+      }
+    }
+    stage('Publish') {
+      steps {
+        sh '''cd common-config-root
+mvn "-Duser.home=/" deploy'''
       }
     }
   }
