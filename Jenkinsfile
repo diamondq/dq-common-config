@@ -20,7 +20,4 @@ mvn "-Duser.home=/" install'''
       }
     }
   }
-  environment {
-    GPG_TTY = /dev/console
-  }
 }
