@@ -330,9 +330,9 @@ public class ImmutableClassBuilder implements ConfigClassBuilder {
 				for (Method fm : finalMethods) {
 					String finalName = fm.getName();
 					String testSubName;
-					if (finalName.startsWith("get") == true)
+					if ((finalName.startsWith("get") == true) && (finalName.length() > 3))
 						testSubName = finalName.substring(3, 4).toLowerCase().concat(finalName.substring(4));
-					else if (finalName.startsWith("is") == true)
+					else if ((finalName.startsWith("is") == true) && (finalName.length() > 2))
 						testSubName = finalName.substring(2, 3).toLowerCase().concat(finalName.substring(3));
 					else
 						continue;
