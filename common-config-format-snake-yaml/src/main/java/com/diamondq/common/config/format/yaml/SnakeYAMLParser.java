@@ -13,7 +13,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
-import javax.inject.Singleton;
+import javax.enterprise.context.ApplicationScoped;
 
 import org.yaml.snakeyaml.Yaml;
 import org.yaml.snakeyaml.constructor.SafeConstructor;
@@ -21,7 +21,7 @@ import org.yaml.snakeyaml.constructor.SafeConstructor;
 /**
  * This parser is capable of reading YAML files by using the Snake YAML library
  */
-@Singleton
+@ApplicationScoped
 public class SnakeYAMLParser extends AbstractYAMLConfigParser implements ConfigParser {
 
 	private static final NodeType sNodeType = NodeType.builder().isExplicitType(true)

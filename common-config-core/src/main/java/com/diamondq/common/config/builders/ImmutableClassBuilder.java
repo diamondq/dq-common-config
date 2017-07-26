@@ -25,7 +25,7 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 import javax.annotation.Priority;
-import javax.inject.Singleton;
+import javax.enterprise.context.ApplicationScoped;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
@@ -33,7 +33,7 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 /**
  * The ImmutableClassBuilder is responsible for handling Immutable classes as a bind destination for Configs
  */
-@Singleton
+@ApplicationScoped
 @Priority(1)
 public class ImmutableClassBuilder implements ConfigClassBuilder {
 

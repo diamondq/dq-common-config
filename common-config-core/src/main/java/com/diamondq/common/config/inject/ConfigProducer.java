@@ -18,14 +18,15 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Locale;
 
+import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Instance;
 import javax.enterprise.inject.Produces;
 import javax.inject.Named;
-import javax.inject.Singleton;
 
 /**
  * This is a CDI based Producer that will generate a Config given some injectables
  */
+@ApplicationScoped
 public class ConfigProducer {
 
 	/**
@@ -43,7 +44,7 @@ public class ConfigProducer {
 	 * @return the config
 	 */
 	@Produces
-	@Singleton
+	@ApplicationScoped
 	public Config getConfig(@Named("application.environment") String pEnvironment,
 		@Named("application.profiles") String pProfiles, @Named("application.name") String pAppId,
 		ConfigSourceFactoryFactory pFactoryFactory, Locale pDefaultLocale, Instance<ConfigParser> pParsers,

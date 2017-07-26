@@ -13,7 +13,7 @@ import java.util.List;
 import java.util.Map;
 
 import javax.annotation.Priority;
-import javax.inject.Singleton;
+import javax.enterprise.context.ApplicationScoped;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
@@ -21,7 +21,7 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 /**
  * The builder for classes that take no parameter constructors
  */
-@Singleton
+@ApplicationScoped
 @Priority(100)
 public class NoParamConstructorBuilder implements ConfigClassBuilder {
 

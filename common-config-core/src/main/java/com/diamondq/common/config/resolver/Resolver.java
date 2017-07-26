@@ -14,11 +14,14 @@ import java.util.SortedMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import javax.enterprise.context.ApplicationScoped;
+
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 /**
  * The generic resolver
  */
+@ApplicationScoped
 public class Resolver implements ConfigNodeResolver {
 
 	private Pattern					mPattern;
@@ -108,8 +111,8 @@ public class Resolver implements ConfigNodeResolver {
 		return replacement;
 	}
 
-	protected @Nullable Pair<String, Boolean> resolveStr(@Nullable String pValue, ConfigNode pRootNode, String pDiagName,
-		ConfigNode pNode) {
+	protected @Nullable Pair<String, Boolean> resolveStr(@Nullable String pValue, ConfigNode pRootNode,
+		String pDiagName, ConfigNode pNode) {
 		if (pValue != null) {
 			Matcher matcher = mPattern.matcher(pValue);
 			StringBuilder sb = null;
@@ -161,7 +164,7 @@ public class Resolver implements ConfigNodeResolver {
 
 			if (sb == null)
 				return null;
-			
+
 			if (startingPoint > 0)
 				sb.append(pValue.substring(startingPoint));
 			String finalValue = sb.toString();

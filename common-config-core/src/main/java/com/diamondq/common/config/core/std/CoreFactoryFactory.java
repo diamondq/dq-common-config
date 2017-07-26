@@ -5,11 +5,13 @@ import com.diamondq.common.config.spi.ConfigSourceFactory;
 import com.diamondq.common.config.spi.ConfigSourceFactoryFactory;
 
 import javax.annotation.Priority;
+import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Alternative;
 
 /**
  * A factory for the ConfigSourceFactory.
  */
+@ApplicationScoped
 @Alternative
 @Priority(10)
 public class CoreFactoryFactory implements ConfigSourceFactoryFactory {

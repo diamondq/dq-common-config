@@ -22,7 +22,7 @@ import java.util.Optional;
 import java.util.Properties;
 import java.util.Set;
 
-import javax.inject.Singleton;
+import javax.enterprise.context.ApplicationScoped;
 
 import org.checkerframework.checker.nullness.qual.Nullable;
 
@@ -35,7 +35,7 @@ import org.checkerframework.checker.nullness.qual.Nullable;
  * parentkey._dqconfig_meta_key.otherMeta=metaValue
  * </pre>
  */
-@Singleton
+@ApplicationScoped
 public class PropertiesParser implements ConfigParser {
 
 	protected static final Set<String>	sFileExtensions;
