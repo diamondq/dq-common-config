@@ -10,19 +10,19 @@ pipeline {
     stage('Clean') {
       steps {
         sh '''cd common-config-root
-mvn "-Duser.home=/" clean'''
+mvn "-Duser.home=/" "-Djenkins=true" clean'''
       }
     }
     stage('Build') {
       steps {
         sh '''cd common-config-root
-mvn "-Duser.home=/" install'''
+mvn "-Duser.home=/" "-Djenkins=true" install'''
       }
     }
     stage('Publish') {
       steps {
         sh '''cd common-config-root
-mvn "-Duser.home=/" deploy'''
+mvn "-Duser.home=/" "-Djenkins=true" deploy'''
       }
     }
   }
