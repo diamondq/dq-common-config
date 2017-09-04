@@ -7,6 +7,8 @@ import java.util.concurrent.ConcurrentMap;
 
 import javax.annotation.Priority;
 
+import org.checkerframework.checker.nullness.qual.NonNull;
+
 /**
  * Injection/CDI helper
  */
@@ -16,12 +18,12 @@ public class InjectUtils {
 
 	/**
 	 * Reorders a Iterable of entries based on their Priority
-	 * 
+	 *
 	 * @param <T> the entry type
 	 * @param pIterable the entries
 	 * @return the sorted collection
 	 */
-	public static <T> Collection<T> orderByPriority(Iterable<T> pIterable) {
+	public static <@NonNull T> Collection<T> orderByPriority(Iterable<T> pIterable) {
 		TreeMap<String, T> m = new TreeMap<>();
 
 		for (T val : pIterable) {
