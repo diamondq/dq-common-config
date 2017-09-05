@@ -39,6 +39,69 @@
 			<scope>test</scope>
 		</dependency>
 	</dependencies>
+	<profiles>
+		<profile>
+			<id>cli</id>
+			<activation>
+				<property>
+					<name>jenkins</name>
+					<value>true</value>
+				</property>
+			</activation>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-dependency-plugin</artifactId>
+						<executions>
+							<execution>
+								<id>classes</id>
+								<phase>pre-integration-test</phase>
+								<goals>
+									<goal>unpack</goal>
+								</goals>
+								<configuration>
+									<artifactItems>
+										<artifactItem>
+											<groupId>com.diamondq.common.java.config</groupId>
+											<artifactId>common-config-core</artifactId>
+										</artifactItem>
+										<artifactItem>
+											<groupId>com.diamondq.common.java.config</groupId>
+											<artifactId>common-config-format-snake-yaml</artifactId>
+										</artifactItem>
+									</artifactItems>
+									<outputDirectory>target/classes</outputDirectory>
+								</configuration>
+							</execution>
+							<execution>
+								<id>sources</id>
+								<phase>pre-integration-test</phase>
+								<goals>
+									<goal>unpack</goal>
+								</goals>
+								<configuration>
+									<artifactItems>
+										<artifactItem>
+											<groupId>com.diamondq.common.java.config</groupId>
+											<artifactId>common-config-core</artifactId>
+											<classifier>sources</classifier>
+										</artifactItem>
+										<artifactItem>
+											<groupId>com.diamondq.common.java.config</groupId>
+											<artifactId>common-config-format-snake-yaml</artifactId>
+											<classifier>sources</classifier>
+										</artifactItem>
+									</artifactItems>
+									<outputDirectory>target/generated-sources/expanded</outputDirectory>
+								</configuration>
+							</execution>
+						</executions>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+	</profiles>
 	<build>
 		<plugins>
 			<plugin>
@@ -76,54 +139,6 @@
 							<sources>
 								<source>${project.build.directory}/generated-sources/expanded</source>
 							</sources>
-						</configuration>
-					</execution>
-				</executions>
-			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-dependency-plugin</artifactId>
-				<executions>
-					<execution>
-						<id>classes</id>
-						<phase>pre-integration-test</phase>
-						<goals>
-							<goal>unpack</goal>
-						</goals>
-						<configuration>
-							<artifactItems>
-								<artifactItem>
-									<groupId>com.diamondq.common.java.config</groupId>
-									<artifactId>common-config-core</artifactId>
-								</artifactItem>
-								<artifactItem>
-									<groupId>com.diamondq.common.java.config</groupId>
-									<artifactId>common-config-format-snake-yaml</artifactId>
-								</artifactItem>
-							</artifactItems>
-							<outputDirectory>target/classes</outputDirectory>
-						</configuration>
-					</execution>
-					<execution>
-						<id>sources</id>
-						<phase>pre-integration-test</phase>
-						<goals>
-							<goal>unpack</goal>
-						</goals>
-						<configuration>
-							<artifactItems>
-								<artifactItem>
-									<groupId>com.diamondq.common.java.config</groupId>
-									<artifactId>common-config-core</artifactId>
-									<classifier>sources</classifier>
-								</artifactItem>
-								<artifactItem>
-									<groupId>com.diamondq.common.java.config</groupId>
-									<artifactId>common-config-format-snake-yaml</artifactId>
-									<classifier>sources</classifier>
-								</artifactItem>
-							</artifactItems>
-							<outputDirectory>target/generated-sources/expanded</outputDirectory>
 						</configuration>
 					</execution>
 				</executions>
