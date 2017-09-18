@@ -25,7 +25,7 @@ public class StandardSetup {
 
 	/**
 	 * Returns a list of bootstrap sources
-	 * 
+	 *
 	 * @param pFactory the factory
 	 * @param pFileSuffixes the file suffixes
 	 * @param pHolder the config holder
@@ -58,6 +58,10 @@ public class StandardSetup {
 		results.add(
 			new WrappedBootstrapSource(pFactory.getEnvironmentalVariablesConfigSourceFactory().create(null, null)));
 
+		/* Add the Docker Secrets */
+
+		results.add(new WrappedBootstrapSource(pFactory.getDockerSecretsConfigSourceFactory().create(null, null)));
+
 		/* Add the overall bootstrap config data */
 
 		results.add(new WrappedBootstrapSource(new BootstrapSetupSource(pHolder)));
@@ -74,7 +78,7 @@ public class StandardSetup {
 
 	/**
 	 * Returns the standard set of parsers (Property files)
-	 * 
+	 *
 	 * @return the list of parsers
 	 */
 	public static Collection<ConfigParser> getStandardParsers() {
@@ -86,7 +90,7 @@ public class StandardSetup {
 	/**
 	 * Returns the standard set of class builders. This currently means Immutable classes, No Param Construction
 	 * Classes, and List classes.
-	 * 
+	 *
 	 * @return the list of class builders
 	 */
 	public static List<ConfigClassBuilder> getStandardClassBuilders() {
@@ -99,7 +103,7 @@ public class StandardSetup {
 
 	/**
 	 * Returns the standard set of node resolvers, which currently means the standard resolver
-	 * 
+	 *
 	 * @return the list of resolvers
 	 */
 	public static Collection<ConfigNodeResolver> getStandardNodeResolvers() {

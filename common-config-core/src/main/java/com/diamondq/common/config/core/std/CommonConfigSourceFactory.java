@@ -17,7 +17,7 @@ public class CommonConfigSourceFactory implements ConfigSourceFactory {
 
 	/**
 	 * Constructor
-	 * 
+	 *
 	 * @param pType the type of ConfigSource that this factory will generate
 	 */
 	public CommonConfigSourceFactory(ConfigSourceType pType) {
@@ -50,6 +50,9 @@ public class CommonConfigSourceFactory implements ConfigSourceFactory {
 		}
 		case SYSPROPS: {
 			return new SystemPropertiesConfigSource();
+		}
+		case DOCKERSECRETS: {
+			return new DockerSecretsConfigSource();
 		}
 		}
 		throw new IllegalArgumentException();

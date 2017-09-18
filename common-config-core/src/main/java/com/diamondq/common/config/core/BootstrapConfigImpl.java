@@ -15,6 +15,7 @@ import com.diamondq.common.config.spi.NodeType;
 import java.io.IOException;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -39,7 +40,7 @@ public class BootstrapConfigImpl implements Bootstrap {
 
 	/**
 	 * Default constructor
-	 * 
+	 *
 	 * @param pSetupConfig the bootstrap config
 	 */
 	public BootstrapConfigImpl(BootstrapSetupConfig pSetupConfig) {
@@ -96,7 +97,10 @@ public class BootstrapConfigImpl implements Bootstrap {
 				mSetupConfig.getNodeResolvers());
 			if (sLogger.isDebugEnabled()) {
 				sLogger.debug("Final document:");
-				DebugUtils.debug("", bootstrapProperties, true, true, Collections.singleton(".bootstrap"));
+				Set<String> f = new HashSet<>();
+				f.add(".bootstrap");
+				f.add(".secrets");
+				DebugUtils.debug("", bootstrapProperties, true, true, f);
 			}
 
 			/* Now, bind against the BootstrapConfig */

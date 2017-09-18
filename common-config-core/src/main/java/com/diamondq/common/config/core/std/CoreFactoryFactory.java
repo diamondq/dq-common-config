@@ -26,6 +26,8 @@ public class CoreFactoryFactory implements ConfigSourceFactoryFactory {
 
 	private final ConfigSourceFactory	mInMemFactory;
 
+	private final ConfigSourceFactory	mDockerSecretsFactory;
+
 	/**
 	 * Default constructor
 	 */
@@ -35,6 +37,7 @@ public class CoreFactoryFactory implements ConfigSourceFactoryFactory {
 		mFileFactory = new CommonConfigSourceFactory(ConfigSourceType.FILE);
 		mSysPropsFactory = new CommonConfigSourceFactory(ConfigSourceType.SYSPROPS);
 		mInMemFactory = new CommonConfigSourceFactory(ConfigSourceType.INMEMORY);
+		mDockerSecretsFactory = new CommonConfigSourceFactory(ConfigSourceType.DOCKERSECRETS);
 	}
 
 	@Override
@@ -60,5 +63,10 @@ public class CoreFactoryFactory implements ConfigSourceFactoryFactory {
 	@Override
 	public ConfigSourceFactory getInMemoryConfigSourceFactory() {
 		return mInMemFactory;
+	}
+
+	@Override
+	public ConfigSourceFactory getDockerSecretsConfigSourceFactory() {
+		return mDockerSecretsFactory;
 	}
 }

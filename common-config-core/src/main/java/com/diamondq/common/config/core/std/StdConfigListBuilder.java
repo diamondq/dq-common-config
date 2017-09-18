@@ -32,7 +32,7 @@ public class StdConfigListBuilder {
 
 		/**
 		 * Default constructor
-		 * 
+		 *
 		 * @param pList the list
 		 */
 		public ListBuilder(List<ConfigSource> pList) {
@@ -41,7 +41,7 @@ public class StdConfigListBuilder {
 
 		/**
 		 * Adds a new value
-		 * 
+		 *
 		 * @param pValue the value
 		 */
 		@ConfigKey("*")
@@ -51,7 +51,7 @@ public class StdConfigListBuilder {
 
 		/**
 		 * Builds the list
-		 * 
+		 *
 		 * @return the list
 		 */
 		public List<?> build() {
@@ -61,7 +61,7 @@ public class StdConfigListBuilder {
 
 	/**
 	 * Generates a builder
-	 * 
+	 *
 	 * @param pConfig the Config
 	 * @return the ListBuilder
 	 */
@@ -118,6 +118,10 @@ public class StdConfigListBuilder {
 		/* System properties */
 
 		sources.add(factory.getSystemPropertiesConfigSourceFactory().create(null, null));
+
+		/* Docker Secrets */
+
+		sources.add(factory.getDockerSecretsConfigSourceFactory().create(null, null));
 
 		return LoggerUtils.nonNullExit(sLogger, new ListBuilder(sources));
 	}

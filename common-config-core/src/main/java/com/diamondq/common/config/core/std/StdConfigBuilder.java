@@ -21,14 +21,14 @@ public abstract class StdConfigBuilder {
 
 	/**
 	 * Builds the ConfigSource
-	 * 
+	 *
 	 * @return the ConfigSource
 	 */
 	public abstract ConfigSource build();
 
 	/**
 	 * Generates a builder based on type
-	 * 
+	 *
 	 * @param pArg the type (ie. a string version of the ConfigSourceType enum)
 	 * @return the builder
 	 */
@@ -45,6 +45,8 @@ public abstract class StdConfigBuilder {
 			return new InMemoryStdConfigBuilder(sFactory.getInMemoryConfigSourceFactory());
 		case SYSPROPS:
 			return new SysStdConfigBuilder(sFactory.getSystemPropertiesConfigSourceFactory());
+		case DOCKERSECRETS:
+			return new DockerSecretsConfigBuilder(sFactory.getDockerSecretsConfigSourceFactory());
 		}
 		throw new IllegalStateException();
 	}
@@ -62,7 +64,7 @@ public abstract class StdConfigBuilder {
 
 		/**
 		 * Adds the file
-		 * 
+		 *
 		 * @param pValue the file
 		 * @return the builder
 		 */
@@ -94,7 +96,7 @@ public abstract class StdConfigBuilder {
 
 		/**
 		 * Adds the classpath
-		 * 
+		 *
 		 * @param pValue the classpath
 		 * @return the builder
 		 */
@@ -138,6 +140,25 @@ public abstract class StdConfigBuilder {
 	public static class SysStdConfigBuilder extends StdConfigBuilder {
 
 		SysStdConfigBuilder(ConfigSourceFactory pFactory) {
+			super(pFactory);
+		}
+
+		/**
+		 * @see com.diamondq.common.config.core.std.StdConfigBuilder#build()
+		 */
+		@Override
+		public ConfigSource build() {
+			return mFactory.create(null, null);
+		}
+
+	}
+
+	/**
+	 * The Docker Secrets Config Builder
+	 */
+	public static class DockerSecretsConfigBuilder extends StdConfigBuilder {
+
+		DockerSecretsConfigBuilder(ConfigSourceFactory pFactory) {
 			super(pFactory);
 		}
 

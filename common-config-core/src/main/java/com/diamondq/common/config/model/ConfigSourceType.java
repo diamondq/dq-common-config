@@ -24,5 +24,9 @@ public enum ConfigSourceType {
 	/**
 	 * Config information based on System Properties
 	 */
-	SYSPROPS
+	SYSPROPS,
+	/**
+	 * Config information based on Docker secrets
+	 */
+	DOCKERSECRETS
 }
