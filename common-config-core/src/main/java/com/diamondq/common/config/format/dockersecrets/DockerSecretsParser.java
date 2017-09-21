@@ -66,7 +66,7 @@ public class DockerSecretsParser implements ConfigParser {
 			baos.write(buffer, 0, bytesRead);
 		baos.flush();
 		byte[] bytes = baos.toByteArray();
-		String data = new String(bytes, Charset.forName("UTF-8"));
+		String data = new String(bytes, Charset.forName("UTF-8")).trim();
 		String configSource = pData.getSource().getName() + ":" + key;
 
 		ConfigNode valueNode = ConfigNode.builder().name(key)
