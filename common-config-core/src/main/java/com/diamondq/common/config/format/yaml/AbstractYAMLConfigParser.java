@@ -13,26 +13,26 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 /**
  * Generically, the YAML format has 3 types of entries, a Map, a List and a Value. Lists are translated into Maps where
  * each zero-based offset is the key. Maps are flattened using the period (.) as the separator.
- * 
+ *
  * <pre>
  * bootstrap:
  *    profiles:
  *    	- dev
  *    	- test
  * </pre>
- * 
+ *
  * Translates to
- * 
+ *
  * <pre>
  * bootstrap.profiles.0 = dev
  * bootstrap.profiles.1 = test
  * </pre>
- * 
+ *
  * Additional meta data (such as the type, help, etc.) is associated based on the type of entry. <br>
  * <br>
  * A Map is associated by placing a child map with the key of <code>_dqconfig_meta_</code>. Each child is associated in
  * the meta data.
- * 
+ *
  * <pre>
  * bootstrap:
  * 	block:
@@ -42,16 +42,16 @@ import org.checkerframework.checker.nullness.qual.Nullable;
  * 			otherMeta: metaValue
  * 		otherArg: simple
  * </pre>
- * 
+ *
  * Translates to
- * 
+ *
  * <pre>
  * bootstrap.block=[factory=com.diamondq.common.config.ExampleFactory, arg=testValue] {otherMeta=metaValue}
  * bootstrap.block.otherArg=simple
  * </pre>
- * 
+ *
  * A List is associated by placing a child map as the first element with a key of <code>_dqconfig_list_</code>.
- * 
+ *
  * <pre>
  * bootstrap:
  * 	list:
@@ -59,17 +59,17 @@ import org.checkerframework.checker.nullness.qual.Nullable;
  *			otherMeta: metaValue
  *		- firstValue
  * </pre>
- * 
+ *
  * Translates to
- * 
+ *
  * <pre>
  *bootstrap.list={otherMeta=metaValue}
  *bootstrap.list.0=firstValue
  * </pre>
- * 
- * A Value is associated by placing a separate sibling key with a key of <code>_dqconfig_meta_XXX</code> where XXX is
+ *
+ * A Value is associated by placing a separate sibling key with a key of <code>_dqconfig_meta_YYY</code> where YYY is
  * the key name to associate.
- * 
+ *
  * <pre>
  * bootstrap:
  * 	environment: test
@@ -77,13 +77,13 @@ import org.checkerframework.checker.nullness.qual.Nullable;
  * 		type: java.lang.String
  * 		otherMeta: metaValue
  * </pre>
- * 
+ *
  * Translates to
- * 
+ *
  * <pre>
  * bootstrap.environment=[java.lang.String]{otherMeta=metaValue}test
  * </pre>
- * 
+ *
  * The specialized meta entry <code>factory</code>, <code>arg</code> and <code>type</code> are interpreted as TYPE
  * information, not meta data.
  */
