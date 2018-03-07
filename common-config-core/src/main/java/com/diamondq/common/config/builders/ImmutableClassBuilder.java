@@ -2,7 +2,7 @@ package com.diamondq.common.config.builders;
 
 import com.diamondq.common.config.Config;
 import com.diamondq.common.config.ConfigKey;
-import com.diamondq.common.config.core.ConfigImpl;
+import com.diamondq.common.config.core.impl.ConfigImpl;
 import com.diamondq.common.config.spi.BuilderInfo;
 import com.diamondq.common.config.spi.ClassInfo;
 import com.diamondq.common.config.spi.ConfigClassBuilder;

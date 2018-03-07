@@ -1,6 +1,7 @@
-package com.diamondq.common.config.core;
+package com.diamondq.common.config.core.impl;
 
 import com.diamondq.common.config.Config;
+import com.diamondq.common.config.core.DebugUtils;
 import com.diamondq.common.config.spi.BuilderInfo;
 import com.diamondq.common.config.spi.ClassInfo;
 import com.diamondq.common.config.spi.ConfigClassBuilder;
