@@ -1,8 +1,8 @@
 package com.diamondq.common.config.core.std;
 
 import com.diamondq.common.config.Config;
-import com.diamondq.common.config.core.BootstrapConfigImpl;
 import com.diamondq.common.config.core.StandardSetup;
+import com.diamondq.common.config.core.impl.BootstrapConfigImpl;
 import com.diamondq.common.config.model.BootstrapSetupConfig;
 import com.diamondq.common.config.model.BootstrapSetupConfig.Builder;
 import com.diamondq.common.config.model.BootstrapSetupConfigHolder;
