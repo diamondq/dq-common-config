@@ -1,6 +1,6 @@
 package com.diamondq.common.config.tests;
 
-import com.diamondq.common.config.format.yaml.SnakeYAMLParser;
+import com.diamondq.common.config.format.yaml.snakeyaml.SnakeYAMLParser;
 import com.diamondq.common.config.spi.ConfigParser;
 
 import java.util.List;
