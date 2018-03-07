@@ -25,7 +25,7 @@ public abstract class AbstractPathDrivenConfigSource implements ConfigSource {
 
 	/**
 	 * Default constructor
-	 * 
+	 *
 	 * @param pPath the path
 	 */
 	public AbstractPathDrivenConfigSource(Path pPath) {
@@ -51,9 +51,10 @@ public abstract class AbstractPathDrivenConfigSource implements ConfigSource {
 
 			Path[] envPaths;
 			if (pEnvironment.isEmpty() == false) {
-				Path envPath =
-					(mPath.getParent() != null ? mPath.getParent().resolve(pEnvironment).resolve(mPath.getFileName())
-						: Paths.get(pEnvironment, mPath.toString()));
+				Path parent = mPath.getParent();
+				Path fileName = mPath.getFileName();
+				Path envPath = (parent != null && fileName != null ? parent.resolve(pEnvironment).resolve(fileName)
+					: Paths.get(pEnvironment, mPath.toString()));
 				envPaths = new Path[] {envPath, mPath};
 			}
 			else
@@ -66,13 +67,19 @@ public abstract class AbstractPathDrivenConfigSource implements ConfigSource {
 
 			for (Path path : envPaths)
 				for (String profile : profiles) {
-					String fileName = path.getFileName().toString();
+					Path fileNamePath = path.getFileName();
+					if (fileNamePath == null)
+						continue;
+					String fileName = fileNamePath.toString();
 					if (profile.isEmpty() == false) {
 						int offset = fileName.lastIndexOf('.');
-						fileName = fileName.substring(0, offset) + "-" + profile + fileName.substring(offset);
+						if (offset == -1)
+							fileName = fileName + "-" + profile;
+						else
+							fileName = fileName.substring(0, offset) + "-" + profile + fileName.substring(offset);
 					}
-					Path fullPath =
-						(path.getParent() != null ? path.getParent().resolve(fileName) : Paths.get(fileName));
+					Path parent = path.getParent();
+					Path fullPath = (parent != null ? parent.resolve(fileName) : Paths.get(fileName));
 					processPath(fullPath, results);
 				}
 
