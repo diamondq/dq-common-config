@@ -2,6 +2,7 @@ package com.diamondq.common.config.core;
 
 import com.diamondq.common.config.Bootstrap;
 import com.diamondq.common.config.Config;
+import com.diamondq.common.config.core.impl.ConfigImpl;
 import com.diamondq.common.config.model.BootstrapConfig;
 import com.diamondq.common.config.model.BootstrapSetupConfig;
 import com.diamondq.common.config.spi.ConfigDataTuple;
@@ -86,8 +87,6 @@ public class BootstrapConfigImpl implements Bootstrap {
 			List<ConfigSource> sortedSources = mSetupConfig.getBootstrapSources().stream()
 				.sorted((a, b) -> a.getBootstrapPriority() - b.getBootstrapPriority())
 				.map(t -> t.create(environment, profiles)).collect(Collectors.toList());
-			if (sortedSources == null)
-				throw new IllegalArgumentException();
 
 			sLogger.trace("Bootstrap Sources: {}", sortedSources);
 
