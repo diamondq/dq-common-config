@@ -2,7 +2,7 @@ package com.diamondq.common.config.core.std;
 
 import com.diamondq.common.config.Config;
 import com.diamondq.common.config.ConfigKey;
-import com.diamondq.common.config.core.LoggerUtils;
+import com.diamondq.common.config.core.impl.LoggerUtils;
 import com.diamondq.common.config.spi.ConfigParser;
 import com.diamondq.common.config.spi.ConfigSource;
 import com.diamondq.common.config.spi.ConfigSourceFactoryFactory;

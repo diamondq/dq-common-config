@@ -1,6 +1,6 @@
 package com.diamondq.common.config.core.std;
 
-import com.diamondq.common.config.core.LoggerUtils;
+import com.diamondq.common.config.core.impl.LoggerUtils;
 import com.diamondq.common.config.spi.ConfigDataTuple;
 import com.diamondq.common.config.spi.ConfigProp;
 import com.diamondq.common.config.spi.ConfigSource;
