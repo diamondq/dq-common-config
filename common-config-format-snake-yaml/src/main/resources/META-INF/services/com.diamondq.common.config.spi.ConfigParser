@@ -1,1 +1,1 @@
-com.diamondq.common.config.format.yaml.SnakeYAMLParser
+com.diamondq.common.config.format.yaml.snakeyaml.SnakeYAMLParser
