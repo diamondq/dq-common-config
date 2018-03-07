@@ -1,6 +1,6 @@
 package com.diamondq.common.config.builders;
 
-import com.diamondq.common.config.core.I18NRuntimeException;
+import com.diamondq.common.config.core.impl.I18NRuntimeException;
 import com.diamondq.common.config.spi.BuilderInfo;
 import com.diamondq.common.config.spi.ClassInfo;
 import com.diamondq.common.config.spi.ConfigClassBuilder;
