@@ -3,4 +3,5 @@
  */
 @org.checkerframework.framework.qual.DefaultQualifier(value=org.checkerframework.checker.nullness.qual.NonNull.class)
 @org.eclipse.jdt.annotation.NonNullByDefault
+@aQute.bnd.annotation.Version("1.0.0")
 package com.diamondq.common.config;
