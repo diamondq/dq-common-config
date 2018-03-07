@@ -1,6 +1,6 @@
 package com.diamondq.common.config.builders;
 
-import com.diamondq.common.config.core.ConfigImpl;
+import com.diamondq.common.config.Config;
 import com.diamondq.common.config.spi.BuilderInfo;
 import com.diamondq.common.config.spi.ClassInfo;
 import com.diamondq.common.config.spi.Pair;
@@ -13,7 +13,7 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
  * Class information for a class that takes no parameters during the constructor
- * 
+ *
  * @param <O> the 'final' object
  */
 public class NoParamClassInfo<@NonNull O> implements ClassInfo<Object, O> {
@@ -24,7 +24,7 @@ public class NoParamClassInfo<@NonNull O> implements ClassInfo<Object, O> {
 
 	/**
 	 * The constructor
-	 * 
+	 *
 	 * @param pFinalClass the 'final' class
 	 * @param pConstructor the constructor
 	 */
@@ -42,11 +42,11 @@ public class NoParamClassInfo<@NonNull O> implements ClassInfo<Object, O> {
 	}
 
 	/**
-	 * @see com.diamondq.common.config.spi.ClassInfo#builder(com.diamondq.common.config.core.ConfigImpl)
+	 * @see com.diamondq.common.config.spi.ClassInfo#builder(com.diamondq.common.config.Config)
 	 */
 	@Override
 	@SuppressWarnings("nullness")
-	public Pair<@NonNull Object, @NonNull BuilderInfo<@NonNull Object, @NonNull O>> builder(ConfigImpl pConfigImpl)
+	public Pair<@NonNull Object, @NonNull BuilderInfo<@NonNull Object, @NonNull O>> builder(Config pConfigImpl)
 		throws IllegalAccessException, IllegalArgumentException, InvocationTargetException, InstantiationException {
 
 		/*

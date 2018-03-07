@@ -1,6 +1,6 @@
 package com.diamondq.common.config.builders;
 
-import com.diamondq.common.config.core.ConfigImpl;
+import com.diamondq.common.config.Config;
 import com.diamondq.common.config.spi.BuilderInfo;
 import com.diamondq.common.config.spi.ClassInfo;
 import com.diamondq.common.config.spi.Pair;
@@ -19,7 +19,7 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
  * Class information for the Properties builder
- * 
+ *
  * @param <O> the 'final' class
  */
 public class PropertiesClassInfo<@NonNull O> implements ClassInfo<Object, O> {
@@ -48,7 +48,7 @@ public class PropertiesClassInfo<@NonNull O> implements ClassInfo<Object, O> {
 
 	/**
 	 * Default constructor
-	 * 
+	 *
 	 * @param pFinalClass the final class
 	 */
 	public PropertiesClassInfo(Class<O> pFinalClass) {
@@ -64,10 +64,10 @@ public class PropertiesClassInfo<@NonNull O> implements ClassInfo<Object, O> {
 	}
 
 	/**
-	 * @see com.diamondq.common.config.spi.ClassInfo#builder(com.diamondq.common.config.core.ConfigImpl)
+	 * @see com.diamondq.common.config.spi.ClassInfo#builder(com.diamondq.common.config.Config)
 	 */
 	@Override
-	public Pair<Object, BuilderInfo<Object, O>> builder(ConfigImpl pConfigImpl)
+	public Pair<Object, BuilderInfo<Object, O>> builder(Config pConfigImpl)
 		throws IllegalAccessException, IllegalArgumentException, InvocationTargetException, InstantiationException {
 
 		@SuppressWarnings("nullness")

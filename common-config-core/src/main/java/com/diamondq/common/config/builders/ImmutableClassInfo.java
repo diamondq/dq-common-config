@@ -1,6 +1,6 @@
 package com.diamondq.common.config.builders;
 
-import com.diamondq.common.config.core.ConfigImpl;
+import com.diamondq.common.config.Config;
 import com.diamondq.common.config.spi.BuilderInfo;
 import com.diamondq.common.config.spi.ClassInfo;
 import com.diamondq.common.config.spi.ConfigClassBuilder;
@@ -14,7 +14,7 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 
 /**
  * Information about an Immutable class
- * 
+ *
  * @param <O> the class
  */
 public class ImmutableClassInfo<@NonNull O> implements ClassInfo<Object, O> {
@@ -36,7 +36,7 @@ public class ImmutableClassInfo<@NonNull O> implements ClassInfo<Object, O> {
 
 	/**
 	 * Constructor
-	 * 
+	 *
 	 * @param pFinalClass the final class (non builder) to build
 	 * @param pClassBuilder the config class builder
 	 * @param pConstructor the constructor of the final class
@@ -75,10 +75,10 @@ public class ImmutableClassInfo<@NonNull O> implements ClassInfo<Object, O> {
 	}
 
 	/**
-	 * @see com.diamondq.common.config.spi.ClassInfo#builder(com.diamondq.common.config.core.ConfigImpl)
+	 * @see com.diamondq.common.config.spi.ClassInfo#builder(com.diamondq.common.config.Config)
 	 */
 	@Override
-	public Pair<Object, BuilderInfo<Object, O>> builder(ConfigImpl pConfigImpl)
+	public Pair<Object, BuilderInfo<Object, O>> builder(Config pConfig)
 		throws IllegalAccessException, IllegalArgumentException, InvocationTargetException {
 
 		Object builder;
@@ -87,7 +87,7 @@ public class ImmutableClassInfo<@NonNull O> implements ClassInfo<Object, O> {
 		else {
 			Object[] params = new Object[mParamCount];
 			if (mConfigArgPos != -1)
-				params[mConfigArgPos] = pConfigImpl;
+				params[mConfigArgPos] = pConfig;
 			if (mConstructorArgPos != -1)
 				params[mConstructorArgPos] = mConstructorArg;
 
