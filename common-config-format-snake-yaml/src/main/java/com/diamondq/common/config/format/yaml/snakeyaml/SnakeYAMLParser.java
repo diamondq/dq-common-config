@@ -1,5 +1,6 @@
-package com.diamondq.common.config.format.yaml;
+package com.diamondq.common.config.format.yaml.snakeyaml;
 
+import com.diamondq.common.config.format.yaml.AbstractYAMLConfigParser;
 import com.diamondq.common.config.spi.ConfigDataTuple;
 import com.diamondq.common.config.spi.ConfigNode;
 import com.diamondq.common.config.spi.ConfigParser;
