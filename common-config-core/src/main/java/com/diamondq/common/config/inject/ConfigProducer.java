@@ -1,8 +1,8 @@
 package com.diamondq.common.config.inject;
 
 import com.diamondq.common.config.Config;
-import com.diamondq.common.config.core.BootstrapConfigImpl;
 import com.diamondq.common.config.core.StandardSetup;
+import com.diamondq.common.config.core.impl.BootstrapConfigImpl;
 import com.diamondq.common.config.core.std.CoreFactoryFactory;
 import com.diamondq.common.config.model.BootstrapSetupConfig;
 import com.diamondq.common.config.model.BootstrapSetupConfig.Builder;
@@ -31,7 +31,7 @@ public class ConfigProducer {
 
 	/**
 	 * Retrieves a Config based on a variety of injectables
-	 * 
+	 *
 	 * @param pEnvironment the named environment
 	 * @param pProfiles the named profiles
 	 * @param pAppId the named application id
@@ -78,7 +78,7 @@ public class ConfigProducer {
 
 	/**
 	 * Returns the named environment based on the system property "application.environment"
-	 * 
+	 *
 	 * @return the environment
 	 */
 	@Produces
@@ -92,7 +92,7 @@ public class ConfigProducer {
 
 	/**
 	 * Returns the name profiles based on the system property "application.profiles"
-	 * 
+	 *
 	 * @return the profiles
 	 */
 	@Produces
@@ -106,7 +106,7 @@ public class ConfigProducer {
 
 	/**
 	 * Returns the application name based on the system property "application.name"
-	 * 
+	 *
 	 * @return the name
 	 */
 	@Produces
@@ -120,7 +120,7 @@ public class ConfigProducer {
 
 	/**
 	 * Returns the locale default
-	 * 
+	 *
 	 * @return the locale
 	 */
 	@Produces
@@ -130,7 +130,7 @@ public class ConfigProducer {
 
 	/**
 	 * Returns the factory factory
-	 * 
+	 *
 	 * @return the factory factory
 	 */
 	@Produces

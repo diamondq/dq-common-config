@@ -68,6 +68,11 @@
 			<optional>true</optional>
 		</dependency>
 		<dependency>
+			<groupId>org.ops4j.pax.cdi</groupId>
+			<artifactId>pax-cdi-api</artifactId>
+			<optional>true</optional>
+		</dependency>
+		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
 			<scope>test</scope>
@@ -89,7 +94,7 @@
 				</executions>
 				<configuration>
 					<instructions>
-						<Export-Package>com.diamondq.common.config.spi,com.diamondq.common.config.format,com.diamondq.common.config.format.yaml</Export-Package>
+						<Export-Package>!com.diamondq.common.config.core.impl,com.diamondq.common.config.*</Export-Package>
 						<Require-Capability>osgi.extender;
 							filter:="(osgi.extender=pax.cdi)",org.ops4j.pax.cdi.extension;
 							filter:="(extension=pax-cdi-extension)"</Require-Capability>
