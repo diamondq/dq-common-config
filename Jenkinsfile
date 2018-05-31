@@ -9,19 +9,19 @@ pipeline {
   stages {
     stage('Clean') {
       steps {
-        sh '''cd common-config-root
+        sh '''cd config-root
 mvn "-Duser.home=/" "-Djenkins=true" clean'''
       }
     }
     stage('Build') {
       steps {
-        sh '''cd common-config-root
+        sh '''cd config-root
 mvn "-Duser.home=/" "-Djenkins=true" install'''
       }
     }
     stage('Publish') {
       steps {
-        sh '''cd common-config-root
+        sh '''cd config-root
 mvn "-Duser.home=/" "-Djenkins=true" deploy'''
       }
     }
