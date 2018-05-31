@@ -7,22 +7,10 @@ pipeline {
     
   }
   stages {
-    stage('Clean') {
-      steps {
-        sh '''cd config-root
-mvn "-Duser.home=/" "-Djenkins=true" clean'''
-      }
-    }
     stage('Build') {
       steps {
         sh '''cd config-root
-mvn "-Duser.home=/" "-Djenkins=true" install'''
-      }
-    }
-    stage('Publish') {
-      steps {
-        sh '''cd config-root
-mvn "-Duser.home=/" "-Djenkins=true" deploy'''
+mvn "-Duser.home=/" "-Djenkins=true" clean deploy'''
       }
     }
   }
