@@ -98,6 +98,8 @@
                 <extensions>true</extensions>
                 <configuration>
                     <autoReleaseAfterClose>true</autoReleaseAfterClose>
+                    <serverId>ossrh</serverId>
+                    <nexusUrl>https://oss.sonatype.org/content/repositories/snapshots</nexusUrl>
                 </configuration>
             </plugin>
             <plugin>
