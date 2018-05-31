@@ -64,12 +64,12 @@
                                 <configuration>
                                     <artifactItems>
                                         <artifactItem>
-                                            <groupId>com.diamondq.common.java.config</groupId>
-                                            <artifactId>common-config-core</artifactId>
+                                            <groupId>com.diamondq.common.config</groupId>
+                                            <artifactId>config-core</artifactId>
                                         </artifactItem>
                                         <artifactItem>
-                                            <groupId>com.diamondq.common.java.config</groupId>
-                                            <artifactId>common-config-format-snake-yaml</artifactId>
+                                            <groupId>com.diamondq.common.config</groupId>
+                                            <artifactId>config-format.snake.yaml</artifactId>
                                         </artifactItem>
                                     </artifactItems>
                                     <outputDirectory>target/classes</outputDirectory>
@@ -84,13 +84,13 @@
                                 <configuration>
                                     <artifactItems>
                                         <artifactItem>
-                                            <groupId>com.diamondq.common.java.config</groupId>
-                                            <artifactId>common-config-core</artifactId>
+                                            <groupId>com.diamondq.common.config</groupId>
+                                            <artifactId>config-core</artifactId>
                                             <classifier>sources</classifier>
                                         </artifactItem>
                                         <artifactItem>
-                                            <groupId>com.diamondq.common.java.config</groupId>
-                                            <artifactId>common-config-format-snake-yaml</artifactId>
+                                            <groupId>com.diamondq.common.config</groupId>
+                                            <artifactId>config-format.snake.yaml</artifactId>
                                             <classifier>sources</classifier>
                                         </artifactItem>
                                     </artifactItems>
