@@ -22,6 +22,9 @@
                         <id>bundle-manifest</id>
                         <configuration>
                             <skip>true</skip>
+                            <instructions>
+                                <Export-Package>!com.diamondq.*</Export-Package>
+                            </instructions>
                         </configuration>
                     </execution>
                     <execution>
