@@ -90,7 +90,7 @@ public class AbstractConfigManager implements ConfigManager {
 		for (BootstrapConfigSourceFactory f : orderedFactories)
 			bootstrapSources.add(f);
 
-		Builder builder = BootstrapSetupConfig.builder().environment(mDefaultEnvironment).addProfiles(mDefaultProfiles);
+		Builder builder = BootstrapSetupConfig.builder().environment(mDefaultEnvironment).addProfile(mDefaultProfiles);
 		builder = builder.addAllNodeResolvers(nodeResolvers).addAllClassBuilders(orderedClassBuilders)
 			.addAllBootstrapSources(bootstrapSources).addAllParsers(orderedParsers);
 		BootstrapSetupConfig build = builder.build();

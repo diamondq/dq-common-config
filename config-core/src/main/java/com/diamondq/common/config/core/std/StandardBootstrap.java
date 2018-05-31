@@ -56,7 +56,7 @@ public class StandardBootstrap {
 		for (BootstrapConfigSourceFactory f : factories)
 			bootstrapSources.add(f);
 
-		Builder builder = BootstrapSetupConfig.builder().environment(getEnvironment()).addProfiles(profiles);
+		Builder builder = BootstrapSetupConfig.builder().environment(getEnvironment()).addProfile(profiles);
 		builder = builder.addAllNodeResolvers(nodeResolvers).addAllClassBuilders(classBuilders)
 			.addAllBootstrapSources(bootstrapSources).addAllParsers(parsers);
 		BootstrapSetupConfig build = builder.build();

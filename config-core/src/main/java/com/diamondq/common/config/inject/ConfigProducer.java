@@ -66,7 +66,7 @@ public class ConfigProducer {
 		for (BootstrapConfigSourceFactory f : orderedFactories)
 			bootstrapSources.add(f);
 
-		Builder builder = BootstrapSetupConfig.builder().environment(pEnvironment).addProfiles(profiles);
+		Builder builder = BootstrapSetupConfig.builder().environment(pEnvironment).addProfile(profiles);
 		builder = builder.addAllNodeResolvers(nodeResolvers).addAllClassBuilders(orderedClassBuilders)
 			.addAllBootstrapSources(bootstrapSources).addAllParsers(orderedParsers);
 		BootstrapSetupConfig build = builder.build();
