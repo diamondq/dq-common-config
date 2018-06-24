@@ -14,28 +14,6 @@
     <build>
         <plugins>
             <plugin>
-                <groupId>org.apache.felix</groupId>
-                <artifactId>maven-bundle-plugin</artifactId>
-                <extensions>true</extensions>
-                <executions>
-                    <execution>
-                        <id>bundle-manifest</id>
-                        <configuration>
-                            <skip>true</skip>
-                            <instructions>
-                                <Export-Package>!com.diamondq.*</Export-Package>
-                            </instructions>
-                        </configuration>
-                    </execution>
-                    <execution>
-                        <id>source-manifest</id>
-                        <configuration>
-                            <skip>true</skip>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-            <plugin>
                 <groupId>org.asciidoctor</groupId>
                 <artifactId>asciidoctor-maven-plugin</artifactId>
                 <version>1.5.5</version>
@@ -91,16 +69,11 @@
                             <pluginExecutions>
                                 <pluginExecution>
                                     <pluginExecutionFilter>
-                                        <groupId> org.asciidoctor 
-                                        </groupId>
-                                        <artifactId>
-                                            asciidoctor-maven-plugin 
-                                        </artifactId>
-                                        <versionRange> [1.5.3,) 
-                                        </versionRange>
+                                        <groupId>org.asciidoctor</groupId>
+                                        <artifactId>asciidoctor-maven-plugin</artifactId>
+                                        <versionRange>[1.5.3,)</versionRange>
                                         <goals>
-                                            <goal> process-asciidoc 
-                                            </goal>
+                                            <goal>process-asciidoc</goal>
                                         </goals>
                                     </pluginExecutionFilter>
                                     <action>

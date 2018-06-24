@@ -13,11 +13,6 @@
     <name>DiamondQ Common Config: API</name>
     <dependencies>
         <dependency>
-            <groupId>org.checkerframework</groupId>
-            <artifactId>checker-qual</artifactId>
-            <optional>true</optional>
-        </dependency>
-        <dependency>
             <groupId>org.osgi</groupId>
             <artifactId>org.osgi.annotation</artifactId>
             <optional>true</optional>

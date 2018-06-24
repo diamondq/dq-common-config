@@ -75,39 +75,4 @@
             <scope>test</scope>
         </dependency>
     </dependencies>
-    <build>
-        <plugins>
-            <plugin>
-                <groupId>org.apache.felix</groupId>
-                <artifactId>maven-bundle-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <id>bundle-manifest</id>
-                        <configuration>
-                            <instructions>
-                                <Export-Package>!com.diamondq.common.config.core.impl,com.diamondq.*</Export-Package>
-                            </instructions>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-            <plugin>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <configuration>
-                    <!-- Change source and target to 1.7 if using Java 7 -->
-                    <source>1.8</source>
-                    <target>1.8</target>
-                    <fork>true</fork>
-                    <compilerArgs>
-                        <!-- location of the annotated JDK, which comes from 
-                            a Maven dependency -->
-                        <arg>-Xbootclasspath/p:${annotatedJdk}</arg>
-                        <!-- Uncomment the following line to use the type 
-                            annotations compiler. -->
-                        <!-- <arg>-J-Xbootclasspath/p:${typeAnnotationsJavac}</arg> -->
-                    </compilerArgs>
-                </configuration>
-            </plugin>
-        </plugins>
-    </build>
 </project>
