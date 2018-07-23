@@ -5,7 +5,7 @@
     <parent>
         <groupId>com.diamondq</groupId>
         <artifactId>diamondq-parent</artifactId>
-        <version>1</version>
+        <version>5</version>
         <relativePath>../../common-maven/diamondq-parent</relativePath>
     </parent>
     <groupId>com.diamondq.common.config</groupId>
