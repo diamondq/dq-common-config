@@ -5,7 +5,7 @@
     <parent>
         <groupId>com.diamondq</groupId>
         <artifactId>diamondq-parent</artifactId>
-        <version>[6,7)</version>
+        <version>[6.1-SNAPSHOT,7)</version>
         <relativePath>../../common-maven/diamondq-parent</relativePath>
     </parent>
     <groupId>com.diamondq.common.config</groupId>
@@ -26,6 +26,30 @@
             <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
         </repository>
     </distributionManagement>
+    <repositories>
+        <repository>
+            <id>ossrh-snap</id>
+            <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+            <releases>
+                <enabled>false</enabled>
+            </releases>
+        </repository>
+    </repositories>
+    <pluginRepositories>
+        <pluginRepository>
+            <id>ossrh-snap</id>
+            <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+            <releases>
+                <enabled>false</enabled>
+            </releases>
+        </pluginRepository>
+    </pluginRepositories>
     <dependencyManagement>
         <dependencies>
             <dependency>
