@@ -18,6 +18,9 @@
 *.tar.gz
 *.rar
 
+# Eclipse PDE target files (which are almost always generated)
+*/*.target
+
 **/META-INF/MANIFEST.MF
 !**/src/*/resources/META-INF/
 
@@ -29,6 +32,8 @@ target/
 .flattened-pom.xml
 bin/
 generated/
+
+data/
 
 # virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
 hs_err_pid*
