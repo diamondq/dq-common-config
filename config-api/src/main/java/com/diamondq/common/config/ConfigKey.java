@@ -13,7 +13,6 @@ import java.lang.annotation.Target;
 @Target(METHOD)
 public @interface ConfigKey {
 
-	@SuppressWarnings("javadoc")
 	String value();
 
 }
