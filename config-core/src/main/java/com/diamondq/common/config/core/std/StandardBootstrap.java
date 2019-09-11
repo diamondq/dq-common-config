@@ -21,9 +21,14 @@ import java.util.Locale;
 import java.util.ServiceLoader;
 import java.util.Set;
 
+import javax.inject.Singleton;
+
+import io.micronaut.context.annotation.Factory;
+
 /**
  * The standard bootstrap algorithm. Used in most cases
  */
+@Factory
 public class StandardBootstrap {
 
 	/**
@@ -38,6 +43,7 @@ public class StandardBootstrap {
 	 * 
 	 * @return the config
 	 */
+	@Singleton
 	public Config bootstrap() {
 		BootstrapSetupConfigHolder holder = new BootstrapSetupConfigHolder();
 		String[] profiles = getProfiles().split(",");
@@ -56,7 +62,7 @@ public class StandardBootstrap {
 		for (BootstrapConfigSourceFactory f : factories)
 			bootstrapSources.add(f);
 
-		Builder builder = BootstrapSetupConfig.builder().environment(getEnvironment()).addProfile(profiles);
+		Builder builder = BootstrapSetupConfig.builder().environment(getEnvironment()).addProfiles(profiles);
 		builder = builder.addAllNodeResolvers(nodeResolvers).addAllClassBuilders(classBuilders)
 			.addAllBootstrapSources(bootstrapSources).addAllParsers(parsers);
 		BootstrapSetupConfig build = builder.build();
