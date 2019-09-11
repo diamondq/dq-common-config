@@ -24,6 +24,8 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import javax.inject.Singleton;
+
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.slf4j.ext.XLogger;
 import org.slf4j.ext.XLoggerFactory;
