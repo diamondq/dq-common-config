@@ -1,7 +1,7 @@
 pipeline {
   agent {
     docker {
-      image 'maven:3-jdk-10'
+      image 'maven:3-jdk-8'
       args '--user root:root -v /data/jenkins/m2-config:/root/.m2 -v /data/jenkins/gpg:/root/.gnupg'
     }
     
