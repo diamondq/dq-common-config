@@ -50,11 +50,6 @@
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-ext</artifactId>
         </dependency>
-        <dependency>
-            <groupId>org.immutables</groupId>
-            <artifactId>value</artifactId>
-            <scope>provided</scope>
-        </dependency>
         <!-- CDI Dependencies -->
         <!-- javax.annotation can't be optional because it's not included 
             when CDI is later included, but it's Priority definitions are necessary -->
