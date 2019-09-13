@@ -3,6 +3,7 @@ package com.diamondq.common.config.core;
 import com.diamondq.common.config.builders.ImmutableClassBuilder;
 import com.diamondq.common.config.builders.ListClassBuilder;
 import com.diamondq.common.config.builders.NoParamConstructorBuilder;
+import com.diamondq.common.config.format.dockersecrets.DockerSecretsParser;
 import com.diamondq.common.config.format.properties.PropertiesParser;
 import com.diamondq.common.config.model.BootstrapSetupConfigHolder;
 import com.diamondq.common.config.resolver.Resolver;
@@ -83,7 +84,8 @@ public class StandardSetup {
 	 */
 	public static Collection<ConfigParser> getStandardParsers() {
 		List<ConfigParser> results = new ArrayList<>();
-		results.add(new PropertiesParser());
+    results.add(new PropertiesParser());
+    results.add(new DockerSecretsParser());
 		return results;
 	}
 
