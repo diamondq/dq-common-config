@@ -129,7 +129,7 @@ public class BootstrapConfigImpl implements Bootstrap {
 				bootstrapConfig.getParsers(), bootstrapConfig.getNodeResolvers());
 			if (sLogger.isDebugEnabled()) {
 				sLogger.debug("Final document:");
-				DebugUtils.debug("", finalProperties, false, false, pFilterTo);
+				DebugUtils.debug("", finalProperties, false, false, null);
 			}
 
 			ConfigImpl finalConfigImpl = new ConfigImpl(finalProperties, bootstrapConfig.getClassBuilders());
