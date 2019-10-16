@@ -2,7 +2,7 @@ pipeline {
   agent {
     docker {
       image 'maven:3-jdk-8'
-      args '--user root:root -v /data/jenkins/m2-config:/root/.m2 -v /data/jenkins/gpg:/root/.gnupg'
+      args '-e MAVEN_CONFIG=/var/maven/.m2 -v /data/jenkins/m2-config:/var/maven/.m2 -v /data/jenkins/gpg:/var/maven/.gnupg'
     }
     
   }
@@ -10,7 +10,7 @@ pipeline {
     stage('Build') {
       steps {
         sh '''cd config-root
-mvn "-Djenkins=true" clean deploy'''
+MAVEN_OPTS=-Duser.home=/var/maven mvn "-Djenkins=true" clean deploy'''
       }
     }
   }
