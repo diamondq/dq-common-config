@@ -27,7 +27,8 @@ public class InvalidYAMLFileTypeTest extends AbstractYamlTest {
 	/**
 	 * Holder of the expected exception
 	 */
-	@Rule
+	@SuppressWarnings("deprecation")
+  @Rule
 	public ExpectedException thrown = ExpectedException.none();
 
 	/**
