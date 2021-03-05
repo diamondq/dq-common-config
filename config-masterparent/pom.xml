@@ -51,7 +51,6 @@
       <properties>
         <nexus.serverId>ossrh</nexus.serverId>
         <nexus.url>https://oss.sonatype.org</nexus.url>
-        <scm.project>common-maven</scm.project>
       </properties>
       <distributionManagement>
         <repository>
@@ -72,8 +71,6 @@
         <nexus.serverId>dq-release</nexus.serverId>
         <nexus.url>https://nexus.diamondq.com/repository/maven-public-releases</nexus.url>
         <nexus.skip.staging>true</nexus.skip.staging>
-        <nexus.skip.local.staging>true</nexus.skip.local.staging>
-        <scm.project>common-config</scm.project>
       </properties>
       <distributionManagement>
         <repository>
