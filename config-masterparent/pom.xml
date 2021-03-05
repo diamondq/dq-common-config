@@ -5,7 +5,7 @@
   <parent>
     <groupId>com.diamondq</groupId>
     <artifactId>diamondq-parent</artifactId>
-    <version>[6.1-SNAPSHOT,7)</version>
+    <version>6.3.0-SNAPSHOT</version>
     <relativePath>../../common-maven/diamondq-parent</relativePath>
   </parent>
   <groupId>com.diamondq.common.config</groupId>
@@ -18,8 +18,8 @@
   </properties>
   <distributionManagement>
     <snapshotRepository>
-      <id>ossrh-snap</id>
-      <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+      <id>dq-snap</id>
+      <url>https://nexus.diamondq.com/repository/maven-public-snapshots/</url>
     </snapshotRepository>
     <repository>
       <id>ossrh</id>
@@ -36,6 +36,18 @@
         </property>
       </activation>
       <repositories>
+        <repository>
+          <id>dq-snap</id>
+          <url>https://nexus.diamondq.com/repository/maven-public-snapshots/</url>
+          <snapshots>
+            <enabled>true</enabled>
+            <updatePolicy>${snapshot.update.policy}</updatePolicy>
+            <checksumPolicy>fail</checksumPolicy>
+          </snapshots>
+          <releases>
+            <enabled>false</enabled>
+          </releases>
+        </repository>
         <repository>
           <id>1-dq-snapshot</id>
           <url>https://nexus.diamondq.com/repository/maven-snapshots/</url>
@@ -86,6 +98,18 @@
         <activeByDefault>true</activeByDefault>
       </activation>
       <repositories>
+        <repository>
+          <id>dq-snap</id>
+          <url>https://nexus.diamondq.com/repository/maven-public-snapshots/</url>
+          <snapshots>
+            <enabled>true</enabled>
+            <updatePolicy>${snapshot.update.policy}</updatePolicy>
+            <checksumPolicy>fail</checksumPolicy>
+          </snapshots>
+          <releases>
+            <enabled>false</enabled>
+          </releases>
+        </repository>
         <repository>
           <id>1-dq-snapshot</id>
           <url>https://nexus.diamondq.com/repository/maven-snapshots/</url>
