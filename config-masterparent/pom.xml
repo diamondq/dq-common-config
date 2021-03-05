@@ -49,24 +49,6 @@
           </releases>
         </repository>
         <repository>
-          <id>1-dq-snapshot</id>
-          <url>https://nexus.diamondq.com/repository/maven-snapshots/</url>
-          <snapshots>
-            <enabled>true</enabled>
-            <updatePolicy>always</updatePolicy>
-          </snapshots>
-          <releases>
-            <enabled>false</enabled>
-          </releases>
-        </repository>
-        <repository>
-          <id>2-dq-release</id>
-          <url>https://nexus.diamondq.com/repository/maven-public/</url>
-          <snapshots>
-            <enabled>false</enabled>
-          </snapshots>
-        </repository>
-        <repository>
           <id>ossrh-snap</id>
           <url>https://oss.sonatype.org/content/repositories/snapshots</url>
           <snapshots>
@@ -109,24 +91,6 @@
           <releases>
             <enabled>false</enabled>
           </releases>
-        </repository>
-        <repository>
-          <id>1-dq-snapshot</id>
-          <url>https://nexus.diamondq.com/repository/maven-snapshots/</url>
-          <snapshots>
-            <enabled>true</enabled>
-            <updatePolicy>daily</updatePolicy>
-          </snapshots>
-          <releases>
-            <enabled>false</enabled>
-          </releases>
-        </repository>
-        <repository>
-          <id>2-dq-release</id>
-          <url>https://nexus.diamondq.com/repository/maven-public/</url>
-          <snapshots>
-            <enabled>false</enabled>
-          </snapshots>
         </repository>
         <repository>
           <id>ossrh-snap</id>
