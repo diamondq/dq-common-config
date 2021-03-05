@@ -10,7 +10,7 @@ pipeline {
     stage('Build') {
       steps {
         sh '''cd config-root
-MAVEN_OPTS=-Duser.home=/var/maven mvn "-Djenkins=true" "-Drevision=0.3.${env.BUILD_NUMBER}" "-Dsha1=${env.GIT_COMMIT}" "-Dchangelist=" clean deploy'''
+MAVEN_OPTS=-Duser.home=/var/maven mvn "-Djenkins=true" "-Drevision=0.3.${env.BUILD_NUMBER}" "-Dchangelist=" clean deploy'''
       }
     }
   }
