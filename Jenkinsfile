@@ -6,11 +6,17 @@ pipeline {
     }
     
   }
+  environment {
+	GIT_COMMIT_SHORT = sh(
+		script: "printf \$(git rev-parse --short ${GIT_COMMIT})",
+		returnStdout: true
+	)
+  }
   stages {
     stage('Build') {
       steps {
         sh 'printenv'
-        sh 'cd config-root; MAVEN_OPTS=-Duser.home=/var/maven mvn "-Djenkins=true" "-Drevision=0.3.${BUILD_NUMBER}" "-Dchangelist=" "-Dsha1=${GIT_COMMIT}" clean deploy'
+        sh 'cd config-root; MAVEN_OPTS=-Duser.home=/var/maven mvn "-Djenkins=true" "-Drevision=0.3.${BUILD_NUMBER}" "-Dchangelist=" "-Dsha1=-${GIT_COMMIT_SHORT}" clean deploy'
       }
     }
   }
