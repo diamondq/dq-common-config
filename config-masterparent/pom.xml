@@ -5,7 +5,6 @@
     <groupId>com.diamondq</groupId>
     <artifactId>diamondq-parent</artifactId>
     <version>6.3.1</version>
-    <relativePath>../../common-maven/diamondq-parent</relativePath>
   </parent>
   <groupId>com.diamondq.common.config</groupId>
   <artifactId>config-masterparent</artifactId>
@@ -28,6 +27,18 @@
       <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
     </repository>
   </distributionManagement>
+  <repositories>
+    <repository>
+      <id>dq-release</id>
+      <url>https://nexus.diamondq.com/repository/maven-public-releases/</url>
+      <releases>
+        <checksumPolicy>fail</checksumPolicy>
+      </releases>
+      <snapshots>
+        <enabled>false</enabled>
+      </snapshots>
+    </repository>
+  </repositories>
   <profiles>
     <profile>
       <id>project-to-ossrh</id>
