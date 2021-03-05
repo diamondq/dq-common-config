@@ -4,7 +4,7 @@
   <parent>
     <groupId>com.diamondq.common.config</groupId>
     <artifactId>config-masterparent</artifactId>
-    <version>0.2.0-SNAPSHOT</version>
+    <version>0.3.0-SNAPSHOT</version>
     <relativePath>../config-masterparent</relativePath>
   </parent>
   <artifactId>config-bom</artifactId>
@@ -15,27 +15,27 @@
       <dependency>
         <groupId>com.diamondq.common.config</groupId>
         <artifactId>config-api</artifactId>
-        <version>0.2.0-SNAPSHOT</version>
+        <version>${project.version}</version>
       </dependency>
       <dependency>
         <groupId>com.diamondq.common.config</groupId>
         <artifactId>config-core</artifactId>
-        <version>0.2.0-SNAPSHOT</version>
+        <version>${project.version}</version>
       </dependency>
       <dependency>
         <groupId>com.diamondq.common.config</groupId>
         <artifactId>config-docs</artifactId>
-        <version>0.2.0-SNAPSHOT</version>
+        <version>${project.version}</version>
       </dependency>
       <dependency>
         <groupId>com.diamondq.common.config</groupId>
         <artifactId>config-format.snake.yaml</artifactId>
-        <version>0.2.0-SNAPSHOT</version>
+        <version>${project.version}</version>
       </dependency>
       <dependency>
         <groupId>com.diamondq.common.config</groupId>
         <artifactId>config-tests</artifactId>
-        <version>0.2.0-SNAPSHOT</version>
+        <version>${project.version}</version>
       </dependency>
     </dependencies>
   </dependencyManagement>

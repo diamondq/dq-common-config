@@ -4,7 +4,7 @@
   <parent>
     <groupId>com.diamondq.common.config</groupId>
     <artifactId>config-masterparent</artifactId>
-    <version>0.2.0-SNAPSHOT</version>
+    <version>0.3.0-SNAPSHOT</version>
     <relativePath>../config-masterparent</relativePath>
   </parent>
   <artifactId>config-root</artifactId>
