@@ -16,6 +16,7 @@ import java.util.Map;
 
 import jakarta.enterprise.context.ApplicationScoped;
 
+import org.yaml.snakeyaml.LoaderOptions;
 import org.yaml.snakeyaml.Yaml;
 import org.yaml.snakeyaml.constructor.SafeConstructor;
 
@@ -56,7 +57,8 @@ public class SnakeYAMLParser extends AbstractYAMLConfigParser implements ConfigP
 	 */
 	@Override
 	public List<ConfigNode> parse(ConfigDataTuple pData) throws IOException {
-		Yaml yaml = new Yaml(new SafeConstructor());
+		LoaderOptions loaderOptions = new LoaderOptions();
+		Yaml yaml = new Yaml(new SafeConstructor(loaderOptions));
 		InputStream stream = pData.getStream();
 		Iterable<Object> docs = yaml.loadAll(stream);
 		List<ConfigNode> results = new ArrayList<>();
