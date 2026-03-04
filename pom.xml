@@ -5,18 +5,18 @@
     <groupId>com.diamondq.common.config</groupId>
     <artifactId>config-masterparent</artifactId>
     <version>${revision}${sha1}${changelist}</version>
-    <relativePath>../config-masterparent</relativePath>
+    <relativePath>config-masterparent/pom.xml</relativePath>
   </parent>
   <artifactId>config-root</artifactId>
   <packaging>pom</packaging>
   <name>DiamondQ Common Config: Root</name>
   <modules>
-    <module>../config-bom</module>
-    <module>../config-parent</module>
-    <module>../config-api</module>
-    <module>../config-core</module>
-    <module>../config-docs</module>
-    <module>../config-format.snake.yaml</module>
-    <module>../config-tests</module>
+    <module>config-bom</module>
+    <module>config-parent</module>
+    <module>config-api</module>
+    <module>config-core</module>
+    <module>config-docs</module>
+    <module>config-format.snake.yaml</module>
+    <module>config-tests</module>
   </modules>
 </project>
