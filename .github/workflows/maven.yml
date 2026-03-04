@@ -1,0 +1,60 @@
+name: Java CI with Maven
+
+on:
+  push:
+    branches: [ "master" ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Checkout the source code
+      - uses: actions/checkout@v4
+      # Make sure that we have a Java 25 environment
+      - name: Set up JDK 25
+        id: setupJava
+        uses: actions/setup-java@v4
+        with:
+          java-version: |
+            8
+            25
+          distribution: 'corretto'
+          cache: 'maven'
+      # Get the short revision number
+      - name: Set output
+        id: vars
+        run: echo "sha_short=$(git rev-parse --short HEAD)" >> $GITHUB_OUTPUT
+      - name: Import GPG key
+        id: import_gpg
+        uses: crazy-max/ghaction-import-gpg@v6
+        with:
+          gpg_private_key: ${{ secrets.GPG_PRIVATE_KEY }}
+          passphrase: ${{ secrets.GPG_PASSPHRASE }}
+      - name: Setup Repository
+        id: setup_repo
+        uses: s4u/maven-settings-action@v3.0.0
+        with:
+          servers: |
+            [{
+              "id": "dq-snap",
+              "username": "${{ secrets.DQ_REPO_USERNAME }}",
+              "password": "${{ secrets.DQ_REPO_PASSWORD }}"
+            },
+            {
+              "id": "dq-release",
+              "username": "${{ secrets.DQ_REPO_USERNAME }}",
+              "password": "${{ secrets.DQ_REPO_PASSWORD }}"
+            },
+            {
+              "id": "1-dq-snapshot",
+              "username": "${{ secrets.DQ_REPO_USERNAME }}",
+              "password": "${{ secrets.DQ_REPO_PASSWORD }}"
+            },
+            {
+              "id": "2-dq-release",
+              "username": "${{ secrets.DQ_REPO_USERNAME }}",
+              "password": "${{ secrets.DQ_REPO_PASSWORD }}"
+            }]
+      - name: Build with Maven
+        run: mvn -Djenkins=true -Drevision=0.4.$GITHUB_RUN_NUMBER -Dchangelist= -Dsha1=-${{ steps.vars.outputs.sha_short }} --file pom.xml clean deploy
