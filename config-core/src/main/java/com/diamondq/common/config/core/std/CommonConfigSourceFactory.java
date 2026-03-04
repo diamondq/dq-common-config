@@ -3,10 +3,10 @@ package com.diamondq.common.config.core.std;
 import com.diamondq.common.config.model.ConfigSourceType;
 import com.diamondq.common.config.spi.ConfigSource;
 import com.diamondq.common.config.spi.ConfigSourceFactory;
+import org.jspecify.annotations.Nullable;
 
 import java.util.Map;
 
-import org.checkerframework.checker.nullness.qual.Nullable;
 
 /**
  * A standard factory that can generate all the basic kinds of ConfigSources

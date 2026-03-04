@@ -1,8 +1,8 @@
 package com.diamondq.common.config.spi;
 
-import java.util.Map;
+import org.jspecify.annotations.Nullable;
 
-import org.checkerframework.checker.nullness.qual.Nullable;
+import java.util.Map;
 
 /**
  * A ConfigSourceFactory is responsible for creating a ConfigSource within a given engine.

@@ -1,8 +1,8 @@
 package com.diamondq.common.config.spi;
 
-import java.lang.reflect.InvocationTargetException;
+import org.jspecify.annotations.Nullable;
 
-import org.checkerframework.checker.nullness.qual.Nullable;
+import java.lang.reflect.InvocationTargetException;
 
 /**
  * Information about a given parameter within a builder

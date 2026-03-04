@@ -1,6 +1,6 @@
 package com.diamondq.common.config.model;
 
-import org.checkerframework.checker.nullness.qual.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /**
  * The holder for a BootstrapSetupConfig

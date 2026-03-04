@@ -1,14 +1,13 @@
 package com.diamondq.common.config.format.yaml;
 
 import com.diamondq.common.config.format.AbstractStdConfigParser;
+import org.jspecify.annotations.Nullable;
 
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
-
-import org.checkerframework.checker.nullness.qual.Nullable;
 
 /**
  * Generically, the YAML format has 3 types of entries, a Map, a List and a Value. Lists are translated into Maps where

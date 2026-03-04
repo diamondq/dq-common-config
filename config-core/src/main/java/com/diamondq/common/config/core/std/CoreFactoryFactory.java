@@ -4,9 +4,9 @@ import com.diamondq.common.config.model.ConfigSourceType;
 import com.diamondq.common.config.spi.ConfigSourceFactory;
 import com.diamondq.common.config.spi.ConfigSourceFactoryFactory;
 
-import javax.annotation.Priority;
-import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.inject.Alternative;
+import jakarta.annotation.Priority;
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.enterprise.inject.Alternative;
 
 /**
  * A factory for the ConfigSourceFactory.

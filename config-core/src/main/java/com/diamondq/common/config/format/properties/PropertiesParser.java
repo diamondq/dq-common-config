@@ -7,6 +7,7 @@ import com.diamondq.common.config.spi.ConfigNode.Builder;
 import com.diamondq.common.config.spi.ConfigParser;
 import com.diamondq.common.config.spi.ConfigProp;
 import com.diamondq.common.config.spi.NodeType;
+import org.jspecify.annotations.Nullable;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -22,9 +23,7 @@ import java.util.Optional;
 import java.util.Properties;
 import java.util.Set;
 
-import javax.enterprise.context.ApplicationScoped;
-
-import org.checkerframework.checker.nullness.qual.Nullable;
+import jakarta.enterprise.context.ApplicationScoped;
 
 /**
  * The properties file format allows meta data and type data to be added via sibling keys.

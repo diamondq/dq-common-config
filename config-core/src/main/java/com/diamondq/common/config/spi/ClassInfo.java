@@ -1,10 +1,9 @@
 package com.diamondq.common.config.spi;
 
 import com.diamondq.common.config.Config;
+import org.jspecify.annotations.NonNull;
 
 import java.lang.reflect.InvocationTargetException;
-
-import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
  * Defines information about a given class

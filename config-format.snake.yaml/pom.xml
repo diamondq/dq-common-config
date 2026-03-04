@@ -11,6 +11,7 @@
   <packaging>jar</packaging>
   <name>DiamondQ Common Config: Format: SnakeYAML</name>
   <properties>
+    <osgi.base.package>com.diamondq.common.config.format.yaml.snakeyaml</osgi.base.package>
     <osgi.export.base.package>com.diamondq.common.config.format.yaml.snakeyaml</osgi.export.base.package>
   </properties>
   <dependencies>

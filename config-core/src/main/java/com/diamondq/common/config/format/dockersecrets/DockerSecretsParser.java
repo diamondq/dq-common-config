@@ -5,6 +5,7 @@ import com.diamondq.common.config.spi.ConfigNode;
 import com.diamondq.common.config.spi.ConfigParser;
 import com.diamondq.common.config.spi.ConfigProp;
 import com.diamondq.common.config.spi.NodeType;
+import org.jspecify.annotations.Nullable;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -16,9 +17,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-import javax.enterprise.context.ApplicationScoped;
-
-import org.checkerframework.checker.nullness.qual.Nullable;
+import jakarta.enterprise.context.ApplicationScoped;
 
 /**
  * The Docker Secrets format reads redacted values into a section of the Config hierarchy.

@@ -1,10 +1,10 @@
 package com.diamondq.common.config.spi;
 
+import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.Nullable;
+
 import java.util.List;
 import java.util.Map;
-
-import org.checkerframework.checker.nullness.qual.NonNull;
-import org.checkerframework.checker.nullness.qual.Nullable;
 
 /**
  * Represents a handler that can create a builder to support a given class.
@@ -24,7 +24,7 @@ public interface ConfigClassBuilder extends ConfigReconstructable {
 	 * @return the class info
 	 */
 	public <@NonNull T, @NonNull O> @Nullable ClassInfo<T, O> getClassInfo(Class<?> pClass, Class<O> pFinalClass,
-		NodeType pType, List<ConfigClassBuilder> pClassBuilders, @Nullable Map<String, Object> pContext);
+																		   NodeType pType, List<ConfigClassBuilder> pClassBuilders, @Nullable Map<String, Object> pContext);
 
 	/**
 	 * @param pClassInfo the class info

@@ -1,9 +1,9 @@
 package com.diamondq.common.config;
 
+import org.jspecify.annotations.Nullable;
+
 import java.util.Locale;
 import java.util.Set;
-
-import org.checkerframework.checker.nullness.qual.Nullable;
 
 /**
  * The interface for generating a Config from nothing (aka bootstrap)

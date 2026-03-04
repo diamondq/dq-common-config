@@ -12,6 +12,8 @@ import com.diamondq.common.config.spi.ParameterInfo;
 import com.diamondq.common.config.spi.ParameterInfo.ParameterType;
 import com.diamondq.common.config.spi.StdBuilderInfo;
 import com.diamondq.common.config.spi.StdParameterInfo;
+import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.Nullable;
 
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
@@ -24,11 +26,8 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
-import javax.annotation.Priority;
-import javax.enterprise.context.ApplicationScoped;
-
-import org.checkerframework.checker.nullness.qual.NonNull;
-import org.checkerframework.checker.nullness.qual.Nullable;
+import jakarta.annotation.Priority;
+import jakarta.enterprise.context.ApplicationScoped;
 
 /**
  * The ImmutableClassBuilder is responsible for handling Immutable classes as a bind destination for Configs
@@ -84,7 +83,7 @@ public class ImmutableClassBuilder implements ConfigClassBuilder {
 	 */
 	@Override
 	public <@NonNull T, @NonNull O> @Nullable ClassInfo<T, O> getClassInfo(Class<?> pClass, Class<O> pFinalClass,
-		NodeType pType, List<ConfigClassBuilder> pClassBuilders, @Nullable Map<String, Object> pContext) {
+																		   NodeType pType, List<ConfigClassBuilder> pClassBuilders, @Nullable Map<String, Object> pContext) {
 
 		boolean hasFactoryArg = false;
 		if ((pType.getFactoryArg().isPresent() == true) && (pType.getFactoryArg().get().getValue().isPresent() == true))

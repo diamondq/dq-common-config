@@ -1,70 +1,67 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-  <modelVersion>4.0.0</modelVersion>
-  <parent>
-    <groupId>com.diamondq.common.config</groupId>
-    <artifactId>config-parent</artifactId>
-    <version>${revision}${sha1}${changelist}</version>
-    <relativePath>../config-parent</relativePath>
-  </parent>
-  <artifactId>config-core</artifactId>
-  <packaging>jar</packaging>
-  <name>DiamondQ Common Config: Core</name>
-  <properties>
-    <annotatedJdk>${org.checkerframework:jdk8:jar}</annotatedJdk>
-  </properties>
-  <profiles>
-    <profile>
-      <id>m2e</id>
-      <activation>
-        <property>
-          <!-- <name>!m2e.version</name> -->
-          <name>not-used</name>
-        </property>
-      </activation>
-      <dependencies>
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>com.diamondq.common.config</groupId>
+        <artifactId>config-parent</artifactId>
+        <version>${revision}${sha1}${changelist}</version>
+        <relativePath>../config-parent</relativePath>
+    </parent>
+    <artifactId>config-core</artifactId>
+    <packaging>jar</packaging>
+    <name>DiamondQ Common Config: Core</name>
+    <properties>
+        <osgi.base.package>com.diamondq.common.config</osgi.base.package>
+    </properties>
+    <dependencies>
         <dependency>
-          <groupId>org.checkerframework</groupId>
-          <artifactId>checker</artifactId>
+            <groupId>com.diamondq.common.config</groupId>
+            <artifactId>config-api</artifactId>
         </dependency>
-        <!-- The Type Annotations compiler. Uncomment if using Java 7 or annotations in comments. -->
-        <!-- <dependency> <groupId>org.checkerframework</groupId> <artifactId>compiler</artifactId> <version>2.1.12</version> 
-          </dependency> -->
-        <!-- The annotated JDK to use (change to jdk7 if using Java 7). -->
         <dependency>
-          <groupId>org.checkerframework</groupId>
-          <artifactId>jdk8</artifactId>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-ext</artifactId>
         </dependency>
-      </dependencies>
-    </profile>
-  </profiles>
-  <dependencies>
-    <dependency>
-      <groupId>com.diamondq.common.config</groupId>
-      <artifactId>config-api</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.slf4j</groupId>
-      <artifactId>slf4j-ext</artifactId>
-    </dependency>
-    <!-- CDI Dependencies -->
-    <!-- javax.annotation can't be optional because it's not included when CDI is later included, but it's Priority definitions 
-      are necessary -->
-    <dependency>
-      <groupId>javax.annotation</groupId>
-      <artifactId>javax.annotation-api</artifactId>
-      <scope>compile</scope>
-    </dependency>
-    <dependency>
-      <groupId>jakarta.enterprise</groupId>
-      <artifactId>jakarta.enterprise.cdi-api</artifactId>
-      <scope>compile</scope>
-      <optional>true</optional>
-    </dependency>
-    <dependency>
-      <groupId>junit</groupId>
-      <artifactId>junit</artifactId>
-      <scope>test</scope>
-    </dependency>
-  </dependencies>
+        <!-- CDI Dependencies -->
+        <!-- javax.annotation can't be optional because it's not included when CDI is later included, but it's Priority definitions
+          are necessary -->
+        <dependency>
+            <groupId>javax.annotation</groupId>
+            <artifactId>javax.annotation-api</artifactId>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>jakarta.enterprise</groupId>
+            <artifactId>jakarta.enterprise.cdi-api</artifactId>
+            <scope>compile</scope>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>build-helper-maven-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>add-source</id>
+                        <phase>generate-sources</phase>
+                        <goals>
+                            <goal>add-source</goal>
+                        </goals>
+                        <configuration>
+                            <sources>
+                                <source>${project.build.directory}/generated-sources/annotations</source>
+                            </sources>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
 </project>

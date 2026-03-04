@@ -15,7 +15,7 @@
       <dependency>
         <groupId>jakarta.platform</groupId>
         <artifactId>jakarta.jakartaee-bom</artifactId>
-        <version>8.0.0</version>
+        <version>11.0.0</version>
         <scope>import</scope>
         <type>pom</type>
       </dependency>
@@ -44,4 +44,27 @@
       </dependency>
     </dependencies>
   </dependencyManagement>
+  <build>
+    <plugins>
+      <plugin>
+        <artifactId>maven-enforcer-plugin</artifactId>
+        <configuration>
+          <rules>
+<!--            <dependencyConvergence>-->
+<!--              <excludes combine.children="append">-->
+<!--                &lt;!&ndash; jinjava pulls in older versions &ndash;&gt;-->
+<!--                <exclude>com.google.errorprone:error_prone_annotations:2.35.1</exclude>-->
+<!--                <exclude>com.hubspot.immutables:immutables-exceptions:1.4</exclude>-->
+<!--              </excludes>-->
+<!--            </dependencyConvergence>-->
+            <banDynamicVersions>
+              <ignores>
+                <ignore>com.diamondq.common.config</ignore>
+              </ignores>
+            </banDynamicVersions>
+          </rules>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
 </project>

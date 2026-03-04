@@ -1,6 +1,7 @@
 package com.diamondq.common.config.tests.model;
 
-import org.checkerframework.checker.nullness.qual.Nullable;
+
+import org.jspecify.annotations.Nullable;
 
 /**
  * Test Factory

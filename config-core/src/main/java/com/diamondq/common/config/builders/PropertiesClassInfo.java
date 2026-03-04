@@ -8,14 +8,13 @@ import com.diamondq.common.config.spi.ParameterInfo;
 import com.diamondq.common.config.spi.ParameterInfo.ParameterType;
 import com.diamondq.common.config.spi.StdBuilderInfo;
 import com.diamondq.common.config.spi.StdParameterInfo;
+import org.jspecify.annotations.NonNull;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-
-import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
  * Class information for the Properties builder

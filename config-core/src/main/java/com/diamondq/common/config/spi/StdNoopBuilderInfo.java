@@ -1,10 +1,10 @@
 package com.diamondq.common.config.spi;
 
+import org.jspecify.annotations.NonNull;
+
 import java.lang.reflect.InvocationTargetException;
 import java.util.Collections;
 import java.util.List;
-
-import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
  * A standard Builder that just returns the Builder

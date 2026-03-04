@@ -4,6 +4,7 @@ import com.diamondq.common.config.spi.ConfigNode;
 import com.diamondq.common.config.spi.ConfigParser;
 import com.diamondq.common.config.spi.ConfigProp;
 import com.diamondq.common.config.spi.NodeType;
+import org.jspecify.annotations.Nullable;
 
 import java.util.HashMap;
 import java.util.List;
@@ -13,8 +14,6 @@ import java.util.SortedMap;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.atomic.AtomicInteger;
-
-import org.checkerframework.checker.nullness.qual.Nullable;
 
 /**
  * Abstract base for different format parsers

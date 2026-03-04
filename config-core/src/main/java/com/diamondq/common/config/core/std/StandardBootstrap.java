@@ -21,7 +21,7 @@ import java.util.Locale;
 import java.util.ServiceLoader;
 import java.util.Set;
 
-import javax.inject.Singleton;
+import jakarta.inject.Singleton;
 
 import io.micronaut.context.annotation.Factory;
 

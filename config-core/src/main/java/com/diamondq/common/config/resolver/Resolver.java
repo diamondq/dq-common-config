@@ -6,6 +6,7 @@ import com.diamondq.common.config.spi.ConfigProp;
 import com.diamondq.common.config.spi.ConfigProp.Builder;
 import com.diamondq.common.config.spi.NodeType;
 import com.diamondq.common.config.spi.Pair;
+import org.jspecify.annotations.Nullable;
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -14,9 +15,7 @@ import java.util.SortedMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import javax.enterprise.context.ApplicationScoped;
-
-import org.checkerframework.checker.nullness.qual.Nullable;
+import jakarta.enterprise.context.ApplicationScoped;
 
 /**
  * The generic resolver

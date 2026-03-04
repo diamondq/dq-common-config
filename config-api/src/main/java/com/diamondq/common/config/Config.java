@@ -1,9 +1,9 @@
 package com.diamondq.common.config;
 
+import org.jspecify.annotations.Nullable;
+
 import java.util.Locale;
 import java.util.Map;
-
-import org.checkerframework.checker.nullness.qual.Nullable;
 
 /**
  * Represents the configuration. Can be queried to bind the configuration data to a given object.

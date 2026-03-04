@@ -10,6 +10,9 @@
   <artifactId>config-api</artifactId>
   <packaging>jar</packaging>
   <name>DiamondQ Common Config: API</name>
+  <properties>
+    <osgi.base.package>com.diamondq.common.config</osgi.base.package>
+  </properties>
   <dependencies>
     <dependency>
       <groupId>org.osgi</groupId>

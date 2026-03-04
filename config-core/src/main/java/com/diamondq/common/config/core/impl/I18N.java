@@ -1,10 +1,10 @@
 package com.diamondq.common.config.core.impl;
 
+import org.jspecify.annotations.Nullable;
+
 import java.text.MessageFormat;
 import java.util.Locale;
 import java.util.ResourceBundle;
-
-import org.checkerframework.checker.nullness.qual.Nullable;
 
 /**
  * Internationalization helper class

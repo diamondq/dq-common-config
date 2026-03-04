@@ -18,10 +18,10 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Locale;
 
-import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.inject.Instance;
-import javax.enterprise.inject.Produces;
-import javax.inject.Named;
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.enterprise.inject.Instance;
+import jakarta.enterprise.inject.Produces;
+import jakarta.inject.Named;
 
 /**
  * This is a CDI based Producer that will generate a Config given some injectables

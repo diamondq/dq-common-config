@@ -1,9 +1,9 @@
 package com.diamondq.common.config.spi;
 
+import org.jspecify.annotations.Nullable;
+
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-
-import org.checkerframework.checker.nullness.qual.Nullable;
 
 /**
  * A standard parameter info

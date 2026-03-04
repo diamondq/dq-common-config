@@ -5,11 +5,10 @@ import com.diamondq.common.config.spi.BuilderInfo;
 import com.diamondq.common.config.spi.ClassInfo;
 import com.diamondq.common.config.spi.Pair;
 import com.diamondq.common.config.spi.StdNoopBuilderInfo;
+import org.jspecify.annotations.NonNull;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
-
-import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
  * Class information for a class that takes no parameters during the constructor

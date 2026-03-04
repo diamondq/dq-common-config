@@ -3,8 +3,8 @@ package com.diamondq.common.config.core.std;
 import com.diamondq.common.config.model.ConfigSourceType;
 import com.diamondq.common.config.spi.ConfigSource;
 import com.diamondq.common.config.spi.ConfigSourceFactory;
+import org.jspecify.annotations.Nullable;
 
-import org.checkerframework.checker.nullness.qual.Nullable;
 
 /**
  * ConfigBuilder that follows the Builder pattern.

@@ -1,6 +1,6 @@
 package com.diamondq.common.config.core.impl;
 
-import org.checkerframework.checker.nullness.qual.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /**
  * A Runtime Exception that holds on to a future localizable key

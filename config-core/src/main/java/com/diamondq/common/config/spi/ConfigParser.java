@@ -1,12 +1,12 @@
 package com.diamondq.common.config.spi;
 
+import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.Nullable;
+
 import java.io.IOException;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
-
-import org.checkerframework.checker.nullness.qual.NonNull;
-import org.checkerframework.checker.nullness.qual.Nullable;
 
 /**
  * This represents a parser (ie. YAML, JSON, etc.) that is capable of translating an InputStream from a ConfigSource

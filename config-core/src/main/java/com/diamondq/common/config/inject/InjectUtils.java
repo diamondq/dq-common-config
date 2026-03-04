@@ -1,13 +1,13 @@
 package com.diamondq.common.config.inject;
 
+import org.jspecify.annotations.NonNull;
+
 import java.util.Collection;
 import java.util.TreeMap;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
 import javax.annotation.Priority;
-
-import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
  * Injection/CDI helper

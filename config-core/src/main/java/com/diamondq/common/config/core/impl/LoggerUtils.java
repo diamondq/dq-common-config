@@ -1,6 +1,6 @@
 package com.diamondq.common.config.core.impl;
 
-import org.checkerframework.checker.nullness.qual.NonNull;
+import org.jspecify.annotations.NonNull;
 import org.slf4j.ext.XLogger;
 
 /**

@@ -13,16 +13,15 @@ import com.diamondq.common.config.spi.ConfigClassBuilder;
 import com.diamondq.common.config.spi.ConfigNodeResolver;
 import com.diamondq.common.config.spi.ConfigParser;
 import com.diamondq.common.config.spi.ConfigSourceFactoryFactory;
+import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Locale;
 
-import javax.enterprise.inject.Instance;
-
-import org.checkerframework.checker.nullness.qual.NonNull;
-import org.checkerframework.checker.nullness.qual.Nullable;
+import jakarta.enterprise.inject.Instance;
 
 public class AbstractConfigManager implements ConfigManager {
 
